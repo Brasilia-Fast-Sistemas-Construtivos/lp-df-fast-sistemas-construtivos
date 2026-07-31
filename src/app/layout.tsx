@@ -12,24 +12,21 @@ import { buildGraph, localBusinessSchema, organizationSchema, websiteSchema } fr
 import "./globals.css";
 
 const dmSans = DM_Sans({
-  subsets: ["latin", "latin-ext"],
+  subsets: ["latin"],
   display: "swap",
   variable: "--font-dm-sans",
-  weight: ["200", "300", "400", "500", "600", "700"],
 });
 
 const urbanist = Urbanist({
-  subsets: ["latin", "latin-ext"],
+  subsets: ["latin"],
   display: "swap",
   variable: "--font-urbanist",
-  weight: ["200", "300", "400", "500", "600", "700"],
 });
 
 const manrope = Manrope({
-  subsets: ["latin", "latin-ext"],
+  subsets: ["latin"],
   display: "swap",
   variable: "--font-manrope",
-  weight: ["200", "300", "400", "500", "600", "700"],
 });
 
 const homePage = PAGES[0];

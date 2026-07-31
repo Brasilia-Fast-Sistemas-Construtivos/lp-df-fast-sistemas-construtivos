@@ -10,6 +10,8 @@
   --color-muted-white: #c2c2c2;
   --color-border: #e5e5e5;
   --color-gray-surface: #f0f0f0;
+  --color-galvanized: #8d9499;
+  --color-chalk: #e0b4b6;
 
   --color-success: #0f7b3c;
   --color-warning: #b45309;
@@ -69,6 +71,13 @@
   --dur-fast: 120ms;
   --dur-normal: 200ms;
   --dur-slow: 320ms;
+
+  --ease-snap: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur-snap: 180ms;
+  --dur-settle: 300ms;
+  --dur-lay: 420ms;
+  --line-w: 2px;
+  --line-w-strong: 3px;
 
   --z-base: 1;
   --z-sticky: 100;

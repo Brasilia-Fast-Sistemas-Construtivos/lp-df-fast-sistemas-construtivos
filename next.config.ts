@@ -11,6 +11,8 @@ const nextConfig: NextConfig = {
       "@phosphor-icons/react",
       "@phosphor-icons/react/dist/ssr",
       "swiper",
+      "gsap",
+      "@gsap/react",
     ],
   },
   async headers() {
