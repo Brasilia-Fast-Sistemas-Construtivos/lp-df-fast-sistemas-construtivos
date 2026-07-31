@@ -12,6 +12,10 @@
   --color-gray-surface: #f0f0f0;
   --color-galvanized: #8d9499;
   --color-chalk: #e0b4b6;
+  --color-footer-rule: rgba(255, 255, 255, 0.12);
+  --color-backdrop: rgba(5, 5, 5, 0.55);
+  --color-whatsapp: #128c3e;
+  --color-whatsapp-hover: #0e7a34;
 
   --color-success: #0f7b3c;
   --color-warning: #b45309;

@@ -3,6 +3,7 @@ import { DM_Sans, Manrope, Urbanist } from "next/font/google";
 import type { ReactNode } from "react";
 
 import JsonLd from "@/components/seo/JsonLd";
+import AppShell from "@/components/layout/AppShell";
 import EmotionProvider from "@/components/providers/EmotionProvider";
 import { BRAND_COLORS } from "@/data/brand";
 import { PAGES } from "@/data/seo";
@@ -70,6 +71,8 @@ export const metadata: Metadata = {
 
 const globalSchema = buildGraph([organizationSchema(), localBusinessSchema(), websiteSchema()]);
 
+const MOTION_FLAG_SCRIPT = `try{if(!matchMedia("(prefers-reduced-motion: reduce)").matches){document.documentElement.dataset.motion="on"}}catch(e){}`;
+
 type RootLayoutProps = {
   children: ReactNode;
 };
@@ -84,12 +87,15 @@ export default function RootLayout({ children }: RootLayoutProps) {
       <head>
         <JsonLd schema={globalSchema} />
         <link rel="alternate" type="text/plain" href="/llms.txt" title="llms.txt" />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: MOTION_FLAG_SCRIPT,
+          }}
+        />
       </head>
       <body>
         <EmotionProvider>
-          <div className="app-shell">
-            <main className="app-main">{children}</main>
-          </div>
+          <AppShell>{children}</AppShell>
         </EmotionProvider>
       </body>
     </html>

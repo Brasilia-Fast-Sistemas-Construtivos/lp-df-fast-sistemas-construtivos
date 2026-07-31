@@ -4,6 +4,12 @@ const nextConfig: NextConfig = {
   compiler: {
     removeConsole: process.env.NODE_ENV === "production",
   },
+  images: {
+    formats: ["image/avif", "image/webp"],
+    qualities: [70, 75, 85],
+    deviceSizes: [640, 828, 1080, 1200, 1920],
+    imageSizes: [16, 32, 48, 96, 256, 384],
+  },
   experimental: {
     optimizePackageImports: [
       "@emotion/react",

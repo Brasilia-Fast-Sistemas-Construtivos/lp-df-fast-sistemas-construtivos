@@ -20,6 +20,7 @@ export const CONTACT = {
   whatsappUrl: "https://wa.me/5561998467194",
   emailUrl: "mailto:franquia.fjsteel@fastdrywall.com.br",
   phoneUrl: "tel:+5561998467194",
+  whatsappMensagem: "Olá! Vim pelo site e gostaria de um orçamento.",
 } as const;
 
 export const BRAND_ASSETS = {
