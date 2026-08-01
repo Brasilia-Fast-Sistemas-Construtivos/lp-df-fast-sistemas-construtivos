@@ -5,8 +5,10 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 
 import CtaButton from "@/components/forms/CtaButton";
+import { useFormModal } from "@/components/forms/FormModalProvider";
+import Button from "@/components/ui/Button";
 import { MENU_LINKS, SECTION_IDS } from "@/data/navigation";
-import { BRAND_ASSETS, SITE } from "@/data/site";
+import { BRAND_ASSETS, CONTACT, SITE } from "@/data/site";
 
 const Root = styled.header`
   position: fixed;
@@ -16,7 +18,8 @@ const Root = styled.header`
   border-bottom: 1px solid transparent;
   transition: border-color var(--dur-normal) var(--ease-standard);
 
-  &[data-scrolled="true"] {
+  &[data-scrolled="true"],
+  &[data-menu-aberto="true"] {
     border-bottom-color: var(--color-border);
   }
 
@@ -24,166 +27,278 @@ const Root = styled.header`
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: var(--space-5);
+    gap: var(--space-4);
     height: var(--header-height);
     transition: height var(--dur-normal) var(--ease-standard);
 
     @media (max-width: 900px) {
       height: var(--header-height-mobile);
+      transition: none;
     }
 
-    @media (max-width: 480px) {
-      gap: var(--space-3);
-    }
-  }
-
-  &[data-scrolled="true"] > .header__inner {
-    height: 56px;
-  }
-
-  & .header__logo {
-    display: inline-flex;
-    align-items: center;
-    flex-shrink: 0;
-
-    & > img {
-      width: 150px;
-      height: auto;
-
-      @media (max-width: 900px) {
-        width: 124px;
-      }
-
-      @media (max-width: 480px) {
-        width: 96px;
-      }
-    }
-  }
-
-  & .header__nav {
-    display: flex;
-    align-items: center;
-    gap: var(--space-5);
-
-    @media (max-width: 900px) {
-      display: none;
-    }
-
-    & > .header__link {
-      position: relative;
-      font-size: var(--text-sm);
-      font-weight: var(--weight-medium);
-      color: var(--color-fg);
-      transition: color var(--dur-fast) var(--ease-standard);
-
-      &::after {
-        content: "";
-        position: absolute;
-        left: 0;
-        right: 0;
-        bottom: -6px;
-        height: var(--line-w);
-        background: var(--color-brand);
-        transform: scaleX(0);
-        transform-origin: left center;
-        transition: transform var(--dur-fast) var(--ease-standard);
-      }
-
-      &:hover {
-        color: var(--color-dark);
-      }
-
-      &:hover::after {
-        transform: scaleX(1);
-      }
+    & > .header__logo {
+      display: inline-flex;
+      align-items: center;
+      flex-shrink: 0;
 
       &:focus-visible {
         outline: 2px solid var(--color-brand);
         outline-offset: 4px;
       }
+
+      & > img {
+        width: 150px;
+        height: auto;
+
+        @media (max-width: 900px) {
+          width: 120px;
+        }
+      }
     }
-  }
 
-  & .header__acoes {
-    display: flex;
-    align-items: center;
-    gap: var(--space-3);
-    flex-shrink: 0;
+    & > .header__nav {
+      display: flex;
+      align-items: center;
+      gap: var(--space-5);
 
-    @media (max-width: 480px) {
-      gap: var(--space-2);
+      @media (max-width: 900px) {
+        display: none;
+      }
 
-      & > button:first-of-type {
-        padding: var(--space-2) var(--space-3);
-        font-size: var(--text-xs);
+      & > .header__link {
+        position: relative;
+        font-size: var(--text-sm);
+        font-weight: var(--weight-medium);
+        color: var(--color-fg);
+        transition: color var(--dur-fast) var(--ease-standard);
+
+        &::after {
+          content: "";
+          position: absolute;
+          left: 0;
+          right: 0;
+          bottom: -6px;
+          height: 2px;
+          background: var(--color-brand);
+          transform: scaleX(0);
+          transform-origin: left center;
+          transition: transform var(--dur-fast) var(--ease-standard);
+        }
+
+        &:hover {
+          color: var(--color-dark);
+        }
+
+        &:hover::after {
+          transform: scaleX(1);
+        }
+
+        &:focus-visible {
+          outline: 2px solid var(--color-brand);
+          outline-offset: 4px;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          transition: none;
+
+          &::after {
+            transition: none;
+          }
+        }
+      }
+    }
+
+    & > .header__acoes {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      flex-shrink: 0;
+
+      & > .header__cta-desktop {
+        @media (max-width: 900px) {
+          display: none;
+        }
+      }
+
+      & > .header__toggle {
+        display: none;
+        align-items: center;
+        justify-content: center;
+        width: 44px;
+        height: 44px;
+        border-radius: var(--radius-all);
+        border: 1px solid var(--color-border);
+        background: var(--color-bg);
+        color: var(--color-dark);
+        cursor: pointer;
+        transition: border-color var(--dur-fast) var(--ease-standard);
+
+        &:hover {
+          border-color: var(--color-dark);
+        }
+
+        &:focus-visible {
+          outline: 2px solid var(--color-brand);
+          outline-offset: 2px;
+        }
+
+        @media (max-width: 900px) {
+          display: inline-flex;
+        }
+
+        & > .header__toggle-icone {
+          position: relative;
+          width: 18px;
+          height: 12px;
+
+          & > i {
+            position: absolute;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            border-radius: var(--radius-all);
+            background: currentColor;
+            transition: transform var(--dur-normal) var(--ease-standard),
+              opacity var(--dur-fast) var(--ease-standard);
+
+            &:nth-of-type(1) {
+              top: 0;
+            }
+
+            &:nth-of-type(2) {
+              top: 5px;
+            }
+
+            &:nth-of-type(3) {
+              top: 10px;
+            }
+
+            @media (prefers-reduced-motion: reduce) {
+              transition: none;
+            }
+          }
+        }
       }
     }
   }
 
-  & .header__toggle {
-    display: none;
-    align-items: center;
-    justify-content: center;
-    width: 44px;
-    height: 44px;
-    border-radius: var(--radius-all);
-    border: 1px solid var(--color-border);
-    color: var(--color-dark);
-    cursor: pointer;
-
-    &:focus-visible {
-      outline: 2px solid var(--color-brand);
-      outline-offset: 2px;
+  &[data-menu-aberto="true"] .header__toggle-icone {
+    & > i:nth-of-type(1) {
+      transform: translateY(5px) rotate(45deg);
     }
 
-    @media (max-width: 900px) {
-      display: inline-flex;
+    & > i:nth-of-type(2) {
+      opacity: 0;
     }
-  }
 
-  @media (prefers-reduced-motion: reduce) {
-    transition: none;
-
-    & > .header__inner {
-      transition: none;
+    & > i:nth-of-type(3) {
+      transform: translateY(-5px) rotate(-45deg);
     }
   }
 `;
 
-const Painel = styled.div`
+const Drawer = styled.nav`
+  position: fixed;
+  top: var(--header-height-mobile);
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: var(--z-header);
   display: none;
-  border-top: 1px solid var(--color-border);
+  flex-direction: column;
   background: var(--color-bg);
+  padding: var(--space-4) var(--container-pad) var(--space-6);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  opacity: 0;
+  transform: translateY(-8px);
+  transition: opacity var(--dur-normal) var(--ease-standard),
+    transform var(--dur-normal) var(--ease-standard);
 
-  &[data-open="true"] {
-    @media (max-width: 900px) {
-      display: block;
-    }
+  @media (max-width: 900px) {
+    display: flex;
   }
 
-  & > .painel__inner {
+  @media (min-width: 901px) {
+    display: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+
+  &[data-open="false"] {
+    pointer-events: none;
+    visibility: hidden;
+  }
+
+  &[data-open="true"] {
+    opacity: 1;
+    transform: translateY(0);
+    visibility: visible;
+  }
+
+  & > .drawer__links {
     display: flex;
     flex-direction: column;
-    gap: var(--space-4);
-    padding-block: var(--space-5);
 
-    & > .painel__link {
+    & > .drawer__link {
       display: flex;
       align-items: center;
-      min-height: 44px;
+      justify-content: space-between;
+      min-height: 56px;
+      padding-block: var(--space-3);
+      border-bottom: 1px solid var(--color-border);
       font-size: var(--text-lg);
       font-weight: var(--weight-medium);
+      letter-spacing: -0.01em;
       color: var(--color-dark);
+      font-family: var(--font-display);
 
       &:focus-visible {
         outline: 2px solid var(--color-brand);
-        outline-offset: 4px;
+        outline-offset: 2px;
+      }
+
+      &::after {
+        content: "→";
+        font-size: var(--text-md);
+        color: var(--color-muted);
+      }
+    }
+  }
+
+  & > .drawer__rodape {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    margin-top: auto;
+    padding-top: var(--space-6);
+
+    & > .drawer__contatos {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+
+      & > .drawer__contato {
+        display: inline-flex;
+        align-items: center;
+        min-height: 44px;
+        font-size: var(--text-md);
+        font-weight: var(--weight-medium);
+        color: var(--color-fg);
+
+        &:focus-visible {
+          outline: 2px solid var(--color-brand);
+          outline-offset: 2px;
+        }
       }
     }
   }
 `;
 
 export default function Header() {
+  const { open } = useFormModal();
   const [scrolled, setScrolled] = useState(false);
   const [menuAberto, setMenuAberto] = useState(false);
 
@@ -203,17 +318,52 @@ export default function Header() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  useEffect(() => {
+    if (menuAberto) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [menuAberto]);
+
+  useEffect(() => {
+    if (!menuAberto) return;
+
+    const onKeyDown = (evento: KeyboardEvent) => {
+      if (evento.key === "Escape") setMenuAberto(false);
+    };
+
+    const onResize = () => {
+      if (window.innerWidth > 900) setMenuAberto(false);
+    };
+
+    window.addEventListener("keydown", onKeyDown);
+    window.addEventListener("resize", onResize);
+    return () => {
+      window.removeEventListener("keydown", onKeyDown);
+      window.removeEventListener("resize", onResize);
+    };
+  }, [menuAberto]);
+
+  const fecharEAbrirModal = () => {
+    setMenuAberto(false);
+    open({ origin: "header-menu" });
+  };
+
   return (
-    <Root data-scrolled={scrolled}>
+    <Root data-scrolled={scrolled} data-menu-aberto={menuAberto}>
       <div className="container header__inner">
-        <a className="header__logo" href={`#${SECTION_IDS.hero}`} aria-label={`${SITE.name} — início`}>
-          <Image
-            src={BRAND_ASSETS.logo}
-            alt={SITE.name}
-            width={150}
-            height={38}
-            priority
-          />
+        <a
+          className="header__logo"
+          href={`#${SECTION_IDS.hero}`}
+          aria-label={`${SITE.name}, voltar ao início`}
+          onClick={() => setMenuAberto(false)}
+        >
+          <Image src={BRAND_ASSETS.logo} alt={SITE.name} width={150} height={38} priority />
         </a>
 
         <nav className="header__nav" aria-label="Seções da página">
@@ -225,54 +375,75 @@ export default function Header() {
         </nav>
 
         <div className="header__acoes">
-          <CtaButton id="header-btn-orcamento" origin="header">
-            Pedir orçamento
-          </CtaButton>
+          <span className="header__cta-desktop">
+            <CtaButton id="header-btn-orcamento" origin="header">
+              Pedir orçamento
+            </CtaButton>
+          </span>
 
           <button
             id="header-btn-menu"
             className="header__toggle"
             type="button"
             aria-expanded={menuAberto}
-            aria-controls="header-painel"
+            aria-controls="header-drawer"
             aria-label={menuAberto ? "Fechar menu" : "Abrir menu"}
             onClick={() => setMenuAberto((estado) => !estado)}
           >
-            <svg width="18" height="14" viewBox="0 0 18 14" fill="none" aria-hidden="true">
-              {menuAberto ? (
-                <path
-                  d="M2 2l14 10M16 2L2 12"
-                  stroke="currentColor"
-                  strokeWidth="1.8"
-                  strokeLinecap="round"
-                />
-              ) : (
-                <path
-                  d="M1 1h16M1 7h16M1 13h16"
-                  stroke="currentColor"
-                  strokeWidth="1.8"
-                  strokeLinecap="round"
-                />
-              )}
-            </svg>
+            <span className="header__toggle-icone" aria-hidden="true">
+              <i />
+              <i />
+              <i />
+            </span>
           </button>
         </div>
       </div>
 
-      <Painel id="header-painel" data-open={menuAberto}>
-        <nav className="container painel__inner" aria-label="Menu">
+      <Drawer id="header-drawer" data-open={menuAberto} aria-label="Menu" aria-hidden={!menuAberto}>
+        <div className="drawer__links">
           {MENU_LINKS.map((link) => (
             <a
-              key={`painel-${link.href}${link.label}`}
-              className="painel__link"
+              key={`drawer-${link.href}${link.label}`}
+              className="drawer__link"
               href={link.href}
+              tabIndex={menuAberto ? 0 : -1}
               onClick={() => setMenuAberto(false)}
             >
               {link.label}
             </a>
           ))}
-        </nav>
-      </Painel>
+        </div>
+
+        <div className="drawer__rodape">
+          <div className="drawer__contatos">
+            <a
+              className="drawer__contato"
+              href={CONTACT.phoneUrl}
+              tabIndex={menuAberto ? 0 : -1}
+            >
+              {CONTACT.phoneDisplay}
+            </a>
+            <a
+              className="drawer__contato"
+              href={CONTACT.whatsappUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              tabIndex={menuAberto ? 0 : -1}
+            >
+              WhatsApp
+            </a>
+          </div>
+
+          <Button
+            id="drawer-btn-orcamento"
+            fullWidth
+            tabIndex={menuAberto ? 0 : -1}
+            onClick={fecharEAbrirModal}
+          >
+            Pedir orçamento
+          </Button>
+        </div>
+      </Drawer>
     </Root>
   );
 }

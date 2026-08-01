@@ -166,7 +166,7 @@ export default function SistemasSection() {
       <div className="sistemas__topo">
         <SectionTexts
           titulo="Tudo para construção a seco."
-          descricao="Compre só o material ou contrate com instalação — do perfil à placa, com um único fornecedor."
+          descricao="Compre só o material ou contrate com instalação: do perfil à placa, com um único fornecedor."
         />
         <CtaButton id="sistemas-btn-orcamento" origin="sistemas">
           Pedir orçamento

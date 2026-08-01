@@ -158,10 +158,7 @@ const Section = styled.section`
     }
 
     @media (max-width: 600px) {
-      grid-template-columns: 1fr;
-      margin-top: var(--space-3);
-      gap: var(--space-3);
-      padding: var(--space-4);
+      display: none;
     }
   }
 `;

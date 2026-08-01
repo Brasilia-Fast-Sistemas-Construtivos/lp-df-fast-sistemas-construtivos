@@ -163,6 +163,10 @@ Errado:
 
 Manter o máximo de consistência de design e estilo sem fugir da ideia que a marca transmite. Foco no principal — não decorar por decorar.
 
+## Copy
+
+Nunca usar travessão (—) em nenhum texto do site. Separar ideias com vírgula, dois-pontos ou ponto final.
+
 ## Pilares
 
 1. **Otimização**

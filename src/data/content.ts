@@ -123,7 +123,7 @@ export const ETAPAS = [
     passo: "04",
     titulo: "Instalação, se você quiser",
     descricao:
-      "A mesma equipe que vende o material executa a obra — material e mão de obra em um só contrato.",
+      "A mesma equipe que vende o material executa a obra, com material e mão de obra em um só contrato.",
   },
 ] as const;
 
@@ -131,7 +131,7 @@ export const FAQ_LP: FaqEntry[] = [
   {
     question: "Posso comprar só o material, sem a instalação?",
     answer:
-      "Pode. A Fast vende placas, perfis, forros, pisos, isolamento e acessórios avulsos, na quantidade do seu projeto. Se quiser, a equipe também executa — mas a compra do material não obriga a contratação da obra.",
+      "Pode. A Fast vende placas, perfis, forros, pisos, isolamento e acessórios avulsos, na quantidade do seu projeto. Se quiser, a equipe também executa, mas a compra do material não obriga a contratação da obra.",
   },
   {
     question: "Vocês entregam em Brasília e no entorno?",

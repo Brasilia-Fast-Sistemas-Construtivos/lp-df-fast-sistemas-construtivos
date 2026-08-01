@@ -125,7 +125,7 @@ export default function ComoTrabalhamosSection() {
       <div className="processo__topo" data-reveal>
         <SectionTexts
           titulo="Do orçamento à entrega, sem complicação."
-          descricao="Você não precisa entender de construção a seco para comprar certo — a equipe calcula, cota e entrega."
+          descricao="Você não precisa entender de construção a seco para comprar certo: a equipe calcula, cota e entrega."
         />
         <CtaButton id="processo-btn-orcamento" origin="como-comprar">
           Pedir orçamento

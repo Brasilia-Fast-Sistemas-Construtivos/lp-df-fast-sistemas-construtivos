@@ -247,7 +247,7 @@ export default function Footer() {
           ))}
         </nav>
         <p className="footer__copy">
-          © {ANO_ATUAL} {SITE.name} — {SITE.region}
+          © {ANO_ATUAL} {SITE.name} · {SITE.region}
         </p>
       </div>
     </Root>

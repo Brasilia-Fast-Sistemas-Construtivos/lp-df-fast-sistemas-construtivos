@@ -4,7 +4,7 @@ export const SITE = {
   name: "Fast Sistemas Construtivos",
   city: "Brasília",
   state: "DF",
-  region: "Brasília — DF",
+  region: "Brasília · DF",
   locale: "pt-BR",
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://df.fastsistemasconstrutivos.com.br",
   institutionalUrl: "https://www.fastsistemasconstrutivos.com.br",

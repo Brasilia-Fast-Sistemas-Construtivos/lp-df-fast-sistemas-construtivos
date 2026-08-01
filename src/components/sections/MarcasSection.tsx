@@ -90,7 +90,7 @@ export default function MarcasSection() {
       <div data-reveal>
         <SectionTexts
           titulo="As marcas que você leva da loja."
-          descricao="Vendemos os líderes do sistema construtivo a seco — e já atendemos obras de grande porte com eles."
+          descricao="Vendemos os líderes do sistema construtivo a seco e já atendemos obras de grande porte com eles."
           centrado
         />
       </div>
