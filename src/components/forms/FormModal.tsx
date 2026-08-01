@@ -213,7 +213,7 @@ export default function FormModal() {
     if (whatsapp.replace(/\D/g, "").length < 10) {
       proximosErros.whatsapp = "Informe um WhatsApp com DDD.";
     }
-    if (!tipoObra) proximosErros.tipoObra = "Selecione o tipo de obra.";
+    if (!tipoObra) proximosErros.tipoObra = "Selecione o que você precisa.";
     if (!regiao) proximosErros.regiao = "Selecione a região.";
 
     setErros(proximosErros);
@@ -323,7 +323,7 @@ export default function FormModal() {
               <SelectField
                 id="contato-form-tipo-obra"
                 name="tipoObra"
-                label="Tipo de obra"
+                label="O que você precisa"
                 options={TIPOS_DE_OBRA}
                 defaultValue={preFill.tipoObra ?? ""}
                 erro={erros.tipoObra}

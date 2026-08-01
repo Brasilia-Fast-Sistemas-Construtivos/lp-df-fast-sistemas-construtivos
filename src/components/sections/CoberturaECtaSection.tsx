@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "react";
 
 import CtaButton from "@/components/forms/CtaButton";
 import { gsap, motionEnabled, registerGsap } from "@/components/motion/gsap";
+import { useReveal } from "@/components/motion/useReveal";
 import { CONTACT } from "@/data/site";
 import { CTA_FINAL, REGIOES_ATENDIDAS } from "@/data/content";
 import { SECTION_IDS } from "@/data/navigation";
@@ -273,7 +274,10 @@ export function CoberturaBand() {
 }
 
 export function CtaFinalSection() {
+  const ctaRef = useRef<HTMLElement>(null);
   const [whatsappHref, setWhatsappHref] = useState<string>(CONTACT.whatsappUrl);
+
+  useReveal(ctaRef);
 
   useEffect(() => {
     const base = `${CONTACT.whatsappUrl}?text=${encodeURIComponent(CONTACT.whatsappMensagem)}`;
@@ -281,7 +285,7 @@ export function CtaFinalSection() {
   }, []);
 
   return (
-    <Cta id={SECTION_IDS.cta} aria-labelledby="cta-final-titulo">
+    <Cta id={SECTION_IDS.cta} ref={ctaRef} aria-labelledby="cta-final-titulo">
       <div className="cta__imagem" aria-hidden="true">
         <Image
           src="/obras/corporativo.webp"
@@ -293,11 +297,13 @@ export function CtaFinalSection() {
       </div>
 
       <div className="cta__conteudo">
-        <h2 className="cta__titulo" id="cta-final-titulo">
+        <h2 className="cta__titulo" id="cta-final-titulo" data-reveal>
           {CTA_FINAL.titulo}
         </h2>
-        <p className="cta__descricao">{CTA_FINAL.subtitulo}</p>
-        <div className="cta__acoes" role="group" aria-label="Ações disponíveis">
+        <p className="cta__descricao" data-reveal>
+          {CTA_FINAL.subtitulo}
+        </p>
+        <div className="cta__acoes" role="group" aria-label="Ações disponíveis" data-reveal>
           <CtaButton id="cta-final-btn-orcamento" origin="cta-final">
             Pedir orçamento
           </CtaButton>

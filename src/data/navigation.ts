@@ -1,5 +1,6 @@
 export const SECTION_IDS = {
   hero: "inicio",
+  produtos: "produtos",
   comparativo: "por-que-a-seco",
   sistemas: "sistemas",
   processo: "como-trabalhamos",
@@ -10,9 +11,9 @@ export const SECTION_IDS = {
 } as const;
 
 export const MENU_LINKS = [
+  { href: `#${SECTION_IDS.produtos}`, label: "Produtos" },
   { href: `#${SECTION_IDS.sistemas}`, label: "Sistemas" },
   { href: `#${SECTION_IDS.comparativo}`, label: "Por que a seco" },
-  { href: `#${SECTION_IDS.processo}`, label: "Como trabalhamos" },
   { href: `#${SECTION_IDS.obras}`, label: "Obras" },
   { href: `#${SECTION_IDS.faq}`, label: "Dúvidas" },
 ] as const;

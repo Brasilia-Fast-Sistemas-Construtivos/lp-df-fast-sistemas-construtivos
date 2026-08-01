@@ -161,8 +161,8 @@ export default function SistemasSection() {
 
       <div className="sistemas__topo">
         <SectionTexts
-          titulo="Material e execução, no mesmo contrato."
-          descricao="Você contrata o material e a obra com um único responsável. Sem terceirizar, sem empurrar problema."
+          titulo="Tudo para construção a seco."
+          descricao="Compre só o material ou contrate com instalação — do perfil à placa, com um único fornecedor."
         />
         <CtaButton id="sistemas-btn-orcamento" origin="sistemas">
           Pedir orçamento

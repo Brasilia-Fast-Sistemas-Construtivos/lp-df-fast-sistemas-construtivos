@@ -2,9 +2,11 @@
 
 import styled from "@emotion/styled";
 import Image from "next/image";
+import { useRef } from "react";
 import { A11y, Autoplay, FreeMode } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 
+import { useReveal } from "@/components/motion/useReveal";
 import SectionTexts from "@/components/ui/SectionTexts";
 import { CLIENTES, MARCAS } from "@/data/content";
 
@@ -78,17 +80,22 @@ const LOGOS = [
 ];
 
 export default function MarcasSection() {
+  const sectionRef = useRef<HTMLElement>(null);
+  useReveal(sectionRef);
+
   if (LOGOS.length === 0) return null;
 
   return (
-    <Section aria-label="Marcas e clientes">
-      <SectionTexts
-        titulo="As marcas que entram na sua obra."
-        descricao="Trabalhamos com os líderes do sistema construtivo a seco e já atendemos obras de grande porte."
-        centrado
-      />
+    <Section ref={sectionRef} aria-label="Marcas e clientes">
+      <div data-reveal>
+        <SectionTexts
+          titulo="As marcas que você leva da loja."
+          descricao="Vendemos os líderes do sistema construtivo a seco — e já atendemos obras de grande porte com eles."
+          centrado
+        />
+      </div>
 
-      <Carousel role="region" aria-label="Carrossel de marcas e clientes">
+      <Carousel role="region" aria-label="Carrossel de marcas e clientes" data-reveal>
         <Swiper
           modules={[Autoplay, FreeMode, A11y]}
           spaceBetween={8}

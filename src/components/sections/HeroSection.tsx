@@ -6,18 +6,8 @@ import { useState } from "react";
 
 import CtaButton from "@/components/forms/CtaButton";
 import SelectField from "@/components/ui/SelectField";
-import {
-  CONTENT_GATES,
-  FAIXAS_METRAGEM,
-  HERO,
-  REGIOES_OPTIONS,
-  TIPOS_DE_OBRA,
-} from "@/data/content";
+import { FAIXAS_METRAGEM, HERO, REGIOES_OPTIONS, TIPOS_DE_OBRA } from "@/data/content";
 import { SECTION_IDS } from "@/data/navigation";
-
-const TITULO_HERO = CONTENT_GATES.prazoMedioDias
-  ? HERO.tituloComPrazo.replace("{prazo}", String(CONTENT_GATES.prazoMedioDias))
-  : HERO.tituloSemPrazo;
 
 const Section = styled.section`
   width: 100%;
@@ -143,7 +133,7 @@ function BarraPreQualificacao() {
     <div className="hero__barra" role="group" aria-label="Pré-qualificação do orçamento">
       <SelectField
         id="hero-form-tipo-obra"
-        label="Tipo de obra"
+        label="O que você precisa"
         options={TIPOS_DE_OBRA}
         onChange={(evento) => setTipoObra(evento.target.value)}
       />
@@ -176,7 +166,7 @@ export default function HeroSection() {
       <div className="hero__banner">
         <div className="hero__imagem" aria-hidden="true">
           <Image
-            src="/obras/residencial.webp"
+            src="/produtos/loja-atacado.webp"
             alt=""
             fill
             sizes="100vw"
@@ -187,7 +177,7 @@ export default function HeroSection() {
 
         <div className="hero__conteudo">
           <h1 className="hero__titulo" id="hero-titulo">
-            {TITULO_HERO}
+            {HERO.titulo}
           </h1>
           <p className="hero__descricao">{HERO.subtitulo}</p>
           <div className="hero__acao">

@@ -9,17 +9,30 @@ export const CONTENT_GATES = {
 } as const;
 
 export const HERO = {
-  etiqueta: [
-    { rotulo: "FAST", valor: "SISTEMAS CONSTRUTIVOS" },
-    { rotulo: "ATENDIMENTO", valor: "DISTRITO FEDERAL" },
-  ],
-  tituloComPrazo: "Parede pronta, pintada e entregue em {prazo} dias.",
-  tituloSemPrazo: "Parede pronta, pintada e entregue. Sem quebra-quebra.",
-  palavraMarcada: "entregue",
+  titulo: "Todo o material da construção a seco, em um só lugar.",
   subtitulo:
-    "Sem quebra-quebra, sem entulho, sem obra parada. A Fast vende o material e executa — um contrato, um responsável.",
+    "Placas, perfis, forros, pisos e isolamento com preço de rede nacional e pronta entrega em Brasília. E, se você precisar, a gente também instala.",
   microcopy: "Atendimento em todo o DF e entorno.",
 } as const;
+
+export const PRODUTOS = [
+  { nome: "Placa de drywall", arquivo: "placa-de-drywall.png" },
+  { nome: "Montante de drywall", arquivo: "montante-drywall.png" },
+  { nome: "Guia de drywall", arquivo: "guia-drywall.png" },
+  { nome: "Perfil de steel frame", arquivo: "perfil-de-steel-frame.png" },
+  { nome: "Montante de steel frame", arquivo: "montante-steel-frame.png" },
+  { nome: "Placa Glasroc", arquivo: "placa-glasroc.png" },
+  { nome: "Lã de vidro", arquivo: "la-de-vidro.png" },
+  { nome: "Lã de rocha", arquivo: "la-de-rocha.png" },
+  { nome: "Forro de PVC", arquivo: "forro-de-pvc.png" },
+  { nome: "Forro mineral", arquivo: "forro-mineral.png" },
+  { nome: "Massa para drywall", arquivo: "massa-de-drywall.png" },
+  { nome: "Fita telada", arquivo: "fita-telada.png" },
+  { nome: "Banda acústica", arquivo: "banda-acustica.png" },
+  { nome: "Cantoneira perfurada", arquivo: "cantoneira-perfurada.png" },
+  { nome: "Placa OSB", arquivo: "placa-osb.png" },
+  { nome: "Placa RF", arquivo: "placa-rf.png" },
+] as const;
 
 export const SOBRE = {
   titulo: "A maior rede de construção a seco do Brasil, atendendo Brasília.",
@@ -154,6 +167,16 @@ export const ETAPAS = [
 
 export const FAQ_LP: FaqEntry[] = [
   {
+    question: "Posso comprar só o material, sem a instalação?",
+    answer:
+      "Pode. A Fast vende placas, perfis, forros, pisos, isolamento e acessórios avulsos, na quantidade do seu projeto. Se quiser, a equipe também executa — mas a compra do material não obriga a contratação da obra.",
+  },
+  {
+    question: "Vocês entregam em Brasília e no entorno?",
+    answer:
+      "Sim, atendemos todo o Distrito Federal e o entorno. Informe sua região no orçamento e retornamos com o prazo e as condições de entrega para o seu endereço.",
+  },
+  {
     question: "A parede de drywall aguenta TV e armário?",
     answer:
       "Aguenta. O ponto de fixação é definido no projeto e reforçado na estrutura antes do fechamento, para suportar a carga prevista. Diga na visita técnica o que vai ser pendurado e onde.",
@@ -224,9 +247,10 @@ export const REGIOES_OPTIONS = REGIOES_ATENDIDAS.map((regiao) => ({
 }));
 
 export const TIPOS_DE_OBRA = [
-  { value: "residencial", label: "Residencial" },
-  { value: "comercial", label: "Comercial" },
-  { value: "corporativo", label: "Corporativo" },
+  { value: "compra-de-material", label: "Compra de material" },
+  { value: "residencial", label: "Obra residencial" },
+  { value: "comercial", label: "Obra comercial" },
+  { value: "corporativo", label: "Obra corporativa" },
   { value: "reforma", label: "Reforma" },
   { value: "construcao-nova", label: "Construção nova" },
 ] as const;
@@ -240,10 +264,9 @@ export const FAIXAS_METRAGEM = [
 ] as const;
 
 export const CTA_FINAL = {
-  titulo: "Peça o orçamento da sua obra.",
-  palavraMarcada: "orçamento",
+  titulo: "Peça seu orçamento: material ou obra completa.",
   subtitulo:
-    "Visita técnica no seu endereço, escopo definido e prazo fechado por escrito antes de começar.",
+    "Envie a lista de materiais do seu projeto ou agende a visita técnica. Retornamos com preço, prazo e condições de entrega.",
   microcopy: "Sem compromisso. Retornamos pelo canal que você preferir.",
 } as const;
 

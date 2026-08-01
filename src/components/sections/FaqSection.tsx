@@ -1,12 +1,12 @@
 "use client";
 
 import styled from "@emotion/styled";
+import { CaretDownIcon } from "@phosphor-icons/react/dist/ssr";
 import { useEffect, useRef, useState, type TransitionEvent } from "react";
 
 import CtaButton from "@/components/forms/CtaButton";
 import { ScrollTrigger, motionEnabled, registerGsap } from "@/components/motion/gsap";
 import { useReveal } from "@/components/motion/useReveal";
-import SectionTexts from "@/components/ui/SectionTexts";
 import { FAQ_LP } from "@/data/content";
 import { SECTION_IDS } from "@/data/navigation";
 
@@ -18,151 +18,163 @@ const Root = styled.section`
     padding: var(--space-5) 0;
   }
 
-  & > .faq__conteudo {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-7);
+  & > .faq__grid {
+    display: grid;
+    grid-template-columns: 5fr 7fr;
+    gap: var(--space-9);
+    align-items: start;
 
-    @media (max-width: 768px) {
-      gap: var(--space-5);
+    @media (max-width: 900px) {
+      grid-template-columns: 1fr;
+      gap: var(--space-6);
+    }
+
+    & > .faq__intro {
+      position: sticky;
+      top: calc(var(--header-height) + var(--space-5));
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--space-4);
+
+      @media (max-width: 900px) {
+        position: static;
+      }
+
+      & > .faq__titulo {
+        font-size: var(--text-2xl);
+        line-height: 1;
+        font-weight: var(--weight-medium);
+        letter-spacing: -0.025em;
+        color: var(--color-dark);
+        font-family: var(--font-display);
+      }
+
+      & > .faq__descricao {
+        font-size: var(--text-lg);
+        line-height: 1.2;
+        font-weight: var(--weight-regular);
+        letter-spacing: -0.01em;
+        color: var(--color-muted);
+        font-family: var(--font-display);
+        max-width: 40ch;
+      }
     }
 
     & > .faq__lista {
-      list-style: none;
-      max-width: 76ch;
-      border-top: 1px solid var(--color-border);
-    }
-
-    & > .faq__fecho {
       display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: var(--space-5);
-      max-width: 76ch;
+      flex-direction: column;
+      gap: var(--space-2);
+      list-style: none;
+    }
+  }
+`;
 
-      & > .faq__fecho-texto {
-        flex: 1 1 30ch;
-        font-size: var(--text-sm);
-        line-height: var(--leading-normal);
-        color: var(--color-muted);
+const Item = styled.li`
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background-color: var(--color-bg);
+  transition: border-color var(--dur-normal) var(--ease-standard);
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+
+  & > .item__pergunta {
+    & > .item__gatilho {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-4);
+      width: 100%;
+      min-height: 44px;
+      padding: var(--space-4) var(--space-5);
+      border: 0;
+      background: transparent;
+      text-align: left;
+      cursor: pointer;
+
+      &:focus-visible {
+        outline: 2px solid var(--color-brand);
+        outline-offset: 2px;
+        border-radius: var(--radius-md);
+      }
+
+      & > .item__texto {
+        font-family: var(--font-display);
+        font-size: var(--text-lg);
+        font-weight: var(--weight-medium);
+        letter-spacing: -0.01em;
+        line-height: 1.2;
+        color: var(--color-dark);
+      }
+
+      & > .item__icone {
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        border-radius: var(--radius-all);
+        border: 1px solid var(--color-border);
+        color: var(--color-dark);
+
+        & > svg {
+          width: 16px;
+          height: 16px;
+          transition: transform var(--dur-normal) var(--ease-standard);
+
+          @media (prefers-reduced-motion: reduce) {
+            transition: none;
+          }
+        }
       }
     }
   }
 
-  & .faq__item {
-    border-bottom: 1px solid var(--color-border);
+  & > .item__painel-wrapper {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows var(--dur-normal) var(--ease-standard);
 
-    & > .faq__pergunta {
-      font-size: var(--text-xl);
-
-      & > .faq__gatilho {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: var(--space-5);
-        width: 100%;
-        min-height: var(--space-8);
-        padding-block: var(--space-5);
-        border: 0;
-        background: transparent;
-        text-align: left;
-        cursor: pointer;
-        color: var(--color-dark);
-
-        &:focus-visible {
-          outline: 2px solid var(--color-brand);
-          outline-offset: 3px;
-        }
-
-        & > .faq__gatilho-texto {
-          font-family: var(--font-display);
-          font-size: var(--text-xl);
-          font-weight: var(--weight-medium);
-          letter-spacing: -0.01em;
-          line-height: var(--leading-snug);
-          color: inherit;
-        }
-
-        & > .faq__icone {
-          display: flex;
-          flex: 0 0 auto;
-          align-items: center;
-          justify-content: center;
-          width: var(--space-5);
-          height: var(--space-5);
-          color: var(--color-galvanized);
-          transition: color var(--dur-fast) var(--ease-standard);
-
-          & > svg {
-            width: 100%;
-            height: 100%;
-            fill: none;
-            stroke: currentColor;
-            stroke-width: var(--line-w);
-            stroke-linecap: square;
-
-            & > .faq__icone-barra {
-              transform-box: fill-box;
-              transform-origin: center;
-              transition: transform var(--dur-normal) var(--ease-standard);
-
-              @media (prefers-reduced-motion: reduce) {
-                transition: none;
-              }
-            }
-          }
-        }
-
-        &:hover > .faq__icone {
-          color: var(--color-dark);
-        }
-      }
+    @media (prefers-reduced-motion: reduce) {
+      transition: none;
     }
 
-    & > .faq__painel-wrapper {
-      display: grid;
-      grid-template-rows: 0fr;
-      transition: grid-template-rows var(--dur-normal) var(--ease-standard);
+    & > .item__painel {
+      overflow: hidden;
+      visibility: hidden;
+      transition: visibility 0s linear var(--dur-normal);
 
       @media (prefers-reduced-motion: reduce) {
         transition: none;
       }
 
-      & > .faq__painel {
-        overflow: hidden;
-        visibility: hidden;
-        transition: visibility 0s linear var(--dur-normal);
-
-        @media (prefers-reduced-motion: reduce) {
-          transition: none;
-        }
-
-        & > .faq__resposta {
-          max-width: 62ch;
-          padding-bottom: var(--space-5);
-          font-size: var(--text-md);
-          line-height: var(--leading-relaxed);
-          color: var(--color-fg);
-        }
+      & > .item__resposta {
+        padding: 0 var(--space-5) var(--space-5);
+        font-size: var(--text-md);
+        line-height: 1.4;
+        letter-spacing: -0.01em;
+        color: var(--color-muted);
+        font-family: var(--font-display);
       }
     }
+  }
 
-    &[data-aberto="true"] {
-      & > .faq__pergunta > .faq__gatilho > .faq__icone {
-        color: var(--color-dark);
+  &[data-aberto="true"] {
+    border-color: var(--color-dark);
 
-        & > svg > .faq__icone-barra {
-          transform: rotate(90deg);
-        }
-      }
+    & > .item__pergunta > .item__gatilho > .item__icone > svg {
+      transform: rotate(180deg);
+    }
 
-      & > .faq__painel-wrapper {
-        grid-template-rows: 1fr;
+    & > .item__painel-wrapper {
+      grid-template-rows: 1fr;
 
-        & > .faq__painel {
-          visibility: visible;
-          transition-delay: 0s;
-        }
+      & > .item__painel {
+        visibility: visible;
+        transition-delay: 0s;
       }
     }
   }
@@ -199,13 +211,17 @@ export default function FaqSection() {
   };
 
   return (
-    <Root id={SECTION_IDS.faq} ref={secaoRef} aria-label="Dúvidas">
-      <div className="faq__conteudo">
-        <div data-reveal>
-          <SectionTexts
-            titulo="O que perguntam antes de fechar."
-            descricao="Resposta direta na primeira linha, o detalhe logo abaixo. O que não estiver aqui, a visita técnica responde."
-          />
+    <Root id={SECTION_IDS.faq} ref={secaoRef} aria-label="Dúvidas frequentes">
+      <div className="faq__grid">
+        <div className="faq__intro" data-reveal>
+          <h2 className="faq__titulo">O que perguntam antes de fechar.</h2>
+          <p className="faq__descricao">
+            Resposta direta na primeira linha, o detalhe logo abaixo. O que não estiver aqui, a
+            equipe responde no orçamento.
+          </p>
+          <CtaButton id="faq-btn-orcamento" origin="faq">
+            Pedir orçamento
+          </CtaButton>
         </div>
 
         <ul className="faq__lista" onTransitionEnd={aoTerminarTransicao}>
@@ -213,49 +229,37 @@ export default function FaqSection() {
             const aberta = indice === indiceAberto;
 
             return (
-              <li className="faq__item" key={entrada.question} data-aberto={aberta} data-reveal>
-                <h3 className="faq__pergunta">
+              <Item key={entrada.question} data-aberto={aberta} data-reveal>
+                <h3 className="item__pergunta">
                   <button
                     type="button"
                     id={`faq-btn-${indice}`}
-                    className="faq__gatilho"
+                    className="item__gatilho"
                     aria-expanded={aberta}
                     aria-controls={`faq-painel-${indice}`}
                     onClick={() => alternarPergunta(indice)}
                   >
-                    <span className="faq__gatilho-texto">{entrada.question}</span>
-                    <span className="faq__icone" aria-hidden="true">
-                      <svg viewBox="0 0 20 20" focusable="false">
-                        <path d="M3 10 H17" />
-                        <path className="faq__icone-barra" d="M10 3 V17" />
-                      </svg>
+                    <span className="item__texto">{entrada.question}</span>
+                    <span className="item__icone" aria-hidden="true">
+                      <CaretDownIcon />
                     </span>
                   </button>
                 </h3>
 
-                <div className="faq__painel-wrapper">
+                <div className="item__painel-wrapper">
                   <div
-                    className="faq__painel"
+                    className="item__painel"
                     id={`faq-painel-${indice}`}
                     role="region"
                     aria-labelledby={`faq-btn-${indice}`}
                   >
-                    <p className="faq__resposta">{entrada.answer}</p>
+                    <p className="item__resposta">{entrada.answer}</p>
                   </div>
                 </div>
-              </li>
+              </Item>
             );
           })}
         </ul>
-
-        <div className="faq__fecho" data-reveal>
-          <p className="faq__fecho-texto">
-            Ficou uma dúvida que não está aqui? Ela entra na visita técnica, no seu endereço.
-          </p>
-          <CtaButton id="faq-btn-orcamento" origin="faq">
-            Pedir orçamento
-          </CtaButton>
-        </div>
       </div>
     </Root>
   );

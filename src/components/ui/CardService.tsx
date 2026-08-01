@@ -15,6 +15,19 @@ const Card = styled.article`
   width: 100%;
   gap: var(--space-2);
   position: relative;
+  transition: transform var(--dur-normal) var(--ease-standard);
+
+  &:hover {
+    transform: translateY(-4px);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+
+    &:hover {
+      transform: none;
+    }
+  }
 
   @keyframes cardImageShine {
     0% {

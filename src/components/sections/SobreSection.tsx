@@ -2,9 +2,11 @@
 
 import styled from "@emotion/styled";
 import Image from "next/image";
+import { useRef } from "react";
 import { A11y, Autoplay } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 
+import { useReveal } from "@/components/motion/useReveal";
 import SectionTexts from "@/components/ui/SectionTexts";
 import { ESTATISTICAS, SOBRE } from "@/data/content";
 
@@ -78,11 +80,16 @@ const Carousel = styled.div`
 `;
 
 export default function SobreSection() {
-  return (
-    <Section aria-label="Sobre a Fast Sistemas Construtivos">
-      <SectionTexts titulo={SOBRE.titulo} descricao={SOBRE.descricao} />
+  const sectionRef = useRef<HTMLElement>(null);
+  useReveal(sectionRef);
 
-      <div className="sobre__imagem">
+  return (
+    <Section ref={sectionRef} aria-label="Sobre a Fast Sistemas Construtivos">
+      <div data-reveal>
+        <SectionTexts titulo={SOBRE.titulo} descricao={SOBRE.descricao} />
+      </div>
+
+      <div className="sobre__imagem" data-reveal>
         <Image
           src={SOBRE.imagem}
           alt={SOBRE.imagemAlt}
@@ -93,7 +100,7 @@ export default function SobreSection() {
         />
       </div>
 
-      <Carousel role="region" aria-label="Números da rede Fast">
+      <Carousel role="region" aria-label="Números da rede Fast" data-reveal>
         <Swiper
           modules={[Autoplay, A11y]}
           spaceBetween={16}

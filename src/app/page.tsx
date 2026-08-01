@@ -5,6 +5,7 @@ import FaqSection from "@/components/sections/FaqSection";
 import HeroSection from "@/components/sections/HeroSection";
 import MarcasSection from "@/components/sections/MarcasSection";
 import ObrasSection from "@/components/sections/ObrasSection";
+import ProdutosSection from "@/components/sections/ProdutosSection";
 import SistemasSection from "@/components/sections/SistemasSection";
 import SobreSection from "@/components/sections/SobreSection";
 import JsonLd from "@/components/seo/JsonLd";
@@ -29,6 +30,7 @@ export default function HomePage() {
     <>
       <JsonLd schema={pageSchema} />
       <HeroSection />
+      <ProdutosSection />
       <SobreSection />
       <SistemasSection />
       <ComparativoSection />
