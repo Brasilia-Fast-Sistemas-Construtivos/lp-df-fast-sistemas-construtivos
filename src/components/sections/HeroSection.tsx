@@ -1,11 +1,11 @@
 "use client";
 
 import styled from "@emotion/styled";
+import Image from "next/image";
 import { useState } from "react";
 
 import CtaButton from "@/components/forms/CtaButton";
 import Etiqueta from "@/components/ui/Etiqueta";
-import FiguraParede from "@/components/ui/FiguraParede";
 import SelectField from "@/components/ui/SelectField";
 import SnapLine from "@/components/ui/SnapLine";
 import {
@@ -111,11 +111,21 @@ const Section = styled.section`
     }
 
     & > .hero__figura {
-      display: flex;
-      justify-content: flex-end;
+      position: relative;
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+
+      & > .hero__figura-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+      }
 
       @media (max-width: 980px) {
-        justify-content: center;
+        aspect-ratio: 16 / 10;
       }
     }
   }
@@ -256,7 +266,16 @@ export default function HeroSection() {
         </div>
 
         <div className="hero__figura">
-          <FiguraParede />
+          <Image
+            className="hero__figura-img"
+            src="/obras/residencial.webp"
+            alt="Residência executada em steel frame pela Fast Sistemas Construtivos"
+            width={960}
+            height={720}
+            sizes="(max-width: 980px) 92vw, 46vw"
+            priority
+            fetchPriority="high"
+          />
         </div>
       </div>
 

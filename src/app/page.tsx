@@ -5,6 +5,7 @@ import CredibilidadeSection from "@/components/sections/CredibilidadeSection";
 import DentroDaParedeSection from "@/components/sections/DentroDaParedeSection";
 import FaqSection from "@/components/sections/FaqSection";
 import HeroSection from "@/components/sections/HeroSection";
+import MarcasSection from "@/components/sections/MarcasSection";
 import ObrasSection from "@/components/sections/ObrasSection";
 import SistemasSection from "@/components/sections/SistemasSection";
 import JsonLd from "@/components/seo/JsonLd";
@@ -35,6 +36,7 @@ export default function HomePage() {
       <DentroDaParedeSection />
       <ComoTrabalhamosSection />
       <ObrasSection />
+      <MarcasSection />
       <FaqSection />
       <CoberturaECtaSection />
     </>

@@ -239,6 +239,54 @@ export const CTA_FINAL = {
   microcopy: "Sem compromisso. Retornamos pelo canal que você preferir.",
 } as const;
 
+export const MARCAS: Array<{ nome: string; arquivo: string }> = [
+  { nome: "Saint-Gobain", arquivo: "saint-gobain.png" },
+  { nome: "Isover", arquivo: "isover-icon.png" },
+  { nome: "Ecophone", arquivo: "ecophone-icon.png" },
+  { nome: "Ecofiber", arquivo: "ecofiber-icon.png" },
+  { nome: "Nova Metálica", arquivo: "nova-metalica-icon.png" },
+  { nome: "Tekbond", arquivo: "tekbond.png" },
+  { nome: "Ruffino", arquivo: "ruffino.png" },
+];
+
+export const CLIENTES: Array<{ nome: string; arquivo: string }> = [
+  { nome: "Maracanã", arquivo: "logo-cliente-maracana.jpg" },
+  { nome: "Torra Torra", arquivo: "logo-cliente-torra-torra.jpg" },
+];
+
+export const OBRAS_GALERIA = [
+  {
+    imagem: "/obras/residencial.webp",
+    titulo: "Residência em steel frame",
+    tipo: "Residencial",
+    sistema: "Steel Frame",
+  },
+  {
+    imagem: "/obras/comercial.webp",
+    titulo: "Fachada comercial",
+    tipo: "Comercial",
+    sistema: "Steel Frame",
+  },
+  {
+    imagem: "/obras/interior.webp",
+    titulo: "Interior com parede de drywall",
+    tipo: "Residencial",
+    sistema: "Drywall",
+  },
+  {
+    imagem: "/obras/corporativo.webp",
+    titulo: "Ambiente corporativo com forro acústico",
+    tipo: "Corporativo",
+    sistema: "Forro acústico",
+  },
+  {
+    imagem: "/obras/casa.webp",
+    titulo: "Casa em steel frame",
+    tipo: "Residencial",
+    sistema: "Steel Frame",
+  },
+] as const;
+
 export const DEPOIMENTOS: Array<{
   nome: string;
   tipoObra: string;

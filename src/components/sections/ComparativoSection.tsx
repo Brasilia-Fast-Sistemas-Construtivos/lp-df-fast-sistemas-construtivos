@@ -1,6 +1,7 @@
 "use client";
 
 import styled from "@emotion/styled";
+import Image from "next/image";
 import { useRef } from "react";
 
 import CtaButton from "@/components/forms/CtaButton";
@@ -42,6 +43,20 @@ const Root = styled.section`
         gap: var(--space-6);
         padding: var(--space-6);
         border-radius: var(--radius-md);
+
+        & > .comparativo__foto {
+          width: 100%;
+          aspect-ratio: 3 / 2;
+          border-radius: var(--radius-md);
+          overflow: hidden;
+
+          & > .comparativo__foto-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+          }
+        }
 
         @media (max-width: 640px) {
           gap: var(--space-5);
@@ -192,6 +207,17 @@ export default function ComparativoSection() {
           >
             <Etiqueta pares={paresDoRotulo(COMPARATIVO.alvenaria.rotulo)} />
 
+            <figure className="comparativo__foto">
+              <Image
+                className="comparativo__foto-img"
+                src="/comparativo/antes.webp"
+                alt="Ambiente antes da execução, em obra convencional"
+                width={720}
+                height={480}
+                sizes="(max-width: 900px) 92vw, 44vw"
+              />
+            </figure>
+
             <ul className="comparativo__lista" role="list">
               {COMPARATIVO.alvenaria.itens.map((item) => (
                 <li key={item} className="comparativo__item">
@@ -210,6 +236,17 @@ export default function ComparativoSection() {
             data-reveal
           >
             <Etiqueta pares={paresDoRotulo(COMPARATIVO.aSeco.rotulo)} />
+
+            <figure className="comparativo__foto">
+              <Image
+                className="comparativo__foto-img"
+                src="/comparativo/depois.webp"
+                alt="Mesmo ambiente entregue com drywall pela Fast"
+                width={720}
+                height={480}
+                sizes="(max-width: 900px) 92vw, 44vw"
+              />
+            </figure>
 
             <ul className="comparativo__lista" role="list">
               {COMPARATIVO.aSeco.itens.map((item) => (
