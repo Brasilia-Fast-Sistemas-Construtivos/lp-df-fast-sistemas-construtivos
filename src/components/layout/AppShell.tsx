@@ -26,7 +26,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
       <div className="app-shell">
         <Header />
         <main className="app-main" id="conteudo">
-          {children}
+          <div className="container">{children}</div>
         </main>
         <Footer />
       </div>

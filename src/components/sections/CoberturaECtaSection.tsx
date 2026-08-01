@@ -1,310 +1,320 @@
 "use client";
 
 import styled from "@emotion/styled";
-import { useGSAP } from "@gsap/react";
-import { useRef } from "react";
+import Image from "next/image";
+import { useEffect, useRef, useState } from "react";
 
 import CtaButton from "@/components/forms/CtaButton";
-import { ScrollTrigger, gsap, motionEnabled, registerGsap } from "@/components/motion/gsap";
-import { useReveal } from "@/components/motion/useReveal";
-import Etiqueta from "@/components/ui/Etiqueta";
-import SectionHeader from "@/components/ui/SectionHeader";
-import SnapLine from "@/components/ui/SnapLine";
+import { gsap, motionEnabled, registerGsap } from "@/components/motion/gsap";
+import { CONTACT } from "@/data/site";
 import { CTA_FINAL, REGIOES_ATENDIDAS } from "@/data/content";
 import { SECTION_IDS } from "@/data/navigation";
-import { BUSINESS } from "@/data/site";
+import { appendAttribution } from "@/lib/attribution";
 
-const COBERTURA_ETIQUETA = [
-  { rotulo: "COBERTURA", valor: BUSINESS.areaServed },
-  { rotulo: "REGIÕES", valor: String(REGIOES_ATENDIDAS.length) },
-];
-
-const COPIAS_DO_MARQUEE = ["a", "b"];
-
-const DURACAO_DO_LOOP = 40;
-const VELOCIDADE_MINIMA = 1;
-const VELOCIDADE_MAXIMA = 2.6;
-const DIVISOR_DE_VELOCIDADE = 1400;
-
-const Banda = styled.section`
-  background: var(--color-bg);
-  padding-block: var(--space-8) var(--space-9);
-  scroll-margin-top: var(--header-height);
+const Band = styled.section`
+  width: 100%;
+  padding: var(--space-7) 0;
+  position: relative;
+  overflow: hidden;
 
   @media (max-width: 768px) {
-    padding-block: var(--space-7);
+    padding: var(--space-5) 0;
   }
 
-  & > .cobertura__topo {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-3);
+  &::before,
+  &::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    width: 100px;
+    height: 100%;
+    z-index: 2;
+    pointer-events: none;
 
-    & > .cobertura__titulo {
-      font-family: var(--font-display);
-      font-size: var(--text-xl);
-      font-weight: var(--weight-medium);
-      letter-spacing: -0.01em;
-      line-height: var(--leading-snug);
-      color: var(--color-dark);
+    @media (max-width: 768px) {
+      width: 80px;
     }
   }
 
-  & > .cobertura__marquee {
-    overflow: hidden;
-    margin-block: var(--space-6);
-    padding-block: var(--space-4);
-    border-block: 1px solid var(--color-border);
+  &::before {
+    left: 0;
+    background: linear-gradient(to right, var(--color-bg) 0%, transparent 100%);
+  }
+
+  &::after {
+    right: 0;
+    background: linear-gradient(to left, var(--color-bg) 0%, transparent 100%);
+  }
+
+  & > .band__titulo {
+    font-size: var(--text-2xl);
+    line-height: 1;
+    font-weight: var(--weight-medium);
+    letter-spacing: -0.025em;
+    color: var(--color-dark);
+    font-family: var(--font-display);
+    text-align: center;
+    margin-bottom: var(--space-6);
+  }
+
+  & > .band__marquee {
+    display: flex;
+    width: max-content;
+    gap: var(--space-6);
+    white-space: nowrap;
 
     @media (prefers-reduced-motion: reduce) {
       display: none;
     }
 
-    & > .cobertura__faixa {
+    & > .band__grupo {
       display: flex;
-      width: max-content;
+      align-items: center;
+      gap: var(--space-6);
 
-      & > .cobertura__grupo {
+      & > .band__regiao {
         display: flex;
         align-items: center;
         gap: var(--space-6);
-        padding-inline-end: var(--space-6);
+        font-size: var(--text-xl);
+        font-weight: var(--weight-regular);
+        letter-spacing: -0.02em;
+        color: var(--color-muted);
+        font-family: var(--font-display);
 
-        & > .cobertura__item {
-          display: flex;
-          align-items: center;
-          gap: var(--space-6);
-          font-family: var(--font-alt);
-          font-size: var(--text-xs);
-          font-weight: var(--weight-semibold);
-          letter-spacing: 0.18em;
-          line-height: 1.2;
-          text-transform: uppercase;
-          white-space: nowrap;
-          color: var(--color-muted);
-
-          & > .cobertura__fio {
-            display: block;
-            flex: none;
-            width: 1px;
-            height: var(--space-3);
-            background: var(--color-galvanized);
-          }
+        &::after {
+          content: "";
+          display: block;
+          width: 1px;
+          height: var(--space-5);
+          background-color: var(--color-border);
         }
       }
     }
   }
 
-  & > .cobertura__lista {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-5);
-
-    & > .cobertura__intro {
-      max-width: 62ch;
-      font-size: var(--text-md);
-      line-height: var(--leading-normal);
-      color: var(--color-fg);
-    }
-
-    & > .cobertura__regioes {
-      display: flex;
-      flex-wrap: wrap;
-      gap: var(--space-3) var(--space-5);
-
-      & > .cobertura__regiao {
-        display: flex;
-        align-items: center;
-        gap: var(--space-3);
-        font-size: var(--text-sm);
-        line-height: var(--leading-normal);
-        color: var(--color-fg);
-
-        &::before {
-          content: "";
-          display: block;
-          flex: none;
-          width: var(--space-3);
-          height: 1px;
-          background: var(--color-galvanized);
-        }
-      }
-    }
+  & > .band__lista {
+    margin-top: var(--space-6);
+    text-align: center;
+    font-size: var(--text-sm);
+    line-height: var(--leading-relaxed);
+    color: var(--color-muted);
+    font-family: var(--font-display);
+    max-width: 900px;
+    margin-inline: auto;
   }
 `;
 
-const FaixaCta = styled.section`
+const Cta = styled.section`
+  width: 100%;
   position: relative;
-  background: var(--color-dark);
-  padding-block: var(--space-9);
-  scroll-margin-top: var(--header-height);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-dark);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  isolation: isolate;
+  margin-block: var(--space-7);
 
   @media (max-width: 768px) {
-    padding-block: var(--space-7);
+    margin-block: var(--space-5);
   }
 
-  & > .cta-final__costura {
+  & > .cta__imagem {
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
+    inset: 0;
+    z-index: 1;
+
+    & img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+    }
   }
 
-  & > .cta-final__conteudo {
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    z-index: 2;
+  }
+
+  & > .cta__conteudo {
+    width: 60%;
     display: flex;
     flex-direction: column;
-    gap: var(--space-7);
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-5);
+    padding: var(--space-9) var(--space-5);
+    position: relative;
+    z-index: 3;
 
     @media (max-width: 768px) {
-      gap: var(--space-6);
+      width: 100%;
+      padding: var(--space-7) var(--space-4);
     }
 
-    & > .cta-final__acao {
+    & > .cta__titulo {
+      font-size: var(--text-2xl);
+      line-height: 1;
+      font-weight: var(--weight-medium);
+      letter-spacing: -0.025em;
+      color: var(--color-bg);
+      font-family: var(--font-display);
+      max-width: 600px;
+      text-align: center;
+    }
+
+    & > .cta__descricao {
+      font-size: var(--text-lg);
+      line-height: 1.2;
+      font-weight: var(--weight-regular);
+      letter-spacing: -0.01em;
+      color: var(--color-muted-white);
+      font-family: var(--font-display);
+      max-width: 56ch;
+      text-align: center;
+    }
+
+    & > .cta__acoes {
       display: flex;
-      flex-wrap: wrap;
       align-items: center;
-      gap: var(--space-5);
+      justify-content: center;
+      gap: var(--space-2);
 
-      @media (max-width: 600px) {
+      @media (max-width: 768px) {
         flex-direction: column;
-        align-items: flex-start;
-        gap: var(--space-4);
       }
 
-      & > .cta-final__microcopy {
-        max-width: 42ch;
+      & > .cta__whatsapp {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 44px;
+        padding: var(--space-3) var(--space-5);
+        border-radius: var(--radius-all);
+        border: 1px solid var(--color-bg);
+        color: var(--color-bg);
         font-size: var(--text-sm);
-        line-height: var(--leading-normal);
-        color: var(--color-muted-white);
+        font-weight: var(--weight-medium);
+        font-family: var(--font-body);
+        transition: background-color var(--dur-fast) var(--ease-standard),
+          color var(--dur-fast) var(--ease-standard);
+
+        &:hover {
+          background-color: var(--color-bg);
+          color: var(--color-dark);
+        }
+
+        &:focus-visible {
+          outline: 2px solid var(--color-bg);
+          outline-offset: 3px;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          transition: none;
+        }
       }
+    }
+
+    & > .cta__microcopy {
+      font-size: var(--text-sm);
+      color: var(--color-muted-white);
+      font-family: var(--font-display);
+      text-align: center;
     }
   }
 `;
 
 export function CoberturaBand() {
-  const bandaRef = useRef<HTMLElement>(null);
-  const faixaRef = useRef<HTMLDivElement>(null);
+  const marqueeRef = useRef<HTMLDivElement>(null);
 
-  useGSAP(
-    () => {
-      const banda = bandaRef.current;
-      const faixa = faixaRef.current;
-      if (!banda || !faixa) return;
+  useEffect(() => {
+    const marquee = marqueeRef.current;
+    if (!marquee || !motionEnabled()) return;
 
-      registerGsap();
+    registerGsap();
 
-      if (!motionEnabled()) return;
+    const tween = gsap.to(marquee, {
+      xPercent: -50,
+      duration: 40,
+      ease: "none",
+      repeat: -1,
+    });
 
-      const loop = gsap.to(faixa, {
-        xPercent: -50,
-        duration: DURACAO_DO_LOOP,
-        ease: "none",
-        repeat: -1,
-      });
-
-      let retornoSuave: gsap.core.Tween | null = null;
-
-      const gatilhoDeVelocidade = ScrollTrigger.create({
-        trigger: banda,
-        start: "top bottom",
-        end: "bottom top",
-        onUpdate: (self) => {
-          const velocidade = Math.abs(self.getVelocity());
-          loop.timeScale(
-            gsap.utils.clamp(
-              VELOCIDADE_MINIMA,
-              VELOCIDADE_MAXIMA,
-              VELOCIDADE_MINIMA + velocidade / DIVISOR_DE_VELOCIDADE
-            )
-          );
-          retornoSuave?.kill();
-          retornoSuave = gsap.to(loop, {
-            timeScale: VELOCIDADE_MINIMA,
-            duration: 0.6,
-            ease: "none",
-          });
-        },
-      });
-
-      return () => {
-        retornoSuave?.kill();
-        gatilhoDeVelocidade.kill();
-        loop.kill();
-      };
-    },
-    { scope: bandaRef }
-  );
+    return () => {
+      tween.kill();
+    };
+  }, []);
 
   return (
-    <Banda id={SECTION_IDS.cobertura} ref={bandaRef} aria-labelledby="cobertura-titulo">
-      <div className="container cobertura__topo">
-        <Etiqueta pares={COBERTURA_ETIQUETA} />
-        <h2 id="cobertura-titulo" className="cobertura__titulo">
-          Onde atendemos
-        </h2>
+    <Band id={SECTION_IDS.cobertura} aria-label="Onde atendemos">
+      <h2 className="band__titulo">Onde atendemos</h2>
+
+      <div className="band__marquee" ref={marqueeRef} aria-hidden="true">
+        {[0, 1].map((grupo) => (
+          <div key={grupo} className="band__grupo">
+            {REGIOES_ATENDIDAS.map((regiao) => (
+              <span key={`${grupo}-${regiao}`} className="band__regiao">
+                {regiao}
+              </span>
+            ))}
+          </div>
+        ))}
       </div>
 
-      <div className="cobertura__marquee" aria-hidden="true">
-        <div className="cobertura__faixa" ref={faixaRef}>
-          {COPIAS_DO_MARQUEE.map((copia) => (
-            <div className="cobertura__grupo" key={copia}>
-              {REGIOES_ATENDIDAS.map((regiao) => (
-                <span className="cobertura__item" key={`${copia}-${regiao}`}>
-                  <i className="cobertura__fio" />
-                  {regiao}
-                </span>
-              ))}
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div className="container cobertura__lista">
-        <p className="cobertura__intro">
-          Atendemos obra nas regiões administrativas do Distrito Federal e no entorno, com equipe
-          própria saindo de Brasília.
-        </p>
-        <ul className="cobertura__regioes">
-          {REGIOES_ATENDIDAS.map((regiao) => (
-            <li className="cobertura__regiao" key={regiao}>
-              {regiao}
-            </li>
-          ))}
-        </ul>
-      </div>
-    </Banda>
+      <p className="band__lista">{REGIOES_ATENDIDAS.join(" · ")}</p>
+    </Band>
   );
 }
 
 export function CtaFinalSection() {
-  const faixaRef = useRef<HTMLElement>(null);
+  const [whatsappHref, setWhatsappHref] = useState<string>(CONTACT.whatsappUrl);
 
-  useReveal(faixaRef);
+  useEffect(() => {
+    const base = `${CONTACT.whatsappUrl}?text=${encodeURIComponent(CONTACT.whatsappMensagem)}`;
+    setWhatsappHref(appendAttribution(base));
+  }, []);
 
   return (
-    <FaixaCta id={SECTION_IDS.cta} ref={faixaRef} aria-label={CTA_FINAL.titulo}>
-      <div className="cta-final__costura">
-        <SnapLine variant="seam" trigger="scroll" />
+    <Cta id={SECTION_IDS.cta} aria-labelledby="cta-final-titulo">
+      <div className="cta__imagem" aria-hidden="true">
+        <Image
+          src="/obras/corporativo.webp"
+          alt=""
+          fill
+          sizes="(max-width: 1420px) 92vw, 1372px"
+          loading="lazy"
+        />
       </div>
 
-      <div className="container cta-final__conteudo">
-        <div className="cta-final__cabecalho" data-reveal>
-          <SectionHeader
-            titulo={CTA_FINAL.titulo}
-            palavraMarcada={CTA_FINAL.palavraMarcada}
-            descricao={CTA_FINAL.subtitulo}
-            onDark
-          />
-        </div>
-
-        <div className="cta-final__acao" data-reveal>
+      <div className="cta__conteudo">
+        <h2 className="cta__titulo" id="cta-final-titulo">
+          {CTA_FINAL.titulo}
+        </h2>
+        <p className="cta__descricao">{CTA_FINAL.subtitulo}</p>
+        <div className="cta__acoes" role="group" aria-label="Ações disponíveis">
           <CtaButton id="cta-final-btn-orcamento" origin="cta-final">
             Pedir orçamento
           </CtaButton>
-          <p className="cta-final__microcopy">{CTA_FINAL.microcopy}</p>
+          <a
+            id="cta-final-btn-whatsapp"
+            className="cta__whatsapp"
+            href={whatsappHref}
+            target="_blank"
+            rel="noopener noreferrer"
+            data-no-utm
+          >
+            Chamar no WhatsApp
+          </a>
         </div>
+        <p className="cta__microcopy">{CTA_FINAL.microcopy}</p>
       </div>
-    </FaixaCta>
+    </Cta>
   );
 }
 

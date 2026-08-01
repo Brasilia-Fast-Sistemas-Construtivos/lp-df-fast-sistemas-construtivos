@@ -6,21 +6,25 @@ import { useEffect, useRef, useState, type TransitionEvent } from "react";
 import CtaButton from "@/components/forms/CtaButton";
 import { ScrollTrigger, motionEnabled, registerGsap } from "@/components/motion/gsap";
 import { useReveal } from "@/components/motion/useReveal";
-import SectionHeader from "@/components/ui/SectionHeader";
+import SectionTexts from "@/components/ui/SectionTexts";
 import { FAQ_LP } from "@/data/content";
 import { SECTION_IDS } from "@/data/navigation";
 
 const Root = styled.section`
-  background: var(--color-bg);
-  padding-block: var(--section-gap);
+  width: 100%;
+  padding: var(--space-7) 0;
 
-  & .faq__conteudo {
+  @media (max-width: 768px) {
+    padding: var(--space-5) 0;
+  }
+
+  & > .faq__conteudo {
     display: flex;
     flex-direction: column;
     gap: var(--space-7);
 
     @media (max-width: 768px) {
-      gap: var(--space-6);
+      gap: var(--space-5);
     }
 
     & > .faq__lista {
@@ -196,14 +200,11 @@ export default function FaqSection() {
 
   return (
     <Root id={SECTION_IDS.faq} ref={secaoRef} aria-label="Dúvidas">
-      <div className="container faq__conteudo">
+      <div className="faq__conteudo">
         <div data-reveal>
-          <SectionHeader
+          <SectionTexts
             titulo="O que perguntam antes de fechar."
-            palavraMarcada="fechar"
-            etiqueta={[{ rotulo: "DÚVIDAS", valor: `${FAQ_LP.length} PERGUNTAS` }]}
-            descricao="Resposta direta na primeira linha, o detalhe logo abaixo."
-            as="h2"
+            descricao="Resposta direta na primeira linha, o detalhe logo abaixo. O que não estiver aqui, a visita técnica responde."
           />
         </div>
 

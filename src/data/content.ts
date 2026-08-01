@@ -21,11 +21,19 @@ export const HERO = {
   microcopy: "Atendimento em todo o DF e entorno.",
 } as const;
 
-export const CREDIBILIDADE = [
-  { valor: "20", unidade: "ANOS", rotulo: "DE MERCADO" },
-  { valor: "45", unidade: "UNIDADES", rotulo: "NO BRASIL" },
-  { valor: "1,5", unidade: "Mi m²/MÊS", rotulo: "PRODUÇÃO" },
-  { valor: "20", unidade: "MIL PEDIDOS/ANO", rotulo: "VOLUME" },
+export const SOBRE = {
+  titulo: "A maior rede de construção a seco do Brasil, atendendo Brasília.",
+  descricao:
+    "Do aço ao acabamento, a Fast integra material e mão de obra em um só contrato. A estrutura de uma rede nacional, com equipe dedicada ao DF e entorno.",
+  imagem: "/sobre/equipe.jpeg",
+  imagemAlt: "Equipe da Fast Sistemas Construtivos trabalhando em uma obra de construção a seco",
+} as const;
+
+export const ESTATISTICAS = [
+  { numero: "+ 1,5 Mi", descricao: "m² de placas distribuídos todo mês" },
+  { numero: "+ 20.000", descricao: "pedidos entregues por ano" },
+  { numero: "+ 45", descricao: "unidades em todo o Brasil" },
+  { numero: "+ 20 anos", descricao: "de história e liderança de mercado" },
 ] as const;
 
 export const COMPARATIVO = {

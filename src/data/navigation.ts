@@ -2,7 +2,6 @@ export const SECTION_IDS = {
   hero: "inicio",
   comparativo: "por-que-a-seco",
   sistemas: "sistemas",
-  parede: "dentro-da-parede",
   processo: "como-trabalhamos",
   obras: "obras",
   faq: "duvidas",

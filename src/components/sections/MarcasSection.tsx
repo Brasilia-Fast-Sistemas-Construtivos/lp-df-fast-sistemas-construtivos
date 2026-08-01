@@ -2,115 +2,125 @@
 
 import styled from "@emotion/styled";
 import Image from "next/image";
-import { useRef } from "react";
+import { A11y, Autoplay, FreeMode } from "swiper/modules";
+import { Swiper, SwiperSlide } from "swiper/react";
 
-import { useReveal } from "@/components/motion/useReveal";
-import Etiqueta from "@/components/ui/Etiqueta";
+import SectionTexts from "@/components/ui/SectionTexts";
 import { CLIENTES, MARCAS } from "@/data/content";
 
+import "swiper/css";
+import "swiper/css/free-mode";
+
 const Section = styled.section`
-  padding-block: var(--section-gap);
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-7);
+  padding: var(--space-7) 0;
 
-  & > .marcas__inner {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-7);
+  @media (max-width: 768px) {
+    gap: var(--space-5);
+    padding: var(--space-5) 0;
+  }
+`;
 
-    & > .marcas__bloco {
+const Carousel = styled.div`
+  width: 100%;
+
+  & .swiper {
+    width: 100%;
+
+    & .swiper-slide {
       display: flex;
-      flex-direction: column;
-      gap: var(--space-5);
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      height: 180px;
+      background-color: var(--color-bg);
 
-      & > .marcas__grade {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        gap: var(--space-7);
+      @media (max-width: 768px) {
+        height: 120px;
+      }
+
+      & > .logo {
+        width: 120px;
+        height: 120px;
+        object-fit: contain;
+        object-position: center;
+        filter: grayscale(1);
+        opacity: 0.75;
+        transition: filter var(--dur-normal) var(--ease-standard),
+          opacity var(--dur-normal) var(--ease-standard);
 
         @media (max-width: 768px) {
-          gap: var(--space-5);
-          justify-content: space-between;
+          width: 72px;
+          height: 72px;
         }
 
-        & > .marcas__item {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          height: 44px;
-
-          & > img {
-            max-height: 100%;
-            width: auto;
-            object-fit: contain;
-            filter: grayscale(1);
-            opacity: 0.7;
-            transition: filter var(--dur-normal) var(--ease-standard),
-              opacity var(--dur-normal) var(--ease-standard);
-          }
-
-          &:hover > img {
-            filter: grayscale(0);
-            opacity: 1;
-          }
-
-          @media (prefers-reduced-motion: reduce) {
-            & > img {
-              transition: none;
-            }
-          }
+        @media (prefers-reduced-motion: reduce) {
+          transition: none;
         }
+      }
+
+      &:hover > .logo {
+        filter: grayscale(0);
+        opacity: 1;
       }
     }
   }
 `;
 
-export default function MarcasSection() {
-  const sectionRef = useRef<HTMLElement>(null);
-  useReveal(sectionRef);
+const LOGOS = [
+  ...MARCAS.map((marca) => ({ ...marca, pasta: "marcas" })),
+  ...CLIENTES.map((cliente) => ({ ...cliente, pasta: "clientes" })),
+];
 
-  if (MARCAS.length === 0 && CLIENTES.length === 0) return null;
+export default function MarcasSection() {
+  if (LOGOS.length === 0) return null;
 
   return (
-    <Section ref={sectionRef} aria-label="Marcas e clientes">
-      <div className="container marcas__inner">
-        {MARCAS.length > 0 ? (
-          <div className="marcas__bloco" data-reveal>
-            <Etiqueta pares={[{ rotulo: "TRABALHAMOS COM", valor: "MARCAS LÍDERES" }]} />
-            <div className="marcas__grade">
-              {MARCAS.map((marca) => (
-                <div key={marca.arquivo} className="marcas__item">
-                  <Image
-                    src={`/marcas/${marca.arquivo}`}
-                    alt={marca.nome}
-                    width={140}
-                    height={44}
-                    sizes="140px"
-                  />
-                </div>
-              ))}
-            </div>
-          </div>
-        ) : null}
+    <Section aria-label="Marcas e clientes">
+      <SectionTexts
+        titulo="As marcas que entram na sua obra."
+        descricao="Trabalhamos com os líderes do sistema construtivo a seco e já atendemos obras de grande porte."
+        centrado
+      />
 
-        {CLIENTES.length > 0 ? (
-          <div className="marcas__bloco" data-reveal>
-            <Etiqueta pares={[{ rotulo: "JÁ ATENDEMOS", valor: "OBRAS DESTE PORTE" }]} />
-            <div className="marcas__grade">
-              {CLIENTES.map((cliente) => (
-                <div key={cliente.arquivo} className="marcas__item">
-                  <Image
-                    src={`/clientes/${cliente.arquivo}`}
-                    alt={cliente.nome}
-                    width={140}
-                    height={44}
-                    sizes="140px"
-                  />
-                </div>
-              ))}
-            </div>
-          </div>
-        ) : null}
-      </div>
+      <Carousel role="region" aria-label="Carrossel de marcas e clientes">
+        <Swiper
+          modules={[Autoplay, FreeMode, A11y]}
+          spaceBetween={8}
+          slidesPerView={2}
+          freeMode
+          loop
+          autoplay={{ delay: 2200, disableOnInteraction: false }}
+          a11y={{
+            enabled: true,
+            prevSlideMessage: "Marca anterior",
+            nextSlideMessage: "Próxima marca",
+          }}
+          breakpoints={{
+            0: { slidesPerView: 2 },
+            640: { slidesPerView: 3 },
+            1024: { slidesPerView: 5 },
+          }}
+        >
+          {LOGOS.map((logo) => (
+            <SwiperSlide key={logo.arquivo} aria-label={logo.nome}>
+              <Image
+                className="logo"
+                src={`/${logo.pasta}/${logo.arquivo}`}
+                alt={logo.nome}
+                width={120}
+                height={120}
+                loading="lazy"
+              />
+            </SwiperSlide>
+          ))}
+        </Swiper>
+      </Carousel>
     </Section>
   );
 }

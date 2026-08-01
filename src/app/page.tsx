@@ -1,13 +1,12 @@
 import CoberturaECtaSection from "@/components/sections/CoberturaECtaSection";
 import ComoTrabalhamosSection from "@/components/sections/ComoTrabalhamosSection";
 import ComparativoSection from "@/components/sections/ComparativoSection";
-import CredibilidadeSection from "@/components/sections/CredibilidadeSection";
-import DentroDaParedeSection from "@/components/sections/DentroDaParedeSection";
 import FaqSection from "@/components/sections/FaqSection";
 import HeroSection from "@/components/sections/HeroSection";
 import MarcasSection from "@/components/sections/MarcasSection";
 import ObrasSection from "@/components/sections/ObrasSection";
 import SistemasSection from "@/components/sections/SistemasSection";
+import SobreSection from "@/components/sections/SobreSection";
 import JsonLd from "@/components/seo/JsonLd";
 import { FAQ_LP } from "@/data/content";
 import { PAGES } from "@/data/seo";
@@ -30,10 +29,9 @@ export default function HomePage() {
     <>
       <JsonLd schema={pageSchema} />
       <HeroSection />
-      <CredibilidadeSection />
-      <ComparativoSection />
+      <SobreSection />
       <SistemasSection />
-      <DentroDaParedeSection />
+      <ComparativoSection />
       <ComoTrabalhamosSection />
       <ObrasSection />
       <MarcasSection />

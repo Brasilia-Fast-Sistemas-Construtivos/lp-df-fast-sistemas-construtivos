@@ -5,9 +5,7 @@ import Image from "next/image";
 import { useState } from "react";
 
 import CtaButton from "@/components/forms/CtaButton";
-import Etiqueta from "@/components/ui/Etiqueta";
 import SelectField from "@/components/ui/SelectField";
-import SnapLine from "@/components/ui/SnapLine";
 import {
   CONTENT_GATES,
   FAIXAS_METRAGEM,
@@ -17,181 +15,124 @@ import {
 } from "@/data/content";
 import { SECTION_IDS } from "@/data/navigation";
 
-const TITULO_HERO =
-  CONTENT_GATES.prazoMedioDias === null
-    ? HERO.tituloSemPrazo
-    : HERO.tituloComPrazo.replace("{prazo}", String(CONTENT_GATES.prazoMedioDias));
+const TITULO_HERO = CONTENT_GATES.prazoMedioDias
+  ? HERO.tituloComPrazo.replace("{prazo}", String(CONTENT_GATES.prazoMedioDias))
+  : HERO.tituloSemPrazo;
 
 const Section = styled.section`
+  width: 100%;
   position: relative;
-  z-index: var(--z-base);
-  background: var(--color-gray-surface);
-  padding-top: calc(var(--header-height) + var(--space-8));
-  scroll-margin-top: var(--header-height);
+  padding-top: var(--space-4);
 
-  @media (max-width: 900px) {
-    padding-top: calc(var(--header-height) + var(--space-6));
-  }
+  & > .hero__banner {
+    position: relative;
+    width: 100%;
+    min-height: 72svh;
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    isolation: isolate;
+    display: flex;
+    align-items: flex-end;
 
-  & > .hero__inner {
-    display: grid;
-    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
-    align-items: center;
-    gap: var(--space-8);
-
-    @media (max-width: 980px) {
-      grid-template-columns: minmax(0, 1fr);
-      gap: var(--space-7);
+    @media (max-width: 768px) {
+      min-height: 62svh;
     }
 
-    & > .hero__conteudo {
-      display: flex;
-      flex-direction: column;
-      gap: var(--space-5);
-
-      & > .hero__titulo {
-        font-family: var(--font-display);
-        font-size: var(--text-4xl);
-        font-weight: var(--weight-medium);
-        letter-spacing: -0.03em;
-        line-height: var(--leading-tight);
-        color: var(--color-dark);
-        max-width: 18ch;
-
-        & > .hero__marcada {
-          position: relative;
-          display: inline-block;
-          font-weight: var(--weight-semibold);
-
-          & > .hero__marcada-snap {
-            position: absolute;
-            left: 0;
-            right: 0;
-            bottom: -0.08em;
-          }
-        }
-      }
-
-      & > .hero__subtitulo {
-        font-size: var(--text-lg);
-        line-height: var(--leading-normal);
-        color: var(--color-fg);
-        max-width: 52ch;
-      }
-
-      & > .hero__acao {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        gap: var(--space-4);
-        margin-top: var(--space-2);
-
-        @media (max-width: 560px) {
-          flex-direction: column;
-          align-items: stretch;
-          gap: var(--space-3);
-        }
-
-        & > button {
-          @media (max-width: 560px) {
-            width: 100%;
-          }
-        }
-
-        & > .hero__microcopy {
-          font-size: var(--text-sm);
-          line-height: var(--leading-normal);
-          color: var(--color-muted);
-
-          @media (max-width: 560px) {
-            text-align: center;
-          }
-        }
-      }
+    &::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.72) 0%, rgba(0, 0, 0, 0.25) 55%, rgba(0, 0, 0, 0.1) 100%);
+      z-index: 2;
     }
 
-    & > .hero__figura {
-      position: relative;
-      width: 100%;
-      aspect-ratio: 4 / 3;
-      border-radius: var(--radius-md);
-      overflow: hidden;
+    & > .hero__imagem {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
 
-      & > .hero__figura-img {
+      & img {
         width: 100%;
         height: 100%;
         object-fit: cover;
         object-position: center;
       }
-
-      @media (max-width: 980px) {
-        aspect-ratio: 16 / 10;
-      }
     }
-  }
-`;
 
-const Barra = styled.div`
-  position: relative;
-  z-index: var(--z-base);
-  margin-top: var(--space-9);
-  margin-bottom: calc(var(--space-8) * -1);
+    & > .hero__conteudo {
+      position: relative;
+      z-index: 3;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--space-5);
+      padding: var(--space-8) var(--space-7) var(--space-9);
+      max-width: 720px;
 
-  @media (max-width: 900px) {
-    margin-top: var(--space-7);
-    margin-bottom: calc(var(--space-5) * -1);
-  }
-
-  & > .barra__inner {
-    display: flex;
-    flex-direction: column;
-
-    & > .barra__painel {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr)) auto;
-      align-items: end;
-      gap: var(--space-4);
-      padding: var(--space-5);
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius-lg);
-      background: var(--color-bg);
-
-      @media (max-width: 900px) {
-        grid-template-columns: minmax(0, 1fr);
-        align-items: stretch;
-        padding: var(--space-4);
+      @media (max-width: 768px) {
+        padding: var(--space-6) var(--space-5) var(--space-8);
+        gap: var(--space-4);
       }
 
-      & > .barra__acao {
-        display: flex;
-        align-items: flex-end;
+      & > .hero__titulo {
+        font-size: var(--text-3xl);
+        line-height: 1;
+        font-weight: var(--weight-medium);
+        letter-spacing: -0.03em;
+        color: var(--color-bg);
+        font-family: var(--font-display);
+      }
 
-        & > button {
-          width: 100%;
+      & > .hero__descricao {
+        font-size: var(--text-lg);
+        line-height: 1.2;
+        font-weight: var(--weight-regular);
+        letter-spacing: -0.01em;
+        color: var(--color-muted-white);
+        font-family: var(--font-display);
+        max-width: 52ch;
+      }
+
+      & > .hero__acao {
+        display: flex;
+        align-items: center;
+        gap: var(--space-4);
+        flex-wrap: wrap;
+
+        & > .hero__microcopy {
+          font-size: var(--text-sm);
+          color: var(--color-muted-white);
         }
       }
     }
   }
+
+  & > .hero__barra {
+    position: relative;
+    z-index: 4;
+    width: min(100%, 1080px);
+    margin: calc(var(--space-8) * -1) auto 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr auto;
+    align-items: end;
+    gap: var(--space-4);
+    padding: var(--space-5);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border);
+    background-color: var(--color-bg);
+    box-shadow: var(--shadow-md);
+
+    @media (max-width: 900px) {
+      grid-template-columns: 1fr 1fr;
+      margin-top: calc(var(--space-6) * -1);
+    }
+
+    @media (max-width: 600px) {
+      grid-template-columns: 1fr;
+      margin-top: var(--space-4);
+    }
+  }
 `;
-
-function TituloHero({ titulo, palavraMarcada }: { titulo: string; palavraMarcada: string }) {
-  const posicao = titulo.indexOf(palavraMarcada);
-
-  if (posicao < 0) return <>{titulo}</>;
-
-  return (
-    <>
-      {titulo.slice(0, posicao)}
-      <span className="hero__marcada">
-        {palavraMarcada}
-        <span className="hero__marcada-snap">
-          <SnapLine variant="underline" trigger="load" delay={0.12} />
-        </span>
-      </span>
-      {titulo.slice(posicao + palavraMarcada.length)}
-    </>
-  );
-}
 
 function BarraPreQualificacao() {
   const [tipoObra, setTipoObra] = useState("");
@@ -199,83 +140,62 @@ function BarraPreQualificacao() {
   const [regiao, setRegiao] = useState("");
 
   return (
-    <Barra>
-      <div className="container barra__inner">
-        <SnapLine variant="seam" trigger="load" delay={0.32} />
-
-        <div
-          className="barra__painel"
-          role="group"
-          aria-label="Pré-qualificação do orçamento"
-        >
-          <SelectField
-            id="hero-form-tipo-obra"
-            label="Tipo de obra"
-            options={TIPOS_DE_OBRA}
-            onChange={(evento) => setTipoObra(evento.target.value)}
-          />
-
-          <SelectField
-            id="hero-form-metragem"
-            label="Metragem"
-            options={FAIXAS_METRAGEM}
-            onChange={(evento) => setMetragem(evento.target.value)}
-          />
-
-          <SelectField
-            id="hero-form-regiao"
-            label="Região"
-            options={REGIOES_OPTIONS}
-            onChange={(evento) => setRegiao(evento.target.value)}
-          />
-
-          <div className="barra__acao">
-            <CtaButton
-              id="hero-btn-prequalificacao"
-              origin="hero-prequalificacao"
-              preFill={{ tipoObra, metragem, regiao }}
-            >
-              Pedir orçamento
-            </CtaButton>
-          </div>
-        </div>
-      </div>
-    </Barra>
+    <div className="hero__barra" role="group" aria-label="Pré-qualificação do orçamento">
+      <SelectField
+        id="hero-form-tipo-obra"
+        label="Tipo de obra"
+        options={TIPOS_DE_OBRA}
+        onChange={(evento) => setTipoObra(evento.target.value)}
+      />
+      <SelectField
+        id="hero-form-metragem"
+        label="Metragem"
+        options={FAIXAS_METRAGEM}
+        onChange={(evento) => setMetragem(evento.target.value)}
+      />
+      <SelectField
+        id="hero-form-regiao"
+        label="Região"
+        options={REGIOES_OPTIONS}
+        onChange={(evento) => setRegiao(evento.target.value)}
+      />
+      <CtaButton
+        id="hero-btn-prequalificacao"
+        origin="hero-prequalificacao"
+        preFill={{ tipoObra, metragem, regiao }}
+      >
+        Pedir orçamento
+      </CtaButton>
+    </div>
   );
 }
 
 export default function HeroSection() {
   return (
     <Section id={SECTION_IDS.hero} aria-labelledby="hero-titulo">
-      <div className="container hero__inner">
+      <div className="hero__banner">
+        <div className="hero__imagem" aria-hidden="true">
+          <Image
+            src="/obras/residencial.webp"
+            alt=""
+            fill
+            sizes="100vw"
+            priority
+            fetchPriority="high"
+          />
+        </div>
+
         <div className="hero__conteudo">
-          <Etiqueta pares={HERO.etiqueta} />
-
           <h1 className="hero__titulo" id="hero-titulo">
-            <TituloHero titulo={TITULO_HERO} palavraMarcada={HERO.palavraMarcada} />
+            {TITULO_HERO}
           </h1>
-
-          <p className="hero__subtitulo">{HERO.subtitulo}</p>
-
+          <p className="hero__descricao">{HERO.subtitulo}</p>
           <div className="hero__acao">
             <CtaButton id="hero-btn-orcamento" origin="hero">
               Pedir orçamento
             </CtaButton>
             <p className="hero__microcopy">{HERO.microcopy}</p>
           </div>
-        </div>
-
-        <div className="hero__figura">
-          <Image
-            className="hero__figura-img"
-            src="/obras/residencial.webp"
-            alt="Residência executada em steel frame pela Fast Sistemas Construtivos"
-            width={960}
-            height={720}
-            sizes="(max-width: 980px) 92vw, 46vw"
-            priority
-            fetchPriority="high"
-          />
         </div>
       </div>
 

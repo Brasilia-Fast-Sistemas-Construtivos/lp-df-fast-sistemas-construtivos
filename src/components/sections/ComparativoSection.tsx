@@ -6,180 +6,173 @@ import { useRef } from "react";
 
 import CtaButton from "@/components/forms/CtaButton";
 import { useReveal } from "@/components/motion/useReveal";
-import Etiqueta, { type EtiquetaPar } from "@/components/ui/Etiqueta";
-import SectionHeader from "@/components/ui/SectionHeader";
-import SnapLine from "@/components/ui/SnapLine";
+import SectionTexts from "@/components/ui/SectionTexts";
 import { COMPARATIVO } from "@/data/content";
 import { SECTION_IDS } from "@/data/navigation";
 
-const Root = styled.section`
-  position: relative;
-  background: var(--color-gray-surface);
+const Section = styled.section`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-7);
+  padding: var(--space-7) 0;
 
-  & > .comparativo__inner {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-8);
-    padding-block: var(--section-gap);
+  @media (max-width: 768px) {
+    gap: var(--space-5);
+    padding: var(--space-5) 0;
+  }
 
-    @media (max-width: 768px) {
-      gap: var(--space-7);
+  & > .confronto {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-4);
+
+    @media (max-width: 900px) {
+      grid-template-columns: 1fr;
     }
 
-    & > .comparativo__confronto {
-      display: grid;
-      grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
-      align-items: stretch;
+    & > .confronto__coluna {
+      display: flex;
+      flex-direction: column;
       gap: var(--space-5);
+      padding: var(--space-5);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--color-border);
+      background-color: var(--color-bg);
 
-      @media (max-width: 900px) {
-        grid-template-columns: minmax(0, 1fr);
-        gap: var(--space-4);
+      & > .confronto__foto {
+        width: 100%;
+        aspect-ratio: 3 / 2;
+        border-radius: var(--radius-sm);
+        overflow: hidden;
+
+        & img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          object-position: center;
+        }
       }
 
-      & > .comparativo__coluna {
+      & > .confronto__titulo {
+        font-size: var(--text-xl);
+        line-height: 1.1;
+        font-weight: var(--weight-medium);
+        letter-spacing: -0.02em;
+        color: var(--color-dark);
+        font-family: var(--font-display);
+      }
+
+      & > .confronto__lista {
         display: flex;
         flex-direction: column;
-        gap: var(--space-6);
-        padding: var(--space-6);
-        border-radius: var(--radius-md);
+        gap: var(--space-3);
 
-        & > .comparativo__foto {
-          width: 100%;
-          aspect-ratio: 3 / 2;
-          border-radius: var(--radius-md);
-          overflow: hidden;
-
-          & > .comparativo__foto-img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            object-position: center;
-          }
-        }
-
-        @media (max-width: 640px) {
-          gap: var(--space-5);
-          padding: var(--space-5);
-        }
-
-        & > .comparativo__lista {
+        & > li {
           display: flex;
-          flex-direction: column;
-          gap: var(--space-4);
+          align-items: flex-start;
+          gap: var(--space-3);
+          font-size: var(--text-md);
+          line-height: 1.3;
+          color: var(--color-muted);
+          font-family: var(--font-display);
 
-          & > .comparativo__item {
-            display: flex;
-            align-items: flex-start;
-            gap: var(--space-3);
-            font-size: var(--text-md);
-            line-height: var(--leading-normal);
+          & > .confronto__marcador {
+            flex-shrink: 0;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px;
+            height: 20px;
+            margin-top: 2px;
 
-            & > .comparativo__marcador {
-              flex: none;
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              width: var(--space-4);
-              height: calc(var(--text-md) * var(--leading-normal));
-
-              & > .comparativo__traco {
-                display: block;
-                width: 100%;
-                height: var(--line-w);
-                background: var(--color-galvanized);
-              }
-
-              & > .comparativo__check {
-                width: 100%;
-                height: auto;
-                fill: none;
-                stroke: currentColor;
-                stroke-width: var(--line-w);
-                stroke-linecap: square;
-              }
+            & > svg {
+              width: 100%;
+              height: 100%;
             }
           }
         }
       }
 
-      & > .comparativo__coluna--alvenaria {
-        background: var(--color-border);
-        color: var(--color-muted);
-      }
+      &[data-tipo="seco"] {
+        border-color: var(--color-dark);
 
-      & > .comparativo__coluna--seco {
-        background: var(--color-surface);
-        color: var(--color-fg);
-
-        @media (max-width: 900px) {
-          order: -1;
+        & > .confronto__lista > li {
+          color: var(--color-fg);
         }
       }
     }
+  }
 
-    & > .comparativo__responsavel {
-      display: flex;
+  & > .responsavel {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-6);
+    padding: var(--space-6);
+    border-radius: var(--radius-md);
+    background-color: var(--color-gray-surface);
+
+    @media (max-width: 900px) {
       flex-direction: column;
-      gap: var(--space-6);
-      padding: var(--space-7);
-      border-radius: var(--radius-md);
-      background: var(--color-surface);
+      align-items: flex-start;
+      gap: var(--space-5);
+    }
 
-      @media (max-width: 640px) {
+    & > .responsavel__itens {
+      display: flex;
+      gap: var(--space-7);
+      flex-wrap: wrap;
+
+      @media (max-width: 900px) {
         gap: var(--space-5);
-        padding: var(--space-5);
       }
 
-      & > .comparativo__pares {
-        display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: var(--space-6);
-
-        @media (max-width: 900px) {
-          grid-template-columns: minmax(0, 1fr);
-          gap: var(--space-5);
-        }
-
-        & > .comparativo__par {
-          display: flex;
-          flex-direction: column;
-          gap: var(--space-2);
-
-          & > .comparativo__par-rotulo {
-            font-family: var(--font-alt);
-            font-size: var(--text-xs);
-            font-weight: var(--weight-semibold);
-            letter-spacing: 0.18em;
-            line-height: 1.2;
-            text-transform: uppercase;
-            color: var(--color-muted);
-          }
-
-          & > .comparativo__par-valor {
-            font-size: var(--text-md);
-            line-height: var(--leading-normal);
-            color: var(--color-fg);
-          }
-        }
-      }
-
-      & > .comparativo__acao {
+      & > .responsavel__item {
         display: flex;
+        flex-direction: column;
+        gap: var(--space-2);
 
-        @media (max-width: 640px) {
-          & > button {
-            width: 100%;
-          }
+        & > dt {
+          font-size: var(--text-sm);
+          font-weight: var(--weight-medium);
+          letter-spacing: -0.01em;
+          color: var(--color-muted);
+          font-family: var(--font-display);
+        }
+
+        & > dd {
+          font-size: var(--text-md);
+          font-weight: var(--weight-regular);
+          letter-spacing: -0.01em;
+          color: var(--color-dark);
+          font-family: var(--font-display);
         }
       }
     }
   }
 `;
 
-function paresDoRotulo(rotuloCompleto: string): EtiquetaPar[] {
-  const [rotulo, ...restante] = rotuloCompleto.split("·").map((parte) => parte.trim());
-  return [{ rotulo, valor: restante.join(" · ") }];
+function IconeTraco() {
+  return (
+    <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+      <path d="M4 10h12" stroke="var(--color-muted)" strokeWidth="1.6" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function IconeCheck() {
+  return (
+    <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+      <path
+        d="M4 10.4 8.4 14.8 16 5.6"
+        stroke="var(--color-dark)"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
 }
 
 export default function ComparativoSection() {
@@ -187,105 +180,75 @@ export default function ComparativoSection() {
   useReveal(sectionRef);
 
   return (
-    <Root id={SECTION_IDS.comparativo} ref={sectionRef}>
-      <SnapLine variant="seam" />
+    <Section id={SECTION_IDS.comparativo} ref={sectionRef} aria-label="Comparativo entre alvenaria e construção a seco">
+      <SectionTexts
+        titulo={COMPARATIVO.titulo}
+        descricao="A diferença entre semanas de obra suja e dias de montagem limpa está no sistema construtivo."
+      />
 
-      <div className="container comparativo__inner">
-        <div className="comparativo__cabecalho" data-reveal>
-          <SectionHeader
-            titulo={COMPARATIVO.titulo}
-            palavraMarcada={COMPARATIVO.palavraMarcada}
-            as="h2"
-          />
-        </div>
-
-        <div className="comparativo__confronto">
-          <article
-            className="comparativo__coluna comparativo__coluna--alvenaria"
-            aria-label={COMPARATIVO.alvenaria.rotulo}
-            data-reveal
-          >
-            <Etiqueta pares={paresDoRotulo(COMPARATIVO.alvenaria.rotulo)} />
-
-            <figure className="comparativo__foto">
-              <Image
-                className="comparativo__foto-img"
-                src="/comparativo/antes.webp"
-                alt="Ambiente antes da execução, em obra convencional"
-                width={720}
-                height={480}
-                sizes="(max-width: 900px) 92vw, 44vw"
-              />
-            </figure>
-
-            <ul className="comparativo__lista" role="list">
-              {COMPARATIVO.alvenaria.itens.map((item) => (
-                <li key={item} className="comparativo__item">
-                  <span className="comparativo__marcador" aria-hidden="true">
-                    <i className="comparativo__traco" />
-                  </span>
-                  {item}
-                </li>
-              ))}
-            </ul>
-          </article>
-
-          <article
-            className="comparativo__coluna comparativo__coluna--seco"
-            aria-label={COMPARATIVO.aSeco.rotulo}
-            data-reveal
-          >
-            <Etiqueta pares={paresDoRotulo(COMPARATIVO.aSeco.rotulo)} />
-
-            <figure className="comparativo__foto">
-              <Image
-                className="comparativo__foto-img"
-                src="/comparativo/depois.webp"
-                alt="Mesmo ambiente entregue com drywall pela Fast"
-                width={720}
-                height={480}
-                sizes="(max-width: 900px) 92vw, 44vw"
-              />
-            </figure>
-
-            <ul className="comparativo__lista" role="list">
-              {COMPARATIVO.aSeco.itens.map((item) => (
-                <li key={item} className="comparativo__item">
-                  <span className="comparativo__marcador" aria-hidden="true">
-                    <svg className="comparativo__check" viewBox="0 0 16 16" focusable="false">
-                      <path d="M2 8.4 6.2 12.6 14 3.6" />
-                    </svg>
-                  </span>
-                  {item}
-                </li>
-              ))}
-            </ul>
-          </article>
-        </div>
-
-        <div className="comparativo__responsavel" data-reveal>
-          <SectionHeader
-            titulo={COMPARATIVO.umResponsavel.titulo}
-            palavraMarcada={COMPARATIVO.umResponsavel.palavraMarcada}
-            as="h3"
-          />
-
-          <dl className="comparativo__pares">
-            {COMPARATIVO.umResponsavel.itens.map((par) => (
-              <div key={par.rotulo} className="comparativo__par">
-                <dt className="comparativo__par-rotulo">{par.rotulo}</dt>
-                <dd className="comparativo__par-valor">{par.valor}</dd>
-              </div>
-            ))}
-          </dl>
-
-          <div className="comparativo__acao">
-            <CtaButton id="comparativo-btn-orcamento" origin="comparativo">
-              Pedir orçamento
-            </CtaButton>
+      <div className="confronto">
+        <article className="confronto__coluna" data-reveal>
+          <div className="confronto__foto">
+            <Image
+              src="/comparativo/antes.webp"
+              alt="Ambiente antes da execução, em obra convencional"
+              width={720}
+              height={480}
+              sizes="(max-width: 900px) 92vw, 45vw"
+              loading="lazy"
+            />
           </div>
-        </div>
+          <h3 className="confronto__titulo">Obra convencional</h3>
+          <ul className="confronto__lista" role="list">
+            {COMPARATIVO.alvenaria.itens.map((item) => (
+              <li key={item}>
+                <span className="confronto__marcador">
+                  <IconeTraco />
+                </span>
+                {item}
+              </li>
+            ))}
+          </ul>
+        </article>
+
+        <article className="confronto__coluna" data-tipo="seco" data-reveal>
+          <div className="confronto__foto">
+            <Image
+              src="/comparativo/depois.webp"
+              alt="Mesmo ambiente entregue com drywall pela Fast"
+              width={720}
+              height={480}
+              sizes="(max-width: 900px) 92vw, 45vw"
+              loading="lazy"
+            />
+          </div>
+          <h3 className="confronto__titulo">Construção a seco Fast</h3>
+          <ul className="confronto__lista" role="list">
+            {COMPARATIVO.aSeco.itens.map((item) => (
+              <li key={item}>
+                <span className="confronto__marcador">
+                  <IconeCheck />
+                </span>
+                {item}
+              </li>
+            ))}
+          </ul>
+        </article>
       </div>
-    </Root>
+
+      <div className="responsavel" data-reveal>
+        <dl className="responsavel__itens">
+          {COMPARATIVO.umResponsavel.itens.map((item) => (
+            <div key={item.rotulo} className="responsavel__item">
+              <dt>{item.rotulo}</dt>
+              <dd>{item.valor}</dd>
+            </div>
+          ))}
+        </dl>
+        <CtaButton id="comparativo-btn-orcamento" origin="comparativo">
+          Pedir orçamento
+        </CtaButton>
+      </div>
+    </Section>
   );
 }
