@@ -48,6 +48,10 @@ const Section = styled.section`
     @media (max-width: 768px) {
       flex-direction: column;
       align-items: flex-start;
+
+      & > button {
+        display: none;
+      }
     }
   }
 `;
@@ -166,7 +170,7 @@ export default function SistemasSection() {
       <div className="sistemas__topo">
         <SectionTexts
           titulo="Tudo para construção a seco."
-          descricao="Compre só o material ou contrate com instalação: do perfil à placa, com um único fornecedor."
+          descricao="Compre só o material ou contrate com a instalação incluída."
         />
         <CtaButton id="sistemas-btn-orcamento" origin="sistemas">
           Pedir orçamento

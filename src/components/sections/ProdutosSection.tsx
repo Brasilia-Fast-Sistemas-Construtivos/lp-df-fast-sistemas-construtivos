@@ -36,6 +36,10 @@ const Section = styled.section`
     @media (max-width: 768px) {
       flex-direction: column;
       align-items: flex-start;
+
+      & > button {
+        display: none;
+      }
     }
   }
 `;
@@ -144,7 +148,7 @@ export default function ProdutosSection() {
       <div className="produtos__topo" data-reveal>
         <SectionTexts
           titulo="O material sai daqui, direto para a sua obra."
-          descricao="Placas, perfis, forros, lãs, massas e acessórios das marcas líderes, na quantidade do seu projeto. Sem pedido mínimo de obra."
+          descricao="Placas, perfis, forros, lãs e acessórios das marcas líderes, na quantidade do seu projeto."
         />
         <CtaButton id="produtos-btn-orcamento" origin="produtos">
           Pedir orçamento

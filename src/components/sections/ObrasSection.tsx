@@ -37,6 +37,10 @@ const Section = styled.section`
     @media (max-width: 768px) {
       flex-direction: column;
       align-items: flex-start;
+
+      & > button {
+        display: none;
+      }
     }
   }
 `;
@@ -194,7 +198,7 @@ export default function ObrasSection() {
       <div className="obras__topo" data-reveal>
         <SectionTexts
           titulo="O material da Fast em obra."
-          descricao="Projetos executados com os sistemas e produtos que você encontra aqui, do residencial ao corporativo."
+          descricao="Projetos com os produtos que você encontra aqui, do residencial ao corporativo."
         />
         <CtaButton id="obras-btn-orcamento" origin="obras">
           Pedir orçamento

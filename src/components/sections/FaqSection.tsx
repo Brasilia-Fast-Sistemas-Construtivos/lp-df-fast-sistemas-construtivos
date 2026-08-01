@@ -198,7 +198,7 @@ const Item = styled.li`
 
 export default function FaqSection() {
   const secaoRef = useRef<HTMLElement>(null);
-  const [indiceAberto, setIndiceAberto] = useState<number | null>(0);
+  const [indiceAberto, setIndiceAberto] = useState<number | null>(null);
   const primeiraRenderizacao = useRef(true);
 
   useReveal(secaoRef);
@@ -236,8 +236,7 @@ export default function FaqSection() {
             O que perguntam antes de fechar<span className="faq__ponto">.</span>
           </h2>
           <p className="faq__descricao">
-            Resposta direta na primeira linha, o detalhe logo abaixo. O que não estiver aqui, a
-            equipe responde no orçamento.
+            Resposta direta, sem enrolação. O que faltar, a equipe responde no orçamento.
           </p>
           <CtaButton id="faq-btn-orcamento" origin="faq">
             Pedir orçamento

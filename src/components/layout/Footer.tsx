@@ -27,6 +27,11 @@ const Root = styled.footer`
     @media (max-width: 600px) {
       grid-template-columns: 1fr;
       padding-block: var(--space-7) var(--space-6);
+
+      & > .footer__coluna:nth-of-type(2),
+      & > .footer__coluna:nth-of-type(3) {
+        display: none;
+      }
     }
 
     & > .footer__coluna {

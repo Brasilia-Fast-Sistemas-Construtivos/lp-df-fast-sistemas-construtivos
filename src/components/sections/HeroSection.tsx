@@ -132,6 +132,10 @@ const Section = styled.section`
         & > .hero__microcopy {
           font-size: var(--text-sm);
           color: var(--color-muted-white);
+
+          @media (max-width: 768px) {
+            display: none;
+          }
         }
       }
     }

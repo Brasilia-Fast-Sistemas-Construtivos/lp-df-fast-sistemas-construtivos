@@ -47,6 +47,11 @@ const Root = styled.header`
     color: var(--color-muted);
     font-family: var(--font-display);
     flex: 1;
+
+    @media (max-width: 768px) {
+      font-size: var(--text-md);
+      line-height: 1.35;
+    }
   }
 
   &[data-centrado="true"] {

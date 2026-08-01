@@ -107,9 +107,7 @@ const Band = styled.section`
     margin-inline: auto;
 
     @media (max-width: 768px) {
-      margin-top: var(--space-4);
-      font-size: var(--text-xs);
-      line-height: var(--leading-normal);
+      display: none;
     }
   }
 `;

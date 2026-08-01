@@ -11,7 +11,7 @@ export const CONTENT_GATES = {
 export const HERO = {
   titulo: "Todo o material da construção a seco, em um só lugar.",
   subtitulo:
-    "Placas, perfis, forros, pisos e isolamento com preço de rede nacional e pronta entrega em Brasília. E, se você precisar, a gente também instala.",
+    "Preço de rede nacional, pronta entrega no DF e instalação se você precisar.",
   microcopy: "Atendimento em todo o DF e entorno.",
 } as const;
 
@@ -37,7 +37,7 @@ export const PRODUTOS = [
 export const SOBRE = {
   titulo: "A maior rede de construção a seco do Brasil, atendendo Brasília.",
   descricao:
-    "Do aço ao acabamento, a Fast integra material e mão de obra em um só contrato. A estrutura de uma rede nacional, com equipe dedicada ao DF e entorno.",
+    "Material e mão de obra em um só contrato, com a força de uma rede nacional e equipe dedicada ao DF.",
   imagem: "/sobre/equipe.jpeg",
   imagemAlt: "Equipe da Fast Sistemas Construtivos trabalhando em uma obra de construção a seco",
 } as const;
@@ -104,26 +104,22 @@ export const ETAPAS = [
   {
     passo: "01",
     titulo: "Conte o que você precisa",
-    descricao:
-      "Envie a lista de materiais ou descreva o projeto pelo formulário ou WhatsApp. Não precisa saber quantidade: a equipe calcula com você.",
+    descricao: "Envie a lista de materiais ou descreva o projeto. A equipe calcula com você.",
   },
   {
     passo: "02",
     titulo: "Receba o orçamento",
-    descricao:
-      "Retornamos com preço, disponibilidade e as condições de entrega para a sua região do DF.",
+    descricao: "Preço, disponibilidade e condições de entrega para a sua região.",
   },
   {
     passo: "03",
     titulo: "Receba o material",
-    descricao:
-      "A entrega é combinada no orçamento, para todo o Distrito Federal e entorno.",
+    descricao: "Entrega combinada no orçamento, em todo o DF e entorno.",
   },
   {
     passo: "04",
     titulo: "Instalação, se você quiser",
-    descricao:
-      "A mesma equipe que vende o material executa a obra, com material e mão de obra em um só contrato.",
+    descricao: "A mesma equipe instala, com tudo em um só contrato.",
   },
 ] as const;
 
@@ -227,8 +223,7 @@ export const FAIXAS_METRAGEM = [
 
 export const CTA_FINAL = {
   titulo: "Peça seu orçamento: material ou obra completa.",
-  subtitulo:
-    "Envie a lista de materiais do seu projeto ou agende a visita técnica. Retornamos com preço, prazo e condições de entrega.",
+  subtitulo: "Envie sua lista de materiais ou agende a visita técnica. Retornamos com preço e prazo.",
   microcopy: "Sem compromisso. Retornamos pelo canal que você preferir.",
 } as const;
 
