@@ -113,7 +113,16 @@ const Card = styled.article`
       width: 32px;
       height: 32px;
       object-fit: contain;
+      transition: rotate var(--dur-slow) var(--ease-standard);
+
+      @media (prefers-reduced-motion: reduce) {
+        transition: none;
+      }
     }
+  }
+
+  &:hover > .card__logo > img {
+    rotate: 360deg;
   }
 
   & > .card__infos {

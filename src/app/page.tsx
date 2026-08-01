@@ -32,8 +32,8 @@ export default function HomePage() {
       <ProdutosSection />
       <SobreSection />
       <SistemasSection />
-      <ComoTrabalhamosSection />
       <ObrasSection />
+      <ComoTrabalhamosSection />
       <MarcasSection />
       <FaqSection />
       <CoberturaECtaSection />

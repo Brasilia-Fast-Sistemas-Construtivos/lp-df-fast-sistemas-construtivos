@@ -86,9 +86,11 @@ const Band = styled.section`
         &::after {
           content: "";
           display: block;
-          width: 1px;
-          height: var(--space-5);
-          background-color: var(--color-border);
+          width: 6px;
+          height: 6px;
+          border-radius: var(--radius-all);
+          background-color: var(--color-brand);
+          opacity: 0.4;
         }
       }
     }
@@ -168,6 +170,10 @@ const Cta = styled.section`
       font-family: var(--font-display);
       max-width: 600px;
       text-align: center;
+
+      & > .cta__ponto {
+        color: var(--color-brand);
+      }
     }
 
     & > .cta__descricao {
@@ -298,7 +304,14 @@ export function CtaFinalSection() {
 
       <div className="cta__conteudo">
         <h2 className="cta__titulo" id="cta-final-titulo" data-reveal>
-          {CTA_FINAL.titulo}
+          {CTA_FINAL.titulo.endsWith(".") ? (
+            <>
+              {CTA_FINAL.titulo.slice(0, -1)}
+              <span className="cta__ponto">.</span>
+            </>
+          ) : (
+            CTA_FINAL.titulo
+          )}
         </h2>
         <p className="cta__descricao" data-reveal>
           {CTA_FINAL.subtitulo}

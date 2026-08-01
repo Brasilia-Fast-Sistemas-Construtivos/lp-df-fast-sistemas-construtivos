@@ -65,6 +65,31 @@ const Section = styled.section`
         gap: var(--space-4);
       }
 
+      & > .hero__badge {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-2);
+        padding: var(--space-2) var(--space-4);
+        border-radius: var(--radius-all);
+        border: 1px solid color-mix(in srgb, var(--color-bg) 35%, transparent);
+        background: color-mix(in srgb, var(--color-dark) 35%, transparent);
+        backdrop-filter: blur(8px);
+        font-size: var(--text-sm);
+        font-weight: var(--weight-medium);
+        letter-spacing: -0.01em;
+        color: var(--color-bg);
+        font-family: var(--font-display);
+
+        &::before {
+          content: "";
+          display: block;
+          width: 6px;
+          height: 6px;
+          border-radius: var(--radius-all);
+          background-color: var(--color-brand);
+        }
+      }
+
       & > .hero__titulo {
         font-size: var(--text-3xl);
         line-height: 1;
@@ -72,6 +97,10 @@ const Section = styled.section`
         letter-spacing: -0.03em;
         color: var(--color-bg);
         font-family: var(--font-display);
+
+        & > .hero__ponto {
+          color: var(--color-brand);
+        }
       }
 
       & > .hero__descricao {
@@ -187,8 +216,16 @@ export default function HeroSection() {
         </div>
 
         <div className="hero__conteudo">
+          <p className="hero__badge">Fast Sistemas Construtivos · Brasília e entorno</p>
           <h1 className="hero__titulo" id="hero-titulo">
-            {HERO.titulo}
+            {HERO.titulo.endsWith(".") ? (
+              <>
+                {HERO.titulo.slice(0, -1)}
+                <span className="hero__ponto">.</span>
+              </>
+            ) : (
+              HERO.titulo
+            )}
           </h1>
           <p className="hero__descricao">{HERO.subtitulo}</p>
           <div className="hero__acao">

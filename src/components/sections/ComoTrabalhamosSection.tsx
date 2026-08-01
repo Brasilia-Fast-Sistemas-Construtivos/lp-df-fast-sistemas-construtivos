@@ -80,12 +80,13 @@ const Section = styled.section`
       }
 
       & > .etapa__numero {
-        font-size: var(--text-3xl);
-        line-height: 1;
-        font-weight: var(--weight-regular);
-        letter-spacing: -0.03em;
-        color: var(--color-muted-white);
+        font-size: var(--text-4xl);
+        line-height: 0.8;
+        font-weight: var(--weight-medium);
+        letter-spacing: -0.04em;
+        color: var(--color-gray-surface);
         font-family: var(--font-display);
+        -webkit-text-stroke: 1px var(--color-muted-white);
       }
 
       & > .etapa__titulo {

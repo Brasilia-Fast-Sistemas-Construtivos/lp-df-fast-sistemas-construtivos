@@ -65,6 +65,10 @@ const Carousel = styled.div`
         letter-spacing: -0.03em;
         font-family: var(--font-display);
         color: var(--color-dark);
+
+        & > .number__mais {
+          color: var(--color-brand);
+        }
       }
 
       & > .description {
@@ -119,7 +123,14 @@ export default function SobreSection() {
           {ESTATISTICAS.map((item) => (
             <SwiperSlide key={item.numero} aria-label={`${item.numero} ${item.descricao}`}>
               <p className="number" aria-hidden="true">
-                {item.numero}
+                {item.numero.startsWith("+") ? (
+                  <>
+                    <span className="number__mais">+</span>
+                    {item.numero.slice(1)}
+                  </>
+                ) : (
+                  item.numero
+                )}
               </p>
               <p className="description">{item.descricao}</p>
             </SwiperSlide>

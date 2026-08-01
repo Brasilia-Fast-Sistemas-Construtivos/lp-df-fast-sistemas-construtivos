@@ -33,6 +33,10 @@ const Root = styled.header`
     color: var(--color-dark);
     font-family: var(--font-display);
     flex: 1;
+
+    & > .texts__ponto {
+      color: var(--color-brand);
+    }
   }
 
   & > .texts__description {
@@ -71,6 +75,17 @@ const Root = styled.header`
   }
 `;
 
+function renderTitulo(titulo: string) {
+  if (!titulo.endsWith(".")) return titulo;
+
+  return (
+    <>
+      {titulo.slice(0, -1)}
+      <span className="texts__ponto">.</span>
+    </>
+  );
+}
+
 export default function SectionTexts({
   titulo,
   descricao,
@@ -81,7 +96,7 @@ export default function SectionTexts({
 }: SectionTextsProps) {
   return (
     <Root data-centrado={centrado} data-on-dark={onDark}>
-      <Tag className="texts__title">{titulo}</Tag>
+      <Tag className="texts__title">{renderTitulo(titulo)}</Tag>
       {descricao ? <p className="texts__description">{descricao}</p> : null}
       {children}
     </Root>

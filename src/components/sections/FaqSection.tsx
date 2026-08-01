@@ -12,10 +12,22 @@ import { SECTION_IDS } from "@/data/navigation";
 
 const Root = styled.section`
   width: 100%;
+  position: relative;
+  isolation: isolate;
   padding: var(--space-7) 0;
 
   @media (max-width: 768px) {
     padding: var(--space-5) 0;
+  }
+
+  & > .bg {
+    position: absolute;
+    inset: 0;
+    left: 50%;
+    width: 100vw;
+    transform: translateX(-50%);
+    background-color: var(--color-gray-surface);
+    z-index: -1;
   }
 
   & > .faq__grid {
@@ -48,6 +60,10 @@ const Root = styled.section`
         letter-spacing: -0.025em;
         color: var(--color-dark);
         font-family: var(--font-display);
+
+        & > .faq__ponto {
+          color: var(--color-brand);
+        }
       }
 
       & > .faq__descricao {
@@ -212,9 +228,13 @@ export default function FaqSection() {
 
   return (
     <Root id={SECTION_IDS.faq} ref={secaoRef} aria-label="Dúvidas frequentes">
+      <div className="bg" aria-hidden="true" />
+
       <div className="faq__grid">
         <div className="faq__intro" data-reveal>
-          <h2 className="faq__titulo">O que perguntam antes de fechar.</h2>
+          <h2 className="faq__titulo">
+            O que perguntam antes de fechar<span className="faq__ponto">.</span>
+          </h2>
           <p className="faq__descricao">
             Resposta direta na primeira linha, o detalhe logo abaixo. O que não estiver aqui, a
             equipe responde no orçamento.
