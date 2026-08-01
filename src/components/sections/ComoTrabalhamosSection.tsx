@@ -3,6 +3,7 @@
 import styled from "@emotion/styled";
 import { useRef } from "react";
 
+import CtaButton from "@/components/forms/CtaButton";
 import { useReveal } from "@/components/motion/useReveal";
 import SectionTexts from "@/components/ui/SectionTexts";
 import { ETAPAS } from "@/data/content";
@@ -10,6 +11,8 @@ import { SECTION_IDS } from "@/data/navigation";
 
 const Section = styled.section`
   width: 100%;
+  position: relative;
+  isolation: isolate;
   display: flex;
   flex-direction: column;
   gap: var(--space-7);
@@ -20,12 +23,34 @@ const Section = styled.section`
     padding: var(--space-5) 0;
   }
 
+  & > .bg {
+    position: absolute;
+    inset: 0;
+    left: 50%;
+    width: 100vw;
+    transform: translateX(-50%);
+    background-color: var(--color-gray-surface);
+    z-index: -1;
+  }
+
+  & > .processo__topo {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--space-5);
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+
   & > .etapas {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: var(--space-6);
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-2);
 
-    @media (max-width: 1100px) {
+    @media (max-width: 1000px) {
       grid-template-columns: repeat(2, 1fr);
     }
 
@@ -36,16 +61,30 @@ const Section = styled.section`
     & > .etapa {
       display: flex;
       flex-direction: column;
-      gap: var(--space-3);
-      padding-top: var(--space-4);
-      border-top: 1px solid var(--color-border);
+      gap: var(--space-4);
+      padding: var(--space-5);
+      border-radius: var(--radius-md);
+      background-color: var(--color-bg);
+      transition: transform var(--dur-normal) var(--ease-standard);
 
-      & > .etapa__marcador {
-        font-size: var(--text-xl);
+      &:hover {
+        transform: translateY(-4px);
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        transition: none;
+
+        &:hover {
+          transform: none;
+        }
+      }
+
+      & > .etapa__numero {
+        font-size: var(--text-3xl);
         line-height: 1;
         font-weight: var(--weight-regular);
-        letter-spacing: -0.02em;
-        color: var(--color-brand);
+        letter-spacing: -0.03em;
+        color: var(--color-muted-white);
         font-family: var(--font-display);
       }
 
@@ -75,18 +114,24 @@ export default function ComoTrabalhamosSection() {
   useReveal(sectionRef);
 
   return (
-    <Section id={SECTION_IDS.processo} ref={sectionRef} aria-label="Como trabalhamos">
-      <SectionTexts
-        titulo="Da visita técnica à entrega, sem surpresa."
-        descricao="O escopo, o valor e o prazo são fechados por escrito antes de começar. Cada etapa tem um responsável e um fim."
-      />
+    <Section id={SECTION_IDS.processo} ref={sectionRef} aria-label="Como comprar">
+      <div className="bg" aria-hidden="true" />
+
+      <div className="processo__topo" data-reveal>
+        <SectionTexts
+          titulo="Do orçamento à entrega, sem complicação."
+          descricao="Você não precisa entender de construção a seco para comprar certo — a equipe calcula, cota e entrega."
+        />
+        <CtaButton id="processo-btn-orcamento" origin="como-comprar">
+          Pedir orçamento
+        </CtaButton>
+      </div>
 
       <div className="etapas">
         {ETAPAS.map((etapa) => (
-          <article key={etapa.titulo} className="etapa" data-reveal>
-            <p className="etapa__marcador">
-              {etapa.duracao}
-              {etapa.tempo ? ` · ${etapa.tempo}` : ""}
+          <article key={etapa.passo} className="etapa" data-reveal>
+            <p className="etapa__numero" aria-hidden="true">
+              {etapa.passo}
             </p>
             <h3 className="etapa__titulo">{etapa.titulo}</h3>
             <p className="etapa__descricao">{etapa.descricao}</p>

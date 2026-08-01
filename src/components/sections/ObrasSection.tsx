@@ -1,9 +1,11 @@
 "use client";
 
 import styled from "@emotion/styled";
+import { ArrowLeftIcon, ArrowRightIcon } from "@phosphor-icons/react/dist/ssr";
 import Image from "next/image";
 import { useRef } from "react";
-import { A11y } from "swiper/modules";
+import type { Swiper as SwiperType } from "swiper";
+import { A11y, Autoplay } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 
 import CtaButton from "@/components/forms/CtaButton";
@@ -26,190 +28,210 @@ const Section = styled.section`
     padding: var(--space-5) 0;
   }
 
-  & > .obras__grade {
-    display: grid;
-    grid-template-columns: repeat(12, 1fr);
-    gap: var(--space-2);
+  & > .obras__topo {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--space-5);
 
-    @media (max-width: 900px) {
-      display: none;
+    @media (max-width: 768px) {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+`;
+
+const Carousel = styled.div`
+  width: 100%;
+  position: relative;
+
+  & > .swiper {
+    width: 100%;
+  }
+
+  & .obra {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    isolation: isolate;
+
+    & > img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      transition: transform var(--dur-slow) var(--ease-standard);
     }
 
-    & > .obra {
-      position: relative;
-      border-radius: var(--radius-md);
-      overflow: hidden;
-      isolation: isolate;
+    &:hover > img {
+      transform: scale(1.04);
+    }
 
-      &:nth-of-type(1) {
-        grid-column: span 7;
-        aspect-ratio: 16 / 10;
-      }
-
-      &:nth-of-type(2) {
-        grid-column: span 5;
-        aspect-ratio: 16 / 10;
-      }
-
-      &:nth-of-type(3),
-      &:nth-of-type(4),
-      &:nth-of-type(5) {
-        grid-column: span 4;
-        aspect-ratio: 4 / 3;
-      }
-
+    @media (prefers-reduced-motion: reduce) {
       & > img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        object-position: center;
+        transition: none;
       }
 
-      & > .obra__legenda {
-        position: absolute;
-        inset: auto 0 0 0;
-        padding: var(--space-5);
-        background: linear-gradient(to top, rgba(0, 0, 0, 0.72), transparent);
-        display: flex;
-        flex-direction: column;
-        gap: var(--space-1);
+      &:hover > img {
+        transform: none;
+      }
+    }
 
-        & > .obra__titulo {
-          font-size: var(--text-lg);
-          line-height: 1.1;
-          font-weight: var(--weight-medium);
-          letter-spacing: -0.01em;
-          color: var(--color-bg);
-          font-family: var(--font-display);
-        }
+    & > .obra__legenda {
+      position: absolute;
+      inset: auto 0 0 0;
+      padding: var(--space-5);
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.72), transparent);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-1);
+      z-index: 2;
 
-        & > .obra__tipo {
-          font-size: var(--text-sm);
-          color: var(--color-muted-white);
-          font-family: var(--font-display);
-        }
+      & > .obra__titulo {
+        font-size: var(--text-lg);
+        line-height: 1.1;
+        font-weight: var(--weight-medium);
+        letter-spacing: -0.01em;
+        color: var(--color-bg);
+        font-family: var(--font-display);
+      }
+
+      & > .obra__tipo {
+        font-size: var(--text-sm);
+        color: var(--color-muted-white);
+        font-family: var(--font-display);
       }
     }
   }
 
-  & > .obras__carrossel {
-    display: none;
-
-    @media (max-width: 900px) {
-      display: block;
-    }
-
-    & .swiper-slide {
-      width: 86%;
-    }
-
-    & .obra {
-      position: relative;
-      border-radius: var(--radius-md);
-      overflow: hidden;
-      aspect-ratio: 4 / 3;
-
-      & > img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-      }
-
-      & > .obra__legenda {
-        position: absolute;
-        inset: auto 0 0 0;
-        padding: var(--space-4);
-        background: linear-gradient(to top, rgba(0, 0, 0, 0.72), transparent);
-        display: flex;
-        flex-direction: column;
-        gap: var(--space-1);
-
-        & > .obra__titulo {
-          font-size: var(--text-md);
-          font-weight: var(--weight-medium);
-          color: var(--color-bg);
-          font-family: var(--font-display);
-        }
-
-        & > .obra__tipo {
-          font-size: var(--text-sm);
-          color: var(--color-muted-white);
-          font-family: var(--font-display);
-        }
-      }
-    }
-  }
-
-  & > .obras__fecho {
+  & > .controls {
+    width: 100%;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    flex-wrap: wrap;
-    gap: var(--space-5);
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    transform: translateY(-50%);
+    z-index: var(--z-sticky);
+    pointer-events: none;
 
-    & > .obras__nota {
-      font-size: var(--text-md);
-      line-height: 1.3;
-      color: var(--color-muted);
-      font-family: var(--font-display);
-      max-width: 52ch;
+    & > .controls__prev,
+    & > .controls__next {
+      pointer-events: auto;
+      background-color: var(--color-bg);
+      border-radius: var(--radius-all);
+      border: 4px solid var(--color-gray-surface);
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--color-dark);
+      will-change: transform;
+      transition: transform var(--dur-normal) var(--ease-standard),
+        box-shadow var(--dur-normal) var(--ease-standard);
+
+      &:hover {
+        transform: scale(1.08);
+        box-shadow: var(--shadow-md);
+      }
+
+      &:active {
+        transform: scale(0.95);
+      }
+
+      &:focus-visible {
+        outline: 2px solid var(--color-brand);
+        outline-offset: 2px;
+      }
+
+      & > svg {
+        width: 24px;
+        height: 24px;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        transition: none;
+
+        &:hover,
+        &:active {
+          transform: none;
+        }
+      }
+    }
+
+    & > .controls__prev {
+      transform: translateX(-50%);
+
+      @media (max-width: 768px) {
+        transform: translateX(-25%);
+      }
+    }
+
+    & > .controls__next {
+      transform: translateX(50%);
+
+      @media (max-width: 768px) {
+        transform: translateX(25%);
+      }
     }
   }
 `;
 
 export default function ObrasSection() {
   const sectionRef = useRef<HTMLElement>(null);
+  const swiperRef = useRef<SwiperType | null>(null);
+
   useReveal(sectionRef);
 
   return (
     <Section id={SECTION_IDS.obras} ref={sectionRef} aria-label="Obras executadas">
-      <SectionTexts
-        titulo="O que a Fast entrega, do projeto à pintura."
-        descricao="Obras executadas com os sistemas construtivos da Fast — a mesma engenharia que atende o país, com equipe dedicada a Brasília."
-      />
-
-      <div className="obras__grade" data-reveal>
-        {OBRAS_GALERIA.map((obra) => (
-          <figure key={obra.imagem} className="obra">
-            <Image
-              src={obra.imagem}
-              alt={obra.titulo}
-              width={900}
-              height={640}
-              sizes="(max-width: 900px) 86vw, 45vw"
-              loading="lazy"
-            />
-            <figcaption className="obra__legenda">
-              <span className="obra__titulo">{obra.titulo}</span>
-              <span className="obra__tipo">
-                {obra.tipo} · {obra.sistema}
-              </span>
-            </figcaption>
-          </figure>
-        ))}
+      <div className="obras__topo" data-reveal>
+        <SectionTexts
+          titulo="O material da Fast em obra."
+          descricao="Projetos executados com os sistemas e produtos que você encontra aqui — do residencial ao corporativo."
+        />
+        <CtaButton id="obras-btn-orcamento" origin="obras">
+          Pedir orçamento
+        </CtaButton>
       </div>
 
-      <div className="obras__carrossel" data-reveal>
+      <Carousel role="region" aria-label="Carrossel de obras" data-reveal>
         <Swiper
-          modules={[A11y]}
-          slidesPerView="auto"
+          modules={[Autoplay, A11y]}
           spaceBetween={8}
-          grabCursor
+          slidesPerView={1}
+          onSwiper={(swiper) => {
+            swiperRef.current = swiper;
+          }}
+          autoplay={{ delay: 5000, disableOnInteraction: false }}
           a11y={{
             enabled: true,
             prevSlideMessage: "Obra anterior",
             nextSlideMessage: "Próxima obra",
+            firstSlideMessage: "Primeira obra",
+            lastSlideMessage: "Última obra",
+          }}
+          breakpoints={{
+            0: { slidesPerView: 1 },
+            700: { slidesPerView: 2 },
+            1024: { slidesPerView: 3 },
           }}
         >
           {OBRAS_GALERIA.map((obra) => (
-            <SwiperSlide key={obra.imagem}>
+            <SwiperSlide key={obra.imagem} aria-label={obra.titulo}>
               <figure className="obra">
                 <Image
                   src={obra.imagem}
                   alt={obra.titulo}
                   width={720}
                   height={540}
-                  sizes="86vw"
+                  sizes="(max-width: 700px) 92vw, (max-width: 1024px) 46vw, 31vw"
                   loading="lazy"
                 />
                 <figcaption className="obra__legenda">
@@ -222,17 +244,28 @@ export default function ObrasSection() {
             </SwiperSlide>
           ))}
         </Swiper>
-      </div>
 
-      <div className="obras__fecho">
-        <p className="obras__nota">
-          Quer ver como fica no seu projeto? Marcamos a visita técnica e levamos as amostras dos
-          sistemas até você.
-        </p>
-        <CtaButton id="obras-btn-orcamento" origin="obras">
-          Pedir orçamento
-        </CtaButton>
-      </div>
+        <div className="controls" aria-label="Controles do carrossel">
+          <button
+            id="obras-btn-anterior"
+            className="controls__prev"
+            type="button"
+            aria-label="Obra anterior"
+            onClick={() => swiperRef.current?.slidePrev()}
+          >
+            <ArrowLeftIcon aria-hidden="true" />
+          </button>
+          <button
+            id="obras-btn-proximo"
+            className="controls__next"
+            type="button"
+            aria-label="Próxima obra"
+            onClick={() => swiperRef.current?.slideNext()}
+          >
+            <ArrowRightIcon aria-hidden="true" />
+          </button>
+        </div>
+      </Carousel>
     </Section>
   );
 }

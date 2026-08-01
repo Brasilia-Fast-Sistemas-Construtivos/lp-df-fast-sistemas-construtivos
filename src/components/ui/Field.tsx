@@ -34,8 +34,10 @@ export const FieldRoot = styled.div`
     color: var(--color-muted);
   }
 
-  & > .field__control {
+  & > .field__control,
+  & > .field__select-wrap > .field__control {
     width: 100%;
+    min-height: 44px;
     padding: var(--space-3) var(--space-4);
     border-radius: var(--radius-all);
     border: 1px solid var(--color-border);
@@ -43,14 +45,15 @@ export const FieldRoot = styled.div`
     font-family: var(--font-body);
     font-size: var(--text-md);
     color: var(--color-fg);
-    transition: border-color var(--dur-fast) var(--ease-standard);
+    transition: border-color var(--dur-fast) var(--ease-standard),
+      box-shadow var(--dur-fast) var(--ease-standard);
 
     &::placeholder {
       color: var(--color-muted);
     }
 
     &:hover {
-      border-color: var(--color-galvanized);
+      border-color: var(--color-muted);
     }
 
     &:focus-visible {
@@ -61,6 +64,36 @@ export const FieldRoot = styled.div`
 
     @media (prefers-reduced-motion: reduce) {
       transition: none;
+    }
+  }
+
+  & > .field__select-wrap {
+    position: relative;
+    width: 100%;
+
+    & > .field__control {
+      appearance: none;
+      padding-right: var(--space-8);
+      cursor: pointer;
+    }
+
+    & > .field__chevron {
+      position: absolute;
+      right: var(--space-4);
+      top: 50%;
+      transform: translateY(-50%);
+      pointer-events: none;
+      color: var(--color-muted);
+      transition: transform var(--dur-normal) var(--ease-standard);
+
+      @media (prefers-reduced-motion: reduce) {
+        transition: none;
+      }
+    }
+
+    &:focus-within > .field__chevron {
+      transform: translateY(-50%) rotate(180deg);
+      color: var(--color-dark);
     }
   }
 

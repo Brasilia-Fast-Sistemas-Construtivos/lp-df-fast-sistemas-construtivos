@@ -2,12 +2,12 @@ import { getAttribution } from "@/lib/attribution";
 
 export type LeadPayload = {
   nome: string;
-  whatsapp: string;
-  tipoObra: string;
-  regiao: string;
-  metragem: string;
-  mensagem: string;
+  email: string;
+  telefone: string;
   origin: string;
+  tipoObra?: string;
+  metragem?: string;
+  regiao?: string;
 };
 
 export class LeadEndpointNaoConfigurado extends Error {

@@ -49,38 +49,6 @@ export const ESTATISTICAS = [
   { numero: "+ 20 anos", descricao: "de história e liderança de mercado" },
 ] as const;
 
-export const COMPARATIVO = {
-  titulo: "Quebra-quebra ou montagem.",
-  palavraMarcada: "montagem",
-  alvenaria: {
-    rotulo: "ALVENARIA · OBRA ÚMIDA",
-    itens: [
-      "Entulho e poeira em toda a casa",
-      "Água, cura e espera",
-      "Semanas sem poder usar o cômodo",
-      "Prazo que escorrega",
-    ],
-  },
-  aSeco: {
-    rotulo: "CONSTRUÇÃO A SECO · FAST",
-    itens: [
-      "Montagem limpa, sem entulho",
-      "Sem água e sem tempo de cura",
-      "Cômodo liberado em dias",
-      "Prazo fechado em contrato",
-    ],
-  },
-  umResponsavel: {
-    titulo: "Um responsável.",
-    palavraMarcada: "responsável",
-    itens: [
-      { rotulo: "MATERIAL", valor: "Direto da Fast, sem atravessador" },
-      { rotulo: "MÃO DE OBRA", valor: "Equipe própria especializada" },
-      { rotulo: "GARANTIA", valor: "Um contrato, um interlocutor" },
-    ],
-  },
-} as const;
-
 export const SISTEMAS = [
   {
     slug: "drywall",
@@ -134,34 +102,28 @@ export const SISTEMAS = [
 
 export const ETAPAS = [
   {
-    duracao: "DIA 1",
-    tempo: "4H",
-    titulo: "Visita técnica",
-    descricao: "Medição no local, entendimento do uso e das restrições do ambiente.",
+    passo: "01",
+    titulo: "Conte o que você precisa",
+    descricao:
+      "Envie a lista de materiais ou descreva o projeto pelo formulário ou WhatsApp. Não precisa saber quantidade: a equipe calcula com você.",
   },
   {
-    duracao: "DIA 2",
-    tempo: "",
-    titulo: "Projeto e orçamento fechado",
-    descricao: "Escopo, sistema e prazo por escrito. Sem valor que muda no meio da obra.",
+    passo: "02",
+    titulo: "Receba o orçamento",
+    descricao:
+      "Retornamos com preço, disponibilidade e as condições de entrega para a sua região do DF.",
   },
   {
-    duracao: "EXECUÇÃO",
-    tempo: "",
-    titulo: "Montagem",
-    descricao: "Estrutura, isolamento e fechamento com equipe própria e canteiro organizado.",
+    passo: "03",
+    titulo: "Receba o material",
+    descricao:
+      "A entrega é combinada no orçamento, para todo o Distrito Federal e entorno.",
   },
   {
-    duracao: "EXECUÇÃO",
-    tempo: "",
-    titulo: "Acabamento",
-    descricao: "Tratamento de junta, massa e pintura. A parede sai pronta para uso.",
-  },
-  {
-    duracao: "ENTREGA",
-    tempo: "",
-    titulo: "Entrega com garantia",
-    descricao: "Vistoria final, limpeza e garantia formalizada em contrato.",
+    passo: "04",
+    titulo: "Instalação, se você quiser",
+    descricao:
+      "A mesma equipe que vende o material executa a obra — material e mão de obra em um só contrato.",
   },
 ] as const;
 

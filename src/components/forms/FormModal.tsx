@@ -6,24 +6,23 @@ import { useEffect, useRef, useState, type FormEvent } from "react";
 import { useFormModal } from "@/components/forms/FormModalProvider";
 import Button from "@/components/ui/Button";
 import Field from "@/components/ui/Field";
-import SelectField from "@/components/ui/SelectField";
-import { FAIXAS_METRAGEM, REGIOES_OPTIONS, TIPOS_DE_OBRA } from "@/data/content";
 import { CONTACT } from "@/data/site";
 import { submitLead } from "@/lib/leads";
 
-const CAMPO_IDS = {
-  nome: "contato-form-nome",
-  whatsapp: "contato-form-whatsapp",
-  tipoObra: "contato-form-tipo-obra",
-  regiao: "contato-form-regiao",
-} as const;
-
 type Estado = "editando" | "enviando" | "sucesso" | "erro";
 
-type Erros = Partial<Record<"nome" | "whatsapp" | "tipoObra" | "regiao", string>>;
+type Erros = Partial<Record<"nome" | "email" | "telefone", string>>;
+
+const CAMPO_IDS = {
+  nome: "contato-form-nome",
+  email: "contato-form-email",
+  telefone: "contato-form-telefone",
+} as const;
+
+const EMAIL_VALIDO = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const Dialog = styled.dialog`
-  width: min(520px, calc(100vw - var(--space-6)));
+  width: min(440px, calc(100vw - var(--space-6)));
   max-height: calc(100svh - var(--space-6));
   padding: 0;
   border: none;
@@ -32,12 +31,47 @@ const Dialog = styled.dialog`
   color: var(--color-fg);
   overflow: visible;
 
+  @keyframes modalIn {
+    from {
+      opacity: 0;
+      transform: translateY(16px) scale(0.97);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @keyframes backdropIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
   &::backdrop {
     background: var(--color-backdrop);
   }
 
   &[open] {
     display: block;
+    animation: modalIn var(--dur-slow) var(--ease-standard);
+
+    &::backdrop {
+      animation: backdropIn var(--dur-normal) var(--ease-standard);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    &[open] {
+      animation: none;
+
+      &::backdrop {
+        animation: none;
+      }
+    }
   }
 
   & > .modal__inner {
@@ -52,81 +86,81 @@ const Dialog = styled.dialog`
     @media (max-width: 600px) {
       padding: var(--space-5);
     }
-  }
 
-  & .modal__topo {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: var(--space-4);
+    & > .modal__topo {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: var(--space-4);
 
-    & > .modal__titulos {
+      & > .modal__titulos {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-2);
+
+        & > .modal__titulo {
+          font-family: var(--font-display);
+          font-size: var(--text-xl);
+          font-weight: var(--weight-medium);
+          letter-spacing: -0.02em;
+          line-height: var(--leading-tight);
+          color: var(--color-dark);
+        }
+
+        & > .modal__descricao {
+          font-size: var(--text-sm);
+          color: var(--color-muted);
+          font-family: var(--font-display);
+        }
+      }
+    }
+
+    & > form {
       display: flex;
       flex-direction: column;
-      gap: var(--space-2);
+      gap: var(--space-4);
 
-      & > .modal__titulo {
+      & > .modal__rodape {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-3);
+
+        & > .modal__microcopy {
+          font-size: var(--text-xs);
+          color: var(--color-muted);
+          text-align: center;
+
+          & > a {
+            color: var(--color-brand);
+            text-decoration: underline;
+            text-underline-offset: 2px;
+          }
+        }
+      }
+    }
+
+    & > .modal__feedback {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+      align-items: flex-start;
+      padding: var(--space-2) 0;
+
+      & > .modal__feedback-titulo {
+        display: flex;
+        align-items: center;
+        gap: var(--space-3);
         font-family: var(--font-display);
         font-size: var(--text-xl);
-        font-weight: var(--weight-semibold);
-        letter-spacing: -0.01em;
-        line-height: var(--leading-tight);
+        font-weight: var(--weight-medium);
         color: var(--color-dark);
       }
 
-      & > .modal__descricao {
-        font-size: var(--text-sm);
-        color: var(--color-muted);
+      & > .modal__feedback-texto {
+        font-size: var(--text-md);
+        color: var(--color-fg);
+        font-family: var(--font-display);
       }
-    }
-  }
-
-  & .modal__campos {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: var(--space-4);
-
-    @media (max-width: 600px) {
-      grid-template-columns: 1fr;
-    }
-
-    & > .modal__campo-largo {
-      grid-column: 1 / -1;
-    }
-  }
-
-  & .modal__rodape {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-3);
-
-    & > .modal__microcopy {
-      font-size: var(--text-xs);
-      color: var(--color-muted);
-      text-align: center;
-    }
-  }
-
-  & .modal__feedback {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-4);
-    align-items: flex-start;
-    padding: var(--space-2) 0;
-
-    & > .modal__feedback-titulo {
-      display: flex;
-      align-items: center;
-      gap: var(--space-3);
-      font-family: var(--font-display);
-      font-size: var(--text-xl);
-      font-weight: var(--weight-semibold);
-      color: var(--color-dark);
-    }
-
-    & > .modal__feedback-texto {
-      font-size: var(--text-md);
-      color: var(--color-fg);
     }
   }
 `;
@@ -143,10 +177,12 @@ const FecharBotao = styled.button`
   background: var(--color-bg);
   color: var(--color-dark);
   cursor: pointer;
-  transition: border-color var(--dur-fast) var(--ease-standard);
+  transition: border-color var(--dur-fast) var(--ease-standard),
+    transform var(--dur-fast) var(--ease-standard);
 
   &:hover {
     border-color: var(--color-dark);
+    transform: rotate(90deg);
   }
 
   &:focus-visible {
@@ -156,6 +192,10 @@ const FecharBotao = styled.button`
 
   @media (prefers-reduced-motion: reduce) {
     transition: none;
+
+    &:hover {
+      transform: none;
+    }
   }
 `;
 
@@ -203,22 +243,20 @@ export default function FormModal() {
     const form = event.currentTarget;
     const data = new FormData(form);
 
-    const proximosErros: Erros = {};
     const nome = String(data.get("nome") || "").trim();
-    const whatsapp = String(data.get("whatsapp") || "").trim();
-    const tipoObra = String(data.get("tipoObra") || "");
-    const regiao = String(data.get("regiao") || "");
+    const email = String(data.get("email") || "").trim();
+    const telefone = String(data.get("telefone") || "").trim();
 
+    const proximosErros: Erros = {};
     if (nome.length < 2) proximosErros.nome = "Informe seu nome.";
-    if (whatsapp.replace(/\D/g, "").length < 10) {
-      proximosErros.whatsapp = "Informe um WhatsApp com DDD.";
+    if (!EMAIL_VALIDO.test(email)) proximosErros.email = "Informe um e-mail válido.";
+    if (telefone.replace(/\D/g, "").length < 10) {
+      proximosErros.telefone = "Informe um telefone com DDD.";
     }
-    if (!tipoObra) proximosErros.tipoObra = "Selecione o que você precisa.";
-    if (!regiao) proximosErros.regiao = "Selecione a região.";
 
     setErros(proximosErros);
     if (Object.keys(proximosErros).length > 0) {
-      const ordem: Array<keyof Erros> = ["nome", "whatsapp", "tipoObra", "regiao"];
+      const ordem: Array<keyof Erros> = ["nome", "email", "telefone"];
       const primeiro = ordem.find((campo) => proximosErros[campo]);
       if (primeiro) {
         const alvo = form.querySelector<HTMLElement>(`#${CAMPO_IDS[primeiro]}`);
@@ -232,12 +270,12 @@ export default function FormModal() {
     try {
       await submitLead({
         nome,
-        whatsapp,
-        tipoObra,
-        regiao,
-        metragem: String(data.get("metragem") || ""),
-        mensagem: String(data.get("mensagem") || ""),
+        email,
+        telefone,
         origin,
+        ...(preFill.tipoObra ? { tipoObra: preFill.tipoObra } : {}),
+        ...(preFill.metragem ? { metragem: preFill.metragem } : {}),
+        ...(preFill.regiao ? { regiao: preFill.regiao } : {}),
       });
       setEstado("sucesso");
     } catch {
@@ -254,7 +292,7 @@ export default function FormModal() {
               Pedir orçamento
             </h2>
             <p className="modal__descricao">
-              Visita técnica no seu endereço, escopo e prazo por escrito.
+              Deixe seu contato e retornamos com preço e prazo.
             </p>
           </div>
 
@@ -286,8 +324,8 @@ export default function FormModal() {
               Orçamento solicitado
             </p>
             <p className="modal__feedback-texto">
-              Recebemos seu pedido. Nossa equipe em Brasília entra em contato pelo WhatsApp
-              informado.
+              Recebemos seu pedido. Nossa equipe em Brasília entra em contato pelo telefone ou
+              e-mail informado.
             </p>
             <Button id="contato-btn-concluir" variant="outline" onClick={close}>
               Fechar
@@ -295,69 +333,39 @@ export default function FormModal() {
           </div>
         ) : (
           <form onSubmit={handleSubmit} noValidate>
-            <div className="modal__campos">
-              <div className="modal__campo-largo">
-                <Field
-                  id="contato-form-nome"
-                  name="nome"
-                  label="Nome"
-                  autoComplete="name"
-                  placeholder="Seu nome completo"
-                  erro={erros.nome}
-                  required
-                />
-              </div>
+            <Field
+              id="contato-form-nome"
+              name="nome"
+              label="Nome"
+              autoComplete="name"
+              placeholder="Seu nome"
+              erro={erros.nome}
+              required
+            />
 
-              <Field
-                id="contato-form-whatsapp"
-                name="whatsapp"
-                label="WhatsApp"
-                type="tel"
-                inputMode="tel"
-                autoComplete="tel"
-                placeholder="(61) 9 0000-0000"
-                erro={erros.whatsapp}
-                required
-              />
+            <Field
+              id="contato-form-email"
+              name="email"
+              label="E-mail"
+              type="email"
+              inputMode="email"
+              autoComplete="email"
+              placeholder="voce@email.com"
+              erro={erros.email}
+              required
+            />
 
-              <SelectField
-                id="contato-form-tipo-obra"
-                name="tipoObra"
-                label="O que você precisa"
-                options={TIPOS_DE_OBRA}
-                defaultValue={preFill.tipoObra ?? ""}
-                erro={erros.tipoObra}
-                required
-              />
-
-              <SelectField
-                id="contato-form-metragem"
-                name="metragem"
-                label="Metragem"
-                options={FAIXAS_METRAGEM}
-                defaultValue={preFill.metragem ?? ""}
-              />
-
-              <SelectField
-                id="contato-form-regiao"
-                name="regiao"
-                label="Região"
-                options={REGIOES_OPTIONS}
-                defaultValue={preFill.regiao ?? ""}
-                erro={erros.regiao}
-                required
-              />
-
-              <div className="modal__campo-largo">
-                <Field
-                  id="contato-form-mensagem"
-                  name="mensagem"
-                  label="Mensagem"
-                  multiline
-                  placeholder="Conte o que você precisa (opcional)"
-                />
-              </div>
-            </div>
+            <Field
+              id="contato-form-telefone"
+              name="telefone"
+              label="Telefone"
+              type="tel"
+              inputMode="tel"
+              autoComplete="tel"
+              placeholder="(61) 9 0000-0000"
+              erro={erros.telefone}
+              required
+            />
 
             <div className="modal__rodape">
               <Button
@@ -366,7 +374,7 @@ export default function FormModal() {
                 fullWidth
                 disabled={estado === "enviando"}
               >
-                {estado === "enviando" ? "Enviando..." : "Pedir orçamento"}
+                {estado === "enviando" ? "Enviando…" : "Pedir orçamento"}
               </Button>
 
               {estado === "erro" ? (

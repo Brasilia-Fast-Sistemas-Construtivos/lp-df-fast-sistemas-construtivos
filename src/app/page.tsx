@@ -1,6 +1,5 @@
 import CoberturaECtaSection from "@/components/sections/CoberturaECtaSection";
 import ComoTrabalhamosSection from "@/components/sections/ComoTrabalhamosSection";
-import ComparativoSection from "@/components/sections/ComparativoSection";
 import FaqSection from "@/components/sections/FaqSection";
 import HeroSection from "@/components/sections/HeroSection";
 import MarcasSection from "@/components/sections/MarcasSection";
@@ -33,7 +32,6 @@ export default function HomePage() {
       <ProdutosSection />
       <SobreSection />
       <SistemasSection />
-      <ComparativoSection />
       <ComoTrabalhamosSection />
       <ObrasSection />
       <MarcasSection />

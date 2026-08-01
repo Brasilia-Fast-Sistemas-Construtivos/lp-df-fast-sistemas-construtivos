@@ -31,7 +31,15 @@ const Root = styled.button`
   border: 1px solid var(--btn-color);
   background: transparent;
   cursor: pointer;
-  transition: color var(--dur-fast) var(--ease-standard);
+  will-change: transform;
+  transition: color var(--dur-fast) var(--ease-standard),
+    transform var(--dur-normal) var(--ease-standard),
+    box-shadow var(--dur-normal) var(--ease-standard);
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-sm);
+  }
 
   &::before {
     content: "";
@@ -50,7 +58,8 @@ const Root = styled.button`
   }
 
   &:active {
-    transform: scale(0.985);
+    transform: translateY(0) scale(0.98);
+    box-shadow: none;
   }
 
   &:focus-visible {
@@ -68,12 +77,16 @@ const Root = styled.button`
   }
 
   @media (prefers-reduced-motion: reduce) {
-    &::before {
-      transition: none;
-    }
+    transition: color var(--dur-fast) var(--ease-standard);
 
+    &:hover,
     &:active {
       transform: none;
+      box-shadow: none;
+    }
+
+    &::before {
+      transition: none;
     }
   }
 

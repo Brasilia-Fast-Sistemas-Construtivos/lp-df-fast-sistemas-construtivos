@@ -35,23 +35,41 @@ export default function SelectField({
         {label}
       </label>
 
-      <select
-        id={id}
-        className="field__control"
-        aria-invalid={Boolean(erro)}
-        aria-describedby={erroId}
-        defaultValue=""
-        {...rest}
-      >
-        <option value="" disabled>
-          {placeholder}
-        </option>
-        {options.map((option) => (
-          <option key={option.value} value={option.value}>
-            {option.label}
+      <div className="field__select-wrap">
+        <select
+          id={id}
+          className="field__control"
+          aria-invalid={Boolean(erro)}
+          aria-describedby={erroId}
+          defaultValue=""
+          {...rest}
+        >
+          <option value="" disabled>
+            {placeholder}
           </option>
-        ))}
-      </select>
+          {options.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </select>
+        <svg
+          className="field__chevron"
+          width="14"
+          height="14"
+          viewBox="0 0 16 16"
+          fill="none"
+          aria-hidden="true"
+        >
+          <path
+            d="M3 5.5l5 5 5-5"
+            stroke="currentColor"
+            strokeWidth="1.6"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      </div>
 
       {erro ? (
         <span className="field__erro" id={erroId} role="alert">

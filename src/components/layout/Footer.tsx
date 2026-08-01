@@ -206,10 +206,10 @@ export default function Footer() {
           <h2 className="footer__titulo">Navegação</h2>
           <ul className="footer__lista">
             <li>
-              <a href={`#${SECTION_IDS.comparativo}`}>Por que a seco</a>
+              <a href={`#${SECTION_IDS.produtos}`}>Produtos</a>
             </li>
             <li>
-              <a href={`#${SECTION_IDS.processo}`}>Como trabalhamos</a>
+              <a href={`#${SECTION_IDS.processo}`}>Como comprar</a>
             </li>
             <li>
               <a href={`#${SECTION_IDS.obras}`}>Obras no DF</a>
