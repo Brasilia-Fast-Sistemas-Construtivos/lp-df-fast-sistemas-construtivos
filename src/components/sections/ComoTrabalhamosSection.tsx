@@ -87,6 +87,10 @@ const Section = styled.section`
         color: var(--color-gray-surface);
         font-family: var(--font-display);
         -webkit-text-stroke: 1px var(--color-muted-white);
+
+        @media (max-width: 768px) {
+          font-size: var(--text-3xl);
+        }
       }
 
       & > .etapa__titulo {

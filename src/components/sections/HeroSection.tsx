@@ -26,7 +26,8 @@ const Section = styled.section`
     align-items: flex-end;
 
     @media (max-width: 768px) {
-      min-height: 62svh;
+      min-height: 56svh;
+      border-radius: var(--radius-lg);
     }
 
     &::after {
@@ -61,8 +62,8 @@ const Section = styled.section`
       max-width: 720px;
 
       @media (max-width: 768px) {
-        padding: var(--space-6) var(--space-5) var(--space-8);
-        gap: var(--space-4);
+        padding: var(--space-5) var(--space-4) var(--space-6);
+        gap: var(--space-3);
       }
 
       & > .hero__badge {
@@ -70,6 +71,11 @@ const Section = styled.section`
         align-items: center;
         gap: var(--space-2);
         padding: var(--space-2) var(--space-4);
+
+        @media (max-width: 768px) {
+          font-size: var(--text-xs);
+          padding: var(--space-1) var(--space-3);
+        }
         border-radius: var(--radius-all);
         border: 1px solid color-mix(in srgb, var(--color-bg) 35%, transparent);
         background: color-mix(in srgb, var(--color-dark) 35%, transparent);
@@ -97,6 +103,10 @@ const Section = styled.section`
         letter-spacing: -0.03em;
         color: var(--color-bg);
         font-family: var(--font-display);
+
+        @media (max-width: 768px) {
+          font-size: var(--text-2xl);
+        }
 
         & > .hero__ponto {
           color: var(--color-brand);
@@ -149,7 +159,9 @@ const Section = styled.section`
 
     @media (max-width: 600px) {
       grid-template-columns: 1fr;
-      margin-top: var(--space-4);
+      margin-top: var(--space-3);
+      gap: var(--space-3);
+      padding: var(--space-4);
     }
   }
 `;

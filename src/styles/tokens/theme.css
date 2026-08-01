@@ -41,6 +41,7 @@
   --container-max: 1420px;
   --container-pad: 24px;
   --header-height: 80px;
+  --header-height-mobile: 64px;
   --section-gap: clamp(56px, 8vw, 120px);
 
   --font-body: var(--font-dm-sans);

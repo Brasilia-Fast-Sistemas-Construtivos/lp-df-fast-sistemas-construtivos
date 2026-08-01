@@ -85,6 +85,12 @@ const Strip = styled.div`
     border-radius: var(--radius-md);
     background-color: var(--color-bg);
     height: 220px;
+
+    @media (max-width: 768px) {
+      height: 180px;
+      padding: var(--space-4);
+      gap: var(--space-3);
+    }
     transition: transform var(--dur-normal) var(--ease-standard),
       border-color var(--dur-normal) var(--ease-standard);
 
@@ -106,6 +112,11 @@ const Strip = styled.div`
       height: 120px;
       object-fit: contain;
       object-position: center;
+
+      @media (max-width: 768px) {
+        width: 88px;
+        height: 88px;
+      }
     }
 
     & > .produto__nome {
@@ -115,6 +126,11 @@ const Strip = styled.div`
       color: var(--color-fg);
       font-family: var(--font-display);
       text-align: center;
+      line-height: 1.2;
+
+      @media (max-width: 768px) {
+        font-size: var(--text-xs);
+      }
     }
   }
 `;
@@ -150,7 +166,7 @@ export default function ProdutosSection() {
             nextSlideMessage: "Próximo produto",
           }}
           breakpoints={{
-            0: { slidesPerView: 2 },
+            0: { slidesPerView: 2.3 },
             640: { slidesPerView: 3 },
             1024: { slidesPerView: 5 },
             1280: { slidesPerView: 6 },

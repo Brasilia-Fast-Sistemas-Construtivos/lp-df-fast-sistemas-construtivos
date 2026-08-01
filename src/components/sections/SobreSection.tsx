@@ -33,7 +33,7 @@ const Section = styled.section`
     overflow: hidden;
 
     @media (max-width: 768px) {
-      height: 280px;
+      height: 220px;
     }
 
     & img {

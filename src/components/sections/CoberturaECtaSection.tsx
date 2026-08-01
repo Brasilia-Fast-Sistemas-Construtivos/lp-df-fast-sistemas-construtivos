@@ -105,6 +105,12 @@ const Band = styled.section`
     font-family: var(--font-display);
     max-width: 900px;
     margin-inline: auto;
+
+    @media (max-width: 768px) {
+      margin-top: var(--space-4);
+      font-size: var(--text-xs);
+      line-height: var(--leading-normal);
+    }
   }
 `;
 

@@ -60,6 +60,10 @@ const Card = styled.article`
     position: relative;
     isolation: isolate;
 
+    @media (max-width: 768px) {
+      height: 210px;
+    }
+
     &::after {
       content: "";
       position: absolute;
@@ -97,6 +101,10 @@ const Card = styled.article`
     position: absolute;
     top: 260px;
     left: 50%;
+
+    @media (max-width: 768px) {
+      top: 210px;
+    }
     transform: translate(-50%, -50%);
     width: 64px;
     height: 64px;
@@ -139,7 +147,9 @@ const Card = styled.article`
     background-color: var(--color-bg);
 
     @media (max-width: 768px) {
-      padding: var(--space-6) var(--space-5);
+      min-height: 0;
+      padding: var(--space-7) var(--space-5) var(--space-6);
+      gap: var(--space-3);
     }
 
     & > .card__infos-title {

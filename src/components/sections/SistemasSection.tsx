@@ -67,6 +67,10 @@ const Carousel = styled.div`
     justify-content: space-between;
     position: absolute;
     top: 130px;
+
+    @media (max-width: 768px) {
+      top: 105px;
+    }
     left: 0;
     right: 0;
     z-index: var(--z-sticky);

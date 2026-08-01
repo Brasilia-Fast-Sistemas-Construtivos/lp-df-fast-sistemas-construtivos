@@ -29,7 +29,11 @@ const Root = styled.header`
     transition: height var(--dur-normal) var(--ease-standard);
 
     @media (max-width: 900px) {
-      height: 64px;
+      height: var(--header-height-mobile);
+    }
+
+    @media (max-width: 480px) {
+      gap: var(--space-3);
     }
   }
 
@@ -48,6 +52,10 @@ const Root = styled.header`
 
       @media (max-width: 900px) {
         width: 124px;
+      }
+
+      @media (max-width: 480px) {
+        width: 96px;
       }
     }
   }
@@ -101,6 +109,15 @@ const Root = styled.header`
     align-items: center;
     gap: var(--space-3);
     flex-shrink: 0;
+
+    @media (max-width: 480px) {
+      gap: var(--space-2);
+
+      & > button:first-of-type {
+        padding: var(--space-2) var(--space-3);
+        font-size: var(--text-xs);
+      }
+    }
   }
 
   & .header__toggle {
