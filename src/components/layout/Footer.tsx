@@ -5,7 +5,6 @@ import Image from "next/image";
 
 import CtaButton from "@/components/forms/CtaButton";
 import { FOOTER_SOLUCOES, POLITICAS_LINKS, SECTION_IDS } from "@/data/navigation";
-import { REGIOES_ATENDIDAS } from "@/data/content";
 import { BRAND_ASSETS, CONTACT, SITE } from "@/data/site";
 
 const ANO_ATUAL = new Date().getFullYear();
@@ -227,7 +226,15 @@ export default function Footer() {
 
         <div className="footer__coluna">
           <h2 className="footer__titulo">Onde atendemos</h2>
-          <p className="footer__regioes">{REGIOES_ATENDIDAS.join(" · ")}</p>
+          <p className="footer__regioes">
+            Todo o Distrito Federal e entorno, do Plano Piloto às demais regiões
+            administrativas.
+          </p>
+          <ul className="footer__lista">
+            <li>
+              <a href={`#${SECTION_IDS.cobertura}`}>Ver regiões atendidas</a>
+            </li>
+          </ul>
         </div>
       </div>
 

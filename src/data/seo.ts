@@ -1,4 +1,4 @@
-import type { FaqEntry, PageSeo, ServiceEntry } from "@/types/seo";
+import type { PageSeo, ServiceEntry } from "@/types/seo";
 
 export const SERVICES: ServiceEntry[] = [
   {
@@ -105,34 +105,6 @@ export const KEYWORDS: string[] = [
   "empresa de steel frame DF",
   "orçamento drywall Brasília",
   "Fast Sistemas Construtivos Brasília",
-];
-
-export const FAQ: FaqEntry[] = [
-  {
-    question: "A Fast atende quais regiões de Brasília?",
-    answer:
-      "Atendemos Brasília, todas as regiões administrativas do Distrito Federal e o entorno, em projetos residenciais, comerciais e corporativos.",
-  },
-  {
-    question: "A Fast vende o material ou também executa a obra?",
-    answer:
-      "Os dois. Comercializamos os materiais e executamos a instalação com mão de obra especializada, o que permite entregar a solução completa em um único fornecedor.",
-  },
-  {
-    question: "Quais soluções a Fast oferece em Brasília?",
-    answer:
-      "Drywall, steel frame, pisos vinílicos, forros, divisórias, revestimentos e sistemas construtivos a seco em geral, incluindo materiais e execução.",
-  },
-  {
-    question: "Como solicitar um orçamento?",
-    answer:
-      "Entre em contato pelo WhatsApp ou pelo formulário do site com informações do seu projeto. Nossa equipe comercial retorna com o orçamento e as orientações técnicas.",
-  },
-  {
-    question: "Por que construir com sistemas a seco?",
-    answer:
-      "A construção a seco é mais rápida, gera menos resíduo e sujeira, tem prazo mais previsível e permite melhor desempenho térmico e acústico do que a alvenaria convencional.",
-  },
 ];
 
 export const PAGES: PageSeo[] = [

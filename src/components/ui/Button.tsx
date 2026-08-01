@@ -1,7 +1,7 @@
 "use client";
 
 import styled from "@emotion/styled";
-import type { ButtonHTMLAttributes, PointerEvent, ReactNode } from "react";
+import type { ButtonHTMLAttributes, ReactNode } from "react";
 
 type ButtonVariant = "solid" | "outline" | "ghost";
 
@@ -16,6 +16,7 @@ type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
 const Root = styled.button`
   position: relative;
   isolation: isolate;
+  overflow: hidden;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -27,39 +28,36 @@ const Root = styled.button`
   font-size: var(--text-sm);
   font-weight: var(--weight-medium);
   line-height: 1;
-  color: var(--btn-on);
-  border: 1px solid var(--btn-color);
+  white-space: nowrap;
+  color: var(--btn-fg);
+  border: 1px solid var(--btn-border);
   background: transparent;
   cursor: pointer;
-  will-change: transform;
   transition: color var(--dur-fast) var(--ease-standard),
-    transform var(--dur-normal) var(--ease-standard),
-    box-shadow var(--dur-normal) var(--ease-standard);
-
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-sm);
-  }
+    border-color var(--dur-fast) var(--ease-standard);
 
   &::before {
     content: "";
     position: absolute;
     inset: 0;
-    z-index: -1;
     border-radius: inherit;
-    background: var(--btn-color);
-    transform: scaleX(var(--btn-fill));
-    transform-origin: var(--btn-origin, left) center;
-    transition: transform var(--dur-normal) var(--ease-standard);
+    background-color: var(--btn-color);
+    opacity: var(--btn-fill);
+    transition: opacity var(--dur-fast) var(--ease-standard);
+    z-index: -1;
+  }
+
+  &:hover {
+    color: var(--btn-fg-hover);
+    border-color: var(--btn-border-hover);
   }
 
   &:hover::before {
-    transform: scaleX(var(--btn-fill-hover));
+    opacity: var(--btn-fill-hover);
   }
 
   &:active {
-    transform: translateY(0) scale(0.98);
-    box-shadow: none;
+    transform: scale(0.98);
   }
 
   &:focus-visible {
@@ -70,6 +68,15 @@ const Root = styled.button`
   &:disabled {
     opacity: 0.55;
     cursor: not-allowed;
+
+    &:hover {
+      color: var(--btn-fg);
+      border-color: var(--btn-border);
+    }
+
+    &:hover::before {
+      opacity: var(--btn-fill);
+    }
   }
 
   &[data-full="true"] {
@@ -77,81 +84,68 @@ const Root = styled.button`
   }
 
   @media (prefers-reduced-motion: reduce) {
-    transition: color var(--dur-fast) var(--ease-standard);
-
-    &:hover,
-    &:active {
-      transform: none;
-      box-shadow: none;
-    }
+    transition: none;
 
     &::before {
       transition: none;
+    }
+
+    &:active {
+      transform: none;
     }
   }
 
   &[data-variant="solid"] {
     --btn-color: var(--color-brand);
-    --btn-on: var(--color-bg);
     --btn-fill: 1;
-    --btn-fill-hover: 1;
+    --btn-fill-hover: 0;
+    --btn-fg: var(--color-bg);
+    --btn-fg-hover: var(--color-brand);
+    --btn-border: transparent;
+    --btn-border-hover: var(--color-brand);
     --btn-focus: var(--color-brand);
-
-    &:hover {
-      --btn-color: var(--color-brand-contrast);
-    }
-
-    &::before {
-      transition: background var(--dur-fast) var(--ease-standard);
-    }
   }
 
   &[data-variant="outline"] {
     --btn-color: var(--color-dark);
-    --btn-on: var(--color-dark);
     --btn-fill: 0;
     --btn-fill-hover: 1;
+    --btn-fg: var(--color-dark);
+    --btn-fg-hover: var(--color-bg);
+    --btn-border: var(--color-dark);
+    --btn-border-hover: transparent;
     --btn-focus: var(--color-brand);
-
-    &:hover {
-      color: var(--color-bg);
-    }
   }
 
   &[data-variant="ghost"] {
     --btn-color: transparent;
-    --btn-on: var(--color-fg);
     --btn-fill: 0;
     --btn-fill-hover: 0;
+    --btn-fg: var(--color-fg);
+    --btn-fg-hover: var(--color-brand);
+    --btn-border: transparent;
+    --btn-border-hover: transparent;
     --btn-focus: var(--color-brand);
-    border-color: transparent;
-
-    &:hover {
-      color: var(--color-brand);
-    }
   }
 
   &[data-on-dark="true"] {
+    &[data-variant="solid"] {
+      --btn-fg-hover: var(--color-bg);
+      --btn-border-hover: var(--color-bg);
+      --btn-focus: var(--color-bg);
+    }
+
     &[data-variant="outline"] {
       --btn-color: var(--color-bg);
-      --btn-on: var(--color-bg);
+      --btn-fg: var(--color-bg);
+      --btn-fg-hover: var(--color-dark);
+      --btn-border: var(--color-bg);
       --btn-focus: var(--color-bg);
-
-      &:hover {
-        color: var(--color-dark);
-      }
     }
 
     &[data-variant="ghost"] {
-      --btn-on: var(--color-muted-white);
-      --btn-focus: var(--color-bg);
-
-      &:hover {
-        color: var(--color-bg);
-      }
-    }
-
-    &[data-variant="solid"] {
+      --btn-fg: var(--color-muted-white);
+      --btn-fg-hover: var(--color-bg);
       --btn-focus: var(--color-bg);
     }
   }
@@ -163,17 +157,8 @@ export default function Button({
   variant = "solid",
   onDark = false,
   fullWidth = false,
-  onPointerEnter,
   ...rest
 }: ButtonProps) {
-  const handlePointerEnter = (event: PointerEvent<HTMLButtonElement>) => {
-    const target = event.currentTarget;
-    const bounds = target.getBoundingClientRect();
-    const cameFromLeft = event.clientX - bounds.left < bounds.width / 2;
-    target.style.setProperty("--btn-origin", cameFromLeft ? "left" : "right");
-    onPointerEnter?.(event);
-  };
-
   return (
     <Root
       id={id}
@@ -181,7 +166,6 @@ export default function Button({
       data-variant={variant}
       data-on-dark={onDark}
       data-full={fullWidth}
-      onPointerEnter={handlePointerEnter}
       {...rest}
     >
       {children}

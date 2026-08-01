@@ -181,7 +181,7 @@ export default function HeroSection() {
           </h1>
           <p className="hero__descricao">{HERO.subtitulo}</p>
           <div className="hero__acao">
-            <CtaButton id="hero-btn-orcamento" origin="hero">
+            <CtaButton id="hero-btn-orcamento" origin="hero" onDark>
               Pedir orçamento
             </CtaButton>
             <p className="hero__microcopy">{HERO.microcopy}</p>

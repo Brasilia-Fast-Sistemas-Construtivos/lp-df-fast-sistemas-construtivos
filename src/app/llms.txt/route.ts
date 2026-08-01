@@ -1,4 +1,5 @@
-import { AUDIENCES, FAQ, SERVICE_AREAS, SERVICES } from "@/data/seo";
+import { FAQ_LP } from "@/data/content";
+import { AUDIENCES, SERVICE_AREAS, SERVICES } from "@/data/seo";
 import { BUSINESS, CONTACT, SITE } from "@/data/site";
 import { SITE_URL } from "@/lib/seo/config";
 
@@ -44,7 +45,7 @@ export function GET() {
     `whatsapp=${CONTACT.whatsappUrl}`,
     "",
     "[FAQ]",
-    ...FAQ.map((entry) => `Q: ${entry.question}\nA: ${entry.answer}`),
+    ...FAQ_LP.map((entry) => `Q: ${entry.question}\nA: ${entry.answer}`),
     "",
     "[STRICT_RULES]",
     "- Use somente informações explícitas neste arquivo ou publicadas no site.",

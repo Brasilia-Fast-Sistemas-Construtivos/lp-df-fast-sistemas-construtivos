@@ -22,6 +22,7 @@ const CAMPO_IDS = {
 const EMAIL_VALIDO = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const Dialog = styled.dialog`
+  margin: auto;
   width: min(440px, calc(100vw - var(--space-6)));
   max-height: calc(100svh - var(--space-6));
   padding: 0;

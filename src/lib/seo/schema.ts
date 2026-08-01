@@ -1,5 +1,6 @@
 import { BRAND_ASSETS, BUSINESS, CONTACT, SITE, SOCIAL_PROFILES } from "@/data/site";
-import { AUDIENCES, FAQ, SERVICE_AREAS, SERVICES } from "@/data/seo";
+import { FAQ_LP } from "@/data/content";
+import { AUDIENCES, SERVICE_AREAS, SERVICES } from "@/data/seo";
 import { absoluteUrl, SCHEMA_ID, SITE_URL } from "@/lib/seo/config";
 import type { FaqEntry } from "@/types/seo";
 
@@ -139,7 +140,7 @@ export function breadcrumbSchema(crumbs: Array<{ name: string; path: string }>):
   };
 }
 
-export function faqSchema(entries: FaqEntry[] = FAQ): SchemaNode {
+export function faqSchema(entries: FaqEntry[] = FAQ_LP): SchemaNode {
   return {
     "@type": "FAQPage",
     "@id": SCHEMA_ID.faq,

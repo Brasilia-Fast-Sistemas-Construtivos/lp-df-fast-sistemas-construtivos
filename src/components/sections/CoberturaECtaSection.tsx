@@ -304,7 +304,7 @@ export function CtaFinalSection() {
           {CTA_FINAL.subtitulo}
         </p>
         <div className="cta__acoes" role="group" aria-label="Ações disponíveis" data-reveal>
-          <CtaButton id="cta-final-btn-orcamento" origin="cta-final">
+          <CtaButton id="cta-final-btn-orcamento" origin="cta-final" onDark>
             Pedir orçamento
           </CtaButton>
           <a
