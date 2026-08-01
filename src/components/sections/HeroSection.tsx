@@ -5,9 +5,10 @@ import Image from "next/image";
 import { useState } from "react";
 
 import CtaButton from "@/components/forms/CtaButton";
-import SelectField from "@/components/ui/SelectField";
-import { FAIXAS_METRAGEM, HERO, REGIOES_OPTIONS, TIPOS_DE_OBRA } from "@/data/content";
+import Field from "@/components/ui/Field";
+import { HERO } from "@/data/content";
 import { SECTION_IDS } from "@/data/navigation";
+import { maskTelefone } from "@/lib/formatters";
 
 const Section = styled.section`
   width: 100%;
@@ -125,34 +126,44 @@ const Section = styled.section`
 `;
 
 function BarraPreQualificacao() {
-  const [tipoObra, setTipoObra] = useState("");
-  const [metragem, setMetragem] = useState("");
-  const [regiao, setRegiao] = useState("");
+  const [nome, setNome] = useState("");
+  const [email, setEmail] = useState("");
+  const [telefone, setTelefone] = useState("");
 
   return (
-    <div className="hero__barra" role="group" aria-label="Pré-qualificação do orçamento">
-      <SelectField
-        id="hero-form-tipo-obra"
-        label="O que você precisa"
-        options={TIPOS_DE_OBRA}
-        onChange={(evento) => setTipoObra(evento.target.value)}
+    <div className="hero__barra" role="group" aria-label="Pedido de orçamento">
+      <Field
+        id="hero-form-nome"
+        label="Nome"
+        autoComplete="name"
+        placeholder="Seu nome"
+        value={nome}
+        onChange={(evento) => setNome(evento.target.value)}
       />
-      <SelectField
-        id="hero-form-metragem"
-        label="Metragem"
-        options={FAIXAS_METRAGEM}
-        onChange={(evento) => setMetragem(evento.target.value)}
+      <Field
+        id="hero-form-email"
+        label="E-mail"
+        type="email"
+        inputMode="email"
+        autoComplete="email"
+        placeholder="voce@email.com"
+        value={email}
+        onChange={(evento) => setEmail(evento.target.value)}
       />
-      <SelectField
-        id="hero-form-regiao"
-        label="Região"
-        options={REGIOES_OPTIONS}
-        onChange={(evento) => setRegiao(evento.target.value)}
+      <Field
+        id="hero-form-telefone"
+        label="Telefone"
+        type="tel"
+        inputMode="tel"
+        autoComplete="tel"
+        placeholder="(61) 9 0000-0000"
+        value={telefone}
+        onChange={(evento) => setTelefone(maskTelefone(evento.target.value))}
       />
       <CtaButton
         id="hero-btn-prequalificacao"
         origin="hero-prequalificacao"
-        preFill={{ tipoObra, metragem, regiao }}
+        preFill={{ nome, email, telefone }}
       >
         Pedir orçamento
       </CtaButton>

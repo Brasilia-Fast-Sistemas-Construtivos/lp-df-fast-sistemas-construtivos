@@ -7,19 +7,26 @@ import { useFormModal } from "@/components/forms/FormModalProvider";
 import Button from "@/components/ui/Button";
 import Field from "@/components/ui/Field";
 import { CONTACT } from "@/data/site";
+import { maskTelefone, validarEmail, validarNome, validarTelefone } from "@/lib/formatters";
 import { submitLead } from "@/lib/leads";
 
 type Estado = "editando" | "enviando" | "sucesso" | "erro";
 
-type Erros = Partial<Record<"nome" | "email" | "telefone", string>>;
+type Campo = "nome" | "email" | "telefone";
+type Erros = Partial<Record<Campo, string>>;
+type Valores = Record<Campo, string>;
 
-const CAMPO_IDS = {
+const CAMPO_IDS: Record<Campo, string> = {
   nome: "contato-form-nome",
   email: "contato-form-email",
   telefone: "contato-form-telefone",
-} as const;
+};
 
-const EMAIL_VALIDO = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const VALIDADORES: Record<Campo, (valor: string) => string | undefined> = {
+  nome: validarNome,
+  email: validarEmail,
+  telefone: validarTelefone,
+};
 
 const Dialog = styled.dialog`
   margin: auto;
@@ -205,6 +212,7 @@ export default function FormModal() {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [estado, setEstado] = useState<Estado>("editando");
   const [erros, setErros] = useState<Erros>({});
+  const [valores, setValores] = useState<Valores>({ nome: "", email: "", telefone: "" });
 
   useEffect(() => {
     const dialog = dialogRef.current;
@@ -215,13 +223,39 @@ export default function FormModal() {
       document.body.style.overflow = "hidden";
       setEstado("editando");
       setErros({});
+      setValores({
+        nome: preFill.nome ?? "",
+        email: preFill.email ?? "",
+        telefone: maskTelefone(preFill.telefone ?? ""),
+      });
     }
 
     if (!isOpen && dialog.open) {
       dialog.close();
       document.body.style.overflow = "";
     }
-  }, [isOpen]);
+  }, [isOpen, preFill]);
+
+  const atualizarCampo = (campo: Campo, bruto: string) => {
+    const valor = campo === "telefone" ? maskTelefone(bruto) : bruto;
+    setValores((atual) => ({ ...atual, [campo]: valor }));
+    setErros((atual) => {
+      if (!atual[campo]) return atual;
+      if (VALIDADORES[campo](valor)) return atual;
+      const { [campo]: _removido, ...resto } = atual;
+      return resto;
+    });
+  };
+
+  const validarCampo = (campo: Campo) => {
+    const erro = VALIDADORES[campo](valores[campo]);
+    setErros((atual) => {
+      if (erro) return { ...atual, [campo]: erro };
+      if (!atual[campo]) return atual;
+      const { [campo]: _removido, ...resto } = atual;
+      return resto;
+    });
+  };
 
   useEffect(() => {
     const dialog = dialogRef.current;
@@ -242,22 +276,16 @@ export default function FormModal() {
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const form = event.currentTarget;
-    const data = new FormData(form);
-
-    const nome = String(data.get("nome") || "").trim();
-    const email = String(data.get("email") || "").trim();
-    const telefone = String(data.get("telefone") || "").trim();
 
     const proximosErros: Erros = {};
-    if (nome.length < 2) proximosErros.nome = "Informe seu nome.";
-    if (!EMAIL_VALIDO.test(email)) proximosErros.email = "Informe um e-mail válido.";
-    if (telefone.replace(/\D/g, "").length < 10) {
-      proximosErros.telefone = "Informe um telefone com DDD.";
-    }
+    (Object.keys(VALIDADORES) as Campo[]).forEach((campo) => {
+      const erro = VALIDADORES[campo](valores[campo]);
+      if (erro) proximosErros[campo] = erro;
+    });
 
     setErros(proximosErros);
     if (Object.keys(proximosErros).length > 0) {
-      const ordem: Array<keyof Erros> = ["nome", "email", "telefone"];
+      const ordem: Campo[] = ["nome", "email", "telefone"];
       const primeiro = ordem.find((campo) => proximosErros[campo]);
       if (primeiro) {
         const alvo = form.querySelector<HTMLElement>(`#${CAMPO_IDS[primeiro]}`);
@@ -270,9 +298,9 @@ export default function FormModal() {
 
     try {
       await submitLead({
-        nome,
-        email,
-        telefone,
+        nome: valores.nome.trim(),
+        email: valores.email.trim(),
+        telefone: valores.telefone,
         origin,
         ...(preFill.tipoObra ? { tipoObra: preFill.tipoObra } : {}),
         ...(preFill.metragem ? { metragem: preFill.metragem } : {}),
@@ -340,6 +368,9 @@ export default function FormModal() {
               label="Nome"
               autoComplete="name"
               placeholder="Seu nome"
+              value={valores.nome}
+              onChange={(evento) => atualizarCampo("nome", evento.target.value)}
+              onBlur={() => validarCampo("nome")}
               erro={erros.nome}
               required
             />
@@ -352,6 +383,9 @@ export default function FormModal() {
               inputMode="email"
               autoComplete="email"
               placeholder="voce@email.com"
+              value={valores.email}
+              onChange={(evento) => atualizarCampo("email", evento.target.value)}
+              onBlur={() => validarCampo("email")}
               erro={erros.email}
               required
             />
@@ -364,6 +398,9 @@ export default function FormModal() {
               inputMode="tel"
               autoComplete="tel"
               placeholder="(61) 9 0000-0000"
+              value={valores.telefone}
+              onChange={(evento) => atualizarCampo("telefone", evento.target.value)}
+              onBlur={() => validarCampo("telefone")}
               erro={erros.telefone}
               required
             />

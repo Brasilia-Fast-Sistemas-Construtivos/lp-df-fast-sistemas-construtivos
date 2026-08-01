@@ -11,6 +11,9 @@ import {
 } from "react";
 
 export type PreFill = {
+  nome?: string;
+  email?: string;
+  telefone?: string;
   tipoObra?: string;
   metragem?: string;
   regiao?: string;
