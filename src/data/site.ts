@@ -23,6 +23,11 @@ export const CONTACT = {
   whatsappMensagem: "Olá! Vim pelo site e gostaria de um orçamento.",
 } as const;
 
+export const SOCIAL = {
+  instagramHandle: "@fast.brasilia",
+  instagramUrl: "https://www.instagram.com/fast.brasilia/",
+} as const;
+
 export const BRAND_ASSETS = {
   logo: "/brand/logo-fast-sistemas-construtivos.svg",
   logoWhite: "/brand/logo-fast-sistemas-construtivos-white.svg",
@@ -50,4 +55,4 @@ export const BUSINESS: {
   mapUrl: null,
 };
 
-export const SOCIAL_PROFILES: string[] = [];
+export const SOCIAL_PROFILES: string[] = [SOCIAL.instagramUrl];

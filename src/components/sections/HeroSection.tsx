@@ -229,7 +229,7 @@ export default function HeroSection() {
         </div>
 
         <div className="hero__conteudo">
-          <p className="hero__badge">Fast Sistemas Construtivos · Brasília e entorno</p>
+          <p className="hero__badge">{HERO.badge}</p>
           <h1 className="hero__titulo" id="hero-titulo">
             {HERO.titulo.endsWith(".") ? (
               <>

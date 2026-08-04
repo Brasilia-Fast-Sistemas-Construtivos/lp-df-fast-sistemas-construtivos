@@ -1,6 +1,6 @@
 import { FAQ_LP } from "@/data/content";
 import { AUDIENCES, SERVICE_AREAS, SERVICES } from "@/data/seo";
-import { BUSINESS, CONTACT, SITE } from "@/data/site";
+import { BUSINESS, CONTACT, SITE, SOCIAL } from "@/data/site";
 import { SITE_URL } from "@/lib/seo/config";
 
 export const dynamic = "force-static";
@@ -23,7 +23,8 @@ export function GET() {
     "",
     "[SCOPE]",
     "- Venda de materiais para construção a seco.",
-    "- Execução e instalação com mão de obra especializada.",
+    "- Fornecimento acompanhado do projeto à conclusão da obra: especificação do sistema, quantitativo fechado, entrega do material de cada fase e reposição até o fim.",
+    "- Execução e instalação com mão de obra especializada, como serviço opcional.",
     "- Atendimento a projetos residenciais, comerciais e corporativos.",
     "",
     "[SERVICES]",
@@ -43,6 +44,7 @@ export function GET() {
     `email=${CONTACT.email}`,
     `phone=${CONTACT.phoneDisplay}`,
     `whatsapp=${CONTACT.whatsappUrl}`,
+    `instagram=${SOCIAL.instagramUrl}`,
     "",
     "[FAQ]",
     ...FAQ_LP.map((entry) => `Q: ${entry.question}\nA: ${entry.answer}`),

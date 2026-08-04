@@ -9,10 +9,45 @@ export const CONTENT_GATES = {
 } as const;
 
 export const HERO = {
-  titulo: "Todo o material da construção a seco, em um só lugar.",
+  badge: "Drywall e steel frame · Brasília e DF",
+  titulo: "Faça sua obra com a Fast Brasília, do projeto à conclusão.",
   subtitulo:
-    "Preço de rede nacional, pronta entrega no DF e instalação se você precisar.",
+    "Especificação, quantitativo e material em cada fase da obra. Com execução, se você quiser.",
   microcopy: "Atendimento em todo o DF e entorno.",
+} as const;
+
+export const OBRA_COMPLETA = {
+  titulo: "Do projeto à conclusão, sem trocar de fornecedor.",
+  descricao:
+    "A Fast especifica o sistema com você, fecha o quantitativo e entrega o material de cada fase. A execução fica com você ou com a nossa equipe.",
+  fases: [
+    {
+      slug: "projeto",
+      nome: "Projeto",
+      descricao:
+        "Especificação do sistema e lista de material fechada a partir da sua planta.",
+    },
+    {
+      slug: "estrutura",
+      nome: "Estrutura",
+      descricao: "Perfil, montante e guia para levantar a estrutura e erguer as paredes.",
+    },
+    {
+      slug: "fechamento",
+      nome: "Fechamento",
+      descricao: "Placa, parafuso e isolamento térmico e acústico para fechar os vãos.",
+    },
+    {
+      slug: "acabamento",
+      nome: "Acabamento",
+      descricao: "Massa, fita, cantoneira, forro e piso para a obra sair pronta para usar.",
+    },
+    {
+      slug: "conclusao",
+      nome: "Conclusão",
+      descricao: "Reposição do que faltar até o último metro, sem a obra parar esperando.",
+    },
+  ],
 } as const;
 
 export const PRODUTOS = [
@@ -128,6 +163,11 @@ export const FAQ_LP: FaqEntry[] = [
     question: "Posso comprar só o material, sem a instalação?",
     answer:
       "Pode. A Fast vende placas, perfis, forros, pisos, isolamento e acessórios avulsos, na quantidade do seu projeto. Se quiser, a equipe também executa, mas a compra do material não obriga a contratação da obra.",
+  },
+  {
+    question: "Vocês acompanham a obra do início ao fim?",
+    answer:
+      "Sim, como fornecedor. A gente especifica o sistema com você, fecha o quantitativo antes de a obra começar e entrega o material de cada fase, incluindo a reposição do que faltar até a conclusão. Se você quiser, a nossa equipe também executa.",
   },
   {
     question: "Vocês entregam em Brasília e no entorno?",

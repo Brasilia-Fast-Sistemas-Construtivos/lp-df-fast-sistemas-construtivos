@@ -1,7 +1,11 @@
 "use client";
 
 import styled from "@emotion/styled";
-import { ArrowLeftIcon, ArrowRightIcon } from "@phosphor-icons/react/dist/ssr";
+import {
+  ArrowLeftIcon,
+  ArrowRightIcon,
+  InstagramLogoIcon,
+} from "@phosphor-icons/react/dist/ssr";
 import Image from "next/image";
 import { useRef } from "react";
 import type { Swiper as SwiperType } from "swiper";
@@ -13,6 +17,7 @@ import { useReveal } from "@/components/motion/useReveal";
 import SectionTexts from "@/components/ui/SectionTexts";
 import { OBRAS_GALERIA } from "@/data/content";
 import { SECTION_IDS } from "@/data/navigation";
+import { SOCIAL } from "@/data/site";
 
 import "swiper/css";
 
@@ -39,6 +44,50 @@ const Section = styled.section`
       align-items: flex-start;
 
       & > button {
+        display: none;
+      }
+    }
+  }
+
+  & > .obras__instagram {
+    align-self: center;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-3);
+    min-height: 44px;
+    padding: var(--space-3) var(--space-5);
+    border-radius: var(--radius-all);
+    border: 1px solid var(--color-border);
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-medium);
+    color: var(--color-dark);
+    transition: border-color var(--dur-fast) var(--ease-standard);
+
+    &:hover {
+      border-color: var(--color-dark);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--color-brand);
+      outline-offset: 3px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      transition: none;
+    }
+
+    & > svg {
+      width: 20px;
+      height: 20px;
+      color: var(--color-brand);
+    }
+
+    & > .obras__handle {
+      color: var(--color-muted);
+      font-weight: var(--weight-regular);
+
+      @media (max-width: 480px) {
         display: none;
       }
     }
@@ -270,6 +319,20 @@ export default function ObrasSection() {
           </button>
         </div>
       </Carousel>
+
+      <a
+        id="obras-btn-instagram"
+        className="obras__instagram"
+        href={SOCIAL.instagramUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label={`Mais obras no Instagram da Fast Brasília, ${SOCIAL.instagramHandle}`}
+        data-reveal
+      >
+        <InstagramLogoIcon aria-hidden="true" />
+        Mais obras no Instagram
+        <span className="obras__handle">{SOCIAL.instagramHandle}</span>
+      </a>
     </Section>
   );
 }

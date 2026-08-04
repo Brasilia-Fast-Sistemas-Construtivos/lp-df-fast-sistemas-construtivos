@@ -5,7 +5,7 @@ import Image from "next/image";
 
 import CtaButton from "@/components/forms/CtaButton";
 import { FOOTER_SOLUCOES, POLITICAS_LINKS, SECTION_IDS } from "@/data/navigation";
-import { BRAND_ASSETS, CONTACT, SITE } from "@/data/site";
+import { BRAND_ASSETS, CONTACT, SITE, SOCIAL } from "@/data/site";
 
 const ANO_ATUAL = new Date().getFullYear();
 
@@ -189,6 +189,14 @@ export default function Footer() {
             >
               WhatsApp
             </a>
+            <a
+              id="footer-btn-instagram"
+              href={SOCIAL.instagramUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Instagram · {SOCIAL.instagramHandle}
+            </a>
           </div>
           <CtaButton id="footer-btn-orcamento" origin="footer" variant="outline" onDark>
             Pedir orçamento
@@ -211,6 +219,9 @@ export default function Footer() {
           <ul className="footer__lista">
             <li>
               <a href={`#${SECTION_IDS.produtos}`}>Produtos</a>
+            </li>
+            <li>
+              <a href={`#${SECTION_IDS.obraCompleta}`}>Do projeto à conclusão</a>
             </li>
             <li>
               <a href={`#${SECTION_IDS.processo}`}>Como comprar</a>

@@ -112,7 +112,7 @@ export const PAGES: PageSeo[] = [
     path: "/",
     title: "Drywall, Steel Frame e Sistemas Construtivos a Seco em Brasília",
     description:
-      "Materiais e mão de obra especializada em drywall, steel frame, pisos vinílicos, forros e divisórias em Brasília e no DF. Solicite seu orçamento.",
+      "Drywall, steel frame, pisos vinílicos, forros e divisórias em Brasília e no DF. Material especificado e entregue em cada fase da obra. Peça seu orçamento.",
     changeFrequency: "weekly",
     priority: 1,
   },

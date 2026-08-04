@@ -3,6 +3,7 @@ import ComoTrabalhamosSection from "@/components/sections/ComoTrabalhamosSection
 import FaqSection from "@/components/sections/FaqSection";
 import HeroSection from "@/components/sections/HeroSection";
 import MarcasSection from "@/components/sections/MarcasSection";
+import ObraCompletaSection from "@/components/sections/ObraCompletaSection";
 import ObrasSection from "@/components/sections/ObrasSection";
 import ProdutosSection from "@/components/sections/ProdutosSection";
 import SistemasSection from "@/components/sections/SistemasSection";
@@ -30,6 +31,7 @@ export default function HomePage() {
       <JsonLd schema={pageSchema} />
       <HeroSection />
       <ProdutosSection />
+      <ObraCompletaSection />
       <SobreSection />
       <SistemasSection />
       <ObrasSection />

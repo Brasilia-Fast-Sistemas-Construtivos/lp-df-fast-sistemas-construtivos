@@ -1,5 +1,6 @@
 export const SECTION_IDS = {
   hero: "inicio",
+  obraCompleta: "obra-completa",
   produtos: "produtos",
   sistemas: "sistemas",
   processo: "como-comprar",
