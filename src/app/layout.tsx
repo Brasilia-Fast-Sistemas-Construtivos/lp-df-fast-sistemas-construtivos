@@ -2,6 +2,10 @@ import type { Metadata, Viewport } from "next";
 import { DM_Sans, Manrope, Urbanist } from "next/font/google";
 import type { ReactNode } from "react";
 
+import {
+  GoogleTagManagerNoScript,
+  GoogleTagManagerScripts,
+} from "@/components/analytics/GoogleTagManager";
 import JsonLd from "@/components/seo/JsonLd";
 import AppShell from "@/components/layout/AppShell";
 import EmotionProvider from "@/components/providers/EmotionProvider";
@@ -57,15 +61,26 @@ export const metadata: Metadata = {
   },
   manifest: "/manifest.webmanifest",
   authors: [{ name: SITE.name, url: SITE.institutionalUrl }],
+  creator: SITE.name,
   publisher: SITE.name,
+  category: "Construção civil",
+  appleWebApp: {
+    capable: true,
+    title: `${SITE.name} ${SITE.region}`,
+    statusBarStyle: "default",
+  },
   formatDetection: {
     telephone: false,
     email: false,
     address: false,
   },
+  ...(process.env.GOOGLE_SITE_VERIFICATION
+    ? { verification: { google: process.env.GOOGLE_SITE_VERIFICATION } }
+    : {}),
   other: {
     "geo.region": "BR-DF",
-    "geo.placename": "Brasília",
+    "geo.placename": SITE.city,
+    "geo.country": "BR",
   },
 };
 
@@ -87,13 +102,16 @@ export default function RootLayout({ children }: RootLayoutProps) {
       <head>
         <JsonLd schema={globalSchema} />
         <link rel="alternate" type="text/plain" href="/llms.txt" title="llms.txt" />
+        <link rel="preconnect" href="https://www.googletagmanager.com" />
         <script
           dangerouslySetInnerHTML={{
             __html: MOTION_FLAG_SCRIPT,
           }}
         />
+        <GoogleTagManagerScripts />
       </head>
       <body>
+        <GoogleTagManagerNoScript />
         <EmotionProvider>
           <AppShell>{children}</AppShell>
         </EmotionProvider>

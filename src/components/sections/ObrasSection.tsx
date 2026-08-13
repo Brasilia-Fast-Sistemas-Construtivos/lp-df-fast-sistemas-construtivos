@@ -326,7 +326,7 @@ export default function ObrasSection() {
         href={SOCIAL.instagramUrl}
         target="_blank"
         rel="noopener noreferrer"
-        aria-label={`Mais obras no Instagram da Fast Brasília, ${SOCIAL.instagramHandle}`}
+        aria-label={`Mais obras no Instagram ${SOCIAL.instagramHandle}, da Fast em Brasília`}
         data-reveal
       >
         <InstagramLogoIcon aria-hidden="true" />

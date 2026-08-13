@@ -5,32 +5,104 @@ import { useEffect, useRef, useState, type FormEvent } from "react";
 
 import { useFormModal } from "@/components/forms/FormModalProvider";
 import Button from "@/components/ui/Button";
+import ChoiceField from "@/components/ui/ChoiceField";
 import Field from "@/components/ui/Field";
+import SelectField from "@/components/ui/SelectField";
+import {
+  FAIXAS_METRAGEM,
+  LIMITE_DESCRICAO,
+  REGIOES_OPTIONS,
+  RESPOSTAS_SIM_NAO,
+  TIPOS_DE_OBRA,
+} from "@/data/content";
 import { CONTACT } from "@/data/site";
-import { maskTelefone, validarEmail, validarNome, validarTelefone } from "@/lib/formatters";
+import { pushDataLayerEvent } from "@/lib/analytics";
+import {
+  maskTelefone,
+  validarEmail,
+  validarNome,
+  validarSelecao,
+  validarTelefone,
+} from "@/lib/formatters";
 import { submitLead } from "@/lib/leads";
 
 type Estado = "editando" | "enviando" | "sucesso" | "erro";
 
-type Campo = "nome" | "email" | "telefone";
+type Campo =
+  | "tipoObra"
+  | "regiao"
+  | "metragemEstimada"
+  | "temProjeto"
+  | "temLocal"
+  | "nome"
+  | "telefone"
+  | "email"
+  | "descricao";
+
 type Erros = Partial<Record<Campo, string>>;
 type Valores = Record<Campo, string>;
 
 const CAMPO_IDS: Record<Campo, string> = {
+  tipoObra: "contato-form-tipo-obra",
+  regiao: "contato-form-regiao",
+  metragemEstimada: "contato-form-metragem",
+  temProjeto: "contato-form-tem-projeto",
+  temLocal: "contato-form-tem-local",
   nome: "contato-form-nome",
-  email: "contato-form-email",
   telefone: "contato-form-telefone",
+  email: "contato-form-email",
+  descricao: "contato-form-descricao",
 };
 
-const VALIDADORES: Record<Campo, (valor: string) => string | undefined> = {
+const VALIDADORES: Partial<Record<Campo, (valor: string) => string | undefined>> = {
+  tipoObra: validarSelecao,
+  regiao: validarSelecao,
+  metragemEstimada: validarSelecao,
+  temProjeto: validarSelecao,
+  temLocal: validarSelecao,
   nome: validarNome,
-  email: validarEmail,
   telefone: validarTelefone,
+  email: validarEmail,
 };
+
+const ETAPAS = [
+  {
+    titulo: "A obra",
+    campos: ["tipoObra", "regiao", "metragemEstimada", "temProjeto", "temLocal"] as Campo[],
+    acao: "Continuar",
+  },
+  {
+    titulo: "Seu contato",
+    campos: ["nome", "telefone", "email", "descricao"] as Campo[],
+    acao: "Pedir orçamento",
+  },
+];
+
+const CAMPOS_DE_ESCOLHA: Campo[] = ["temProjeto", "temLocal"];
+
+const VALORES_VAZIOS: Valores = {
+  tipoObra: "",
+  regiao: "",
+  metragemEstimada: "",
+  temProjeto: "",
+  temLocal: "",
+  nome: "",
+  telefone: "",
+  email: "",
+  descricao: "",
+};
+
+function focarCampo(campo: Campo): void {
+  const alvo = CAMPOS_DE_ESCOLHA.includes(campo)
+    ? document.querySelector<HTMLElement>(`#${CAMPO_IDS[campo]} input`)
+    : document.getElementById(CAMPO_IDS[campo]);
+
+  alvo?.focus();
+}
 
 const Dialog = styled.dialog`
   margin: auto;
-  width: min(440px, calc(100vw - var(--space-6)));
+  width: min(460px, calc(100vw - var(--space-6)));
   max-height: calc(100svh - var(--space-6));
   padding: 0;
   border: none;
@@ -93,6 +165,7 @@ const Dialog = styled.dialog`
 
     @media (max-width: 600px) {
       padding: var(--space-5);
+      gap: var(--space-4);
     }
 
     & > .modal__topo {
@@ -123,15 +196,76 @@ const Dialog = styled.dialog`
       }
     }
 
+    & > .modal__progresso {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+
+      & > .modal__progresso-texto {
+        font-family: var(--font-alt);
+        font-size: var(--text-xs);
+        font-weight: var(--weight-semibold);
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--color-muted);
+      }
+
+      & > .modal__progresso-trilha {
+        display: grid;
+        grid-auto-flow: column;
+        grid-auto-columns: 1fr;
+        gap: var(--space-2);
+
+        & > .modal__progresso-segmento {
+          height: var(--line-w);
+          border-radius: var(--radius-all);
+          background: var(--color-galvanized);
+          opacity: 0.35;
+          transition: background-color var(--dur-normal) var(--ease-standard),
+            opacity var(--dur-normal) var(--ease-standard);
+
+          &[data-ativo="true"] {
+            background: var(--color-brand);
+            opacity: 1;
+          }
+
+          @media (prefers-reduced-motion: reduce) {
+            transition: none;
+          }
+        }
+      }
+    }
+
     & > form {
       display: flex;
       flex-direction: column;
       gap: var(--space-4);
 
+      & > .modal__duplo {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: var(--space-4);
+
+        @media (max-width: 480px) {
+          grid-template-columns: 1fr;
+        }
+      }
+
       & > .modal__rodape {
         display: flex;
         flex-direction: column;
         gap: var(--space-3);
+
+        & > .modal__acoes {
+          display: flex;
+          align-items: center;
+          gap: var(--space-3);
+
+          & > .modal__acao-principal {
+            display: flex;
+            flex: 1;
+          }
+        }
 
         & > .modal__microcopy {
           font-size: var(--text-xs);
@@ -210,9 +344,11 @@ const FecharBotao = styled.button`
 export default function FormModal() {
   const { isOpen, origin, preFill, close } = useFormModal();
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const etapaRenderizadaRef = useRef(0);
+  const [etapa, setEtapa] = useState(0);
   const [estado, setEstado] = useState<Estado>("editando");
   const [erros, setErros] = useState<Erros>({});
-  const [valores, setValores] = useState<Valores>({ nome: "", email: "", telefone: "" });
+  const [valores, setValores] = useState<Valores>(VALORES_VAZIOS);
 
   useEffect(() => {
     const dialog = dialogRef.current;
@@ -223,39 +359,33 @@ export default function FormModal() {
       document.body.style.overflow = "hidden";
       setEstado("editando");
       setErros({});
+      setEtapa(0);
+      etapaRenderizadaRef.current = 0;
       setValores({
+        ...VALORES_VAZIOS,
         nome: preFill.nome ?? "",
         email: preFill.email ?? "",
         telefone: maskTelefone(preFill.telefone ?? ""),
+        tipoObra: preFill.tipoObra ?? "",
+        regiao: preFill.regiao ?? "",
+        metragemEstimada: preFill.metragemEstimada ?? "",
+        descricao: preFill.descricao ?? "",
       });
+      pushDataLayerEvent({ event: "form_open", form_origin: origin });
     }
 
     if (!isOpen && dialog.open) {
       dialog.close();
       document.body.style.overflow = "";
     }
-  }, [isOpen, preFill]);
+  }, [isOpen, origin, preFill]);
 
-  const atualizarCampo = (campo: Campo, bruto: string) => {
-    const valor = campo === "telefone" ? maskTelefone(bruto) : bruto;
-    setValores((atual) => ({ ...atual, [campo]: valor }));
-    setErros((atual) => {
-      if (!atual[campo]) return atual;
-      if (VALIDADORES[campo](valor)) return atual;
-      const { [campo]: _removido, ...resto } = atual;
-      return resto;
-    });
-  };
-
-  const validarCampo = (campo: Campo) => {
-    const erro = VALIDADORES[campo](valores[campo]);
-    setErros((atual) => {
-      if (erro) return { ...atual, [campo]: erro };
-      if (!atual[campo]) return atual;
-      const { [campo]: _removido, ...resto } = atual;
-      return resto;
-    });
-  };
+  useEffect(() => {
+    if (etapa === etapaRenderizadaRef.current) return;
+    etapaRenderizadaRef.current = etapa;
+    const primeiroCampo = ETAPAS[etapa].campos[0];
+    window.requestAnimationFrame(() => focarCampo(primeiroCampo));
+  }, [etapa]);
 
   useEffect(() => {
     const dialog = dialogRef.current;
@@ -273,44 +403,91 @@ export default function FormModal() {
     };
   }, [close]);
 
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const form = event.currentTarget;
-
-    const proximosErros: Erros = {};
-    (Object.keys(VALIDADORES) as Campo[]).forEach((campo) => {
-      const erro = VALIDADORES[campo](valores[campo]);
-      if (erro) proximosErros[campo] = erro;
+  const limparErro = (campo: Campo, valor: string) => {
+    setErros((atual) => {
+      if (!atual[campo]) return atual;
+      if (VALIDADORES[campo]?.(valor)) return atual;
+      const { [campo]: _removido, ...resto } = atual;
+      return resto;
     });
+  };
 
-    setErros(proximosErros);
-    if (Object.keys(proximosErros).length > 0) {
-      const ordem: Campo[] = ["nome", "email", "telefone"];
-      const primeiro = ordem.find((campo) => proximosErros[campo]);
-      if (primeiro) {
-        const alvo = form.querySelector<HTMLElement>(`#${CAMPO_IDS[primeiro]}`);
-        window.requestAnimationFrame(() => alvo?.focus());
-      }
-      return;
-    }
+  const atualizarCampo = (campo: Campo, bruto: string) => {
+    const valor = campo === "telefone" ? maskTelefone(bruto) : bruto;
+    setValores((atual) => ({ ...atual, [campo]: valor }));
+    limparErro(campo, valor);
+  };
 
+  const validarCampo = (campo: Campo) => {
+    const erro = VALIDADORES[campo]?.(valores[campo]);
+    setErros((atual) => {
+      if (erro) return { ...atual, [campo]: erro };
+      if (!atual[campo]) return atual;
+      const { [campo]: _removido, ...resto } = atual;
+      return resto;
+    });
+  };
+
+  const validarEtapa = (indice: number): Erros => {
+    const encontrados: Erros = {};
+    ETAPAS[indice].campos.forEach((campo) => {
+      const erro = VALIDADORES[campo]?.(valores[campo]);
+      if (erro) encontrados[campo] = erro;
+    });
+    return encontrados;
+  };
+
+  const enviar = async () => {
     setEstado("enviando");
 
     try {
       await submitLead({
         nome: valores.nome.trim(),
-        email: valores.email.trim(),
         telefone: valores.telefone,
+        email: valores.email.trim(),
+        regiao: valores.regiao,
+        tipoObra: valores.tipoObra,
+        metragemEstimada: valores.metragemEstimada,
+        temProjeto: valores.temProjeto,
+        temLocal: valores.temLocal,
+        descricao: valores.descricao.trim(),
         origin,
-        ...(preFill.tipoObra ? { tipoObra: preFill.tipoObra } : {}),
-        ...(preFill.metragem ? { metragem: preFill.metragem } : {}),
-        ...(preFill.regiao ? { regiao: preFill.regiao } : {}),
+      });
+      pushDataLayerEvent({
+        event: "generate_lead",
+        form_origin: origin,
+        tipo_obra: valores.tipoObra,
+        regiao: valores.regiao,
       });
       setEstado("sucesso");
     } catch {
       setEstado("erro");
     }
   };
+
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    const encontrados = validarEtapa(etapa);
+    setErros(encontrados);
+
+    if (Object.keys(encontrados).length > 0) {
+      const primeiro = ETAPAS[etapa].campos.find((campo) => encontrados[campo]);
+      if (primeiro) {
+        window.requestAnimationFrame(() => focarCampo(primeiro));
+      }
+      return;
+    }
+
+    if (etapa < ETAPAS.length - 1) {
+      setEtapa(etapa + 1);
+      return;
+    }
+
+    void enviar();
+  };
+
+  const etapaAtual = ETAPAS[etapa];
 
   return (
     <Dialog ref={dialogRef} aria-labelledby="contato-modal-titulo">
@@ -321,7 +498,7 @@ export default function FormModal() {
               Pedir orçamento
             </h2>
             <p className="modal__descricao">
-              Deixe seu contato e retornamos com preço e prazo.
+              Retornamos com preço e prazo do seu projeto.
             </p>
           </div>
 
@@ -361,75 +538,185 @@ export default function FormModal() {
             </Button>
           </div>
         ) : (
-          <form onSubmit={handleSubmit} noValidate>
-            <Field
-              id="contato-form-nome"
-              name="nome"
-              label="Nome"
-              autoComplete="name"
-              placeholder="Seu nome"
-              value={valores.nome}
-              onChange={(evento) => atualizarCampo("nome", evento.target.value)}
-              onBlur={() => validarCampo("nome")}
-              erro={erros.nome}
-              required
-            />
-
-            <Field
-              id="contato-form-email"
-              name="email"
-              label="E-mail"
-              type="email"
-              inputMode="email"
-              autoComplete="email"
-              placeholder="voce@email.com"
-              value={valores.email}
-              onChange={(evento) => atualizarCampo("email", evento.target.value)}
-              onBlur={() => validarCampo("email")}
-              erro={erros.email}
-              required
-            />
-
-            <Field
-              id="contato-form-telefone"
-              name="telefone"
-              label="Telefone"
-              type="tel"
-              inputMode="tel"
-              autoComplete="tel"
-              placeholder="(61) 9 0000-0000"
-              value={valores.telefone}
-              onChange={(evento) => atualizarCampo("telefone", evento.target.value)}
-              onBlur={() => validarCampo("telefone")}
-              erro={erros.telefone}
-              required
-            />
-
-            <div className="modal__rodape">
-              <Button
-                id="contato-btn-enviar"
-                type="submit"
-                fullWidth
-                disabled={estado === "enviando"}
-              >
-                {estado === "enviando" ? "Enviando…" : "Pedir orçamento"}
-              </Button>
-
-              {estado === "erro" ? (
-                <p className="modal__microcopy" role="alert">
-                  Não conseguimos enviar agora.{" "}
-                  <a href={CONTACT.whatsappUrl} target="_blank" rel="noopener noreferrer">
-                    Fale com a gente no WhatsApp
-                  </a>{" "}
-                  ou ligue para {CONTACT.phoneDisplay}.
-                </p>
-              ) : (
-                <p className="modal__microcopy">
-                  Sem compromisso. Seus dados são usados apenas para este atendimento.
-                </p>
-              )}
+          <>
+            <div className="modal__progresso">
+              <p className="modal__progresso-texto" aria-live="polite">
+                Passo {etapa + 1} de {ETAPAS.length}: {etapaAtual.titulo}
+              </p>
+              <div className="modal__progresso-trilha" aria-hidden="true">
+                {ETAPAS.map((item, indice) => (
+                  <span
+                    key={item.titulo}
+                    className="modal__progresso-segmento"
+                    data-ativo={indice <= etapa}
+                  />
+                ))}
+              </div>
             </div>
-          </form>
+
+            <form onSubmit={handleSubmit} noValidate>
+              {etapa === 0 ? (
+                <>
+                  <SelectField
+                    id={CAMPO_IDS.tipoObra}
+                    name="tipoObra"
+                    label="Tipo de obra"
+                    placeholder="Selecione o tipo"
+                    options={TIPOS_DE_OBRA}
+                    value={valores.tipoObra}
+                    onChange={(evento) => atualizarCampo("tipoObra", evento.target.value)}
+                    erro={erros.tipoObra}
+                    required
+                  />
+
+                  <SelectField
+                    id={CAMPO_IDS.regiao}
+                    name="regiao"
+                    label="Região da obra"
+                    placeholder="Selecione a região"
+                    options={REGIOES_OPTIONS}
+                    value={valores.regiao}
+                    onChange={(evento) => atualizarCampo("regiao", evento.target.value)}
+                    erro={erros.regiao}
+                    required
+                  />
+
+                  <SelectField
+                    id={CAMPO_IDS.metragemEstimada}
+                    name="metragemEstimada"
+                    label="Metragem estimada"
+                    placeholder="Selecione a faixa"
+                    options={FAIXAS_METRAGEM}
+                    value={valores.metragemEstimada}
+                    onChange={(evento) => atualizarCampo("metragemEstimada", evento.target.value)}
+                    erro={erros.metragemEstimada}
+                    ajuda="Faixa aproximada já resolve. Não precisa calcular."
+                    required
+                  />
+
+                  <div className="modal__duplo">
+                    <ChoiceField
+                      id={CAMPO_IDS.temProjeto}
+                      name="temProjeto"
+                      label="Tem projeto?"
+                      options={RESPOSTAS_SIM_NAO}
+                      value={valores.temProjeto}
+                      onChange={(valor) => atualizarCampo("temProjeto", valor)}
+                      erro={erros.temProjeto}
+                    />
+
+                    <ChoiceField
+                      id={CAMPO_IDS.temLocal}
+                      name="temLocal"
+                      label="Tem o local?"
+                      options={RESPOSTAS_SIM_NAO}
+                      value={valores.temLocal}
+                      onChange={(valor) => atualizarCampo("temLocal", valor)}
+                      erro={erros.temLocal}
+                    />
+                  </div>
+                </>
+              ) : (
+                <>
+                  <Field
+                    id={CAMPO_IDS.nome}
+                    name="nome"
+                    label="Nome"
+                    autoComplete="name"
+                    placeholder="Seu nome"
+                    value={valores.nome}
+                    onChange={(evento) => atualizarCampo("nome", evento.target.value)}
+                    onBlur={() => validarCampo("nome")}
+                    erro={erros.nome}
+                    required
+                  />
+
+                  <Field
+                    id={CAMPO_IDS.telefone}
+                    name="telefone"
+                    label="Telefone"
+                    type="tel"
+                    inputMode="tel"
+                    autoComplete="tel"
+                    placeholder="(61) 9 0000-0000"
+                    value={valores.telefone}
+                    onChange={(evento) => atualizarCampo("telefone", evento.target.value)}
+                    onBlur={() => validarCampo("telefone")}
+                    erro={erros.telefone}
+                    required
+                  />
+
+                  <Field
+                    id={CAMPO_IDS.email}
+                    name="email"
+                    label="E-mail"
+                    type="email"
+                    inputMode="email"
+                    autoComplete="email"
+                    spellCheck={false}
+                    placeholder="voce@email.com"
+                    value={valores.email}
+                    onChange={(evento) => atualizarCampo("email", evento.target.value)}
+                    onBlur={() => validarCampo("email")}
+                    erro={erros.email}
+                    required
+                  />
+
+                  <Field
+                    id={CAMPO_IDS.descricao}
+                    name="descricao"
+                    label="O que você precisa (opcional)"
+                    multiline
+                    maxLength={LIMITE_DESCRICAO}
+                    placeholder="Ex.: parede de drywall na sala e forro no quarto."
+                    value={valores.descricao}
+                    onChange={(evento) => atualizarCampo("descricao", evento.target.value)}
+                  />
+                </>
+              )}
+
+              <div className="modal__rodape">
+                <div className="modal__acoes">
+                  {etapa > 0 ? (
+                    <Button
+                      id="contato-btn-voltar"
+                      type="button"
+                      variant="outline"
+                      onClick={() => setEtapa(etapa - 1)}
+                      disabled={estado === "enviando"}
+                    >
+                      Voltar
+                    </Button>
+                  ) : null}
+
+                  <span className="modal__acao-principal">
+                    <Button
+                      id="contato-btn-enviar"
+                      type="submit"
+                      fullWidth
+                      disabled={estado === "enviando"}
+                    >
+                      {estado === "enviando" ? "Enviando…" : etapaAtual.acao}
+                    </Button>
+                  </span>
+                </div>
+
+                {estado === "erro" ? (
+                  <p className="modal__microcopy" role="alert">
+                    Não conseguimos enviar agora.{" "}
+                    <a href={CONTACT.whatsappUrl} target="_blank" rel="noopener noreferrer">
+                      Fale com a gente no WhatsApp
+                    </a>{" "}
+                    ou ligue para {CONTACT.phoneDisplay}.
+                  </p>
+                ) : (
+                  <p className="modal__microcopy">
+                    Sem compromisso. Seus dados são usados apenas para este atendimento.
+                  </p>
+                )}
+              </div>
+            </form>
+          </>
         )}
       </div>
     </Dialog>

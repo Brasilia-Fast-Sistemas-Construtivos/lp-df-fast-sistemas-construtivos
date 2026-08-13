@@ -35,6 +35,7 @@ Leitura obrigatória antes de codar:
 | [docs/briefing.md](docs/briefing.md) | Objetivo do site, posicionamento e segmentos |
 | [docs/skills.md](docs/skills.md) | Como usar as skills instaladas |
 | [docs/seo.md](docs/seo.md) | Arquitetura de SEO e pendências |
+| [docs/integracoes.md](docs/integracoes.md) | GTM, consentimento, formulário e webhook do n8n |
 
 Não negociáveis:
 

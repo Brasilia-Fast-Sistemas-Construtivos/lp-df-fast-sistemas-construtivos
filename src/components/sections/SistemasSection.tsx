@@ -10,7 +10,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import CtaButton from "@/components/forms/CtaButton";
 import CardService from "@/components/ui/CardService";
 import SectionTexts from "@/components/ui/SectionTexts";
-import { SISTEMAS } from "@/data/content";
+import { SISTEMAS, TIPO_OBRA_POR_SISTEMA } from "@/data/content";
 import { SECTION_IDS } from "@/data/navigation";
 
 import "swiper/css";
@@ -153,13 +153,6 @@ const IMAGENS: Record<string, string> = {
   revestimento: "/sistemas/revestimento.webp",
 };
 
-const PRE_FILL: Record<string, string> = {
-  drywall: "reforma",
-  "steel-frame": "construcao-nova",
-  divisoria: "corporativo",
-  "piso-vinilico": "comercial",
-};
-
 export default function SistemasSection() {
   const swiperRef = useRef<SwiperType | null>(null);
 
@@ -208,7 +201,9 @@ export default function SistemasSection() {
                 description={sistema.descricao}
                 priority={index === 0}
                 preFill={
-                  PRE_FILL[sistema.slug] ? { tipoObra: PRE_FILL[sistema.slug] } : undefined
+                  TIPO_OBRA_POR_SISTEMA[sistema.slug]
+                    ? { tipoObra: TIPO_OBRA_POR_SISTEMA[sistema.slug] }
+                    : undefined
                 }
               />
             </SwiperSlide>

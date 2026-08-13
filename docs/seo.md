@@ -77,9 +77,16 @@ Campos em `BUSINESS` (`src/data/site.ts`) que estão nulos e derrubam a nota de 
 | `geo` | Latitude/longitude ajudam em buscas "perto de mim" |
 | `openingHours` | Sem isso o Google não mostra "aberto agora" |
 | `mapUrl` | Link do Google Maps do local |
-| `SOCIAL_PROFILES` | `sameAs` conecta o site aos perfis sociais e reforça a entidade |
 
 Não preencher com dado inventado — schema incorreto é pior que schema ausente.
+
+## sameAs fica no LocalBusiness
+
+`SOCIAL_PROFILES` alimenta o `sameAs` do nó **LocalBusiness**, não do `Organization`. Motivo: o Instagram é `@steelconecta.brasilia`, perfil da operação de Brasília. Amarrar um perfil com outro nome à entidade nacional Fast enfraquece o sinal de identidade da marca no lugar de reforçar.
+
+## Verificação do Search Console
+
+A meta de verificação sai da variável `GOOGLE_SITE_VERIFICATION`. Sem ela definida, nenhuma meta é emitida. Detalhes em [integracoes.md](integracoes.md).
 
 ## Fora do código
 

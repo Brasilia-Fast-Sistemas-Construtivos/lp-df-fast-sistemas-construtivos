@@ -187,3 +187,5 @@ export function appendAttribution(url: string): string {
 }
 
 export const CONSENT_STORAGE_KEY = CONSENT_KEY;
+
+export const ATTRIBUTION_KEYS = PARAM_KEYS;

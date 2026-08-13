@@ -4,6 +4,7 @@ import styled from "@emotion/styled";
 import { useEffect, useState } from "react";
 
 import Button from "@/components/ui/Button";
+import { updateConsentState } from "@/lib/analytics";
 import { CONSENT_STORAGE_KEY, promoteAttributionToLocal } from "@/lib/attribution";
 
 const Root = styled.aside`
@@ -77,6 +78,8 @@ export default function CookieConsent() {
   }, []);
 
   const registrar = (escolha: "accepted" | "rejected") => {
+    updateConsentState(escolha === "accepted");
+
     try {
       window.localStorage.setItem(CONSENT_STORAGE_KEY, escolha);
       if (escolha === "accepted") promoteAttributionToLocal();

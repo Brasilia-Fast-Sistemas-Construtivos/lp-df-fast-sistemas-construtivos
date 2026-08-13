@@ -24,8 +24,8 @@ export const CONTACT = {
 } as const;
 
 export const SOCIAL = {
-  instagramHandle: "@fast.brasilia",
-  instagramUrl: "https://www.instagram.com/fast.brasilia/",
+  instagramHandle: "@steelconecta.brasilia",
+  instagramUrl: "https://www.instagram.com/steelconecta.brasilia/",
 } as const;
 
 export const BRAND_ASSETS = {

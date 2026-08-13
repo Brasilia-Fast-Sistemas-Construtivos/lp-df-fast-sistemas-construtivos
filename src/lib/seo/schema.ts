@@ -19,7 +19,6 @@ export function organizationSchema(): SchemaNode {
     },
     image: absoluteUrl(BRAND_ASSETS.logo),
     description: SITE.description,
-    ...(SOCIAL_PROFILES.length > 0 ? { sameAs: SOCIAL_PROFILES } : {}),
     contactPoint: [
       {
         "@type": "ContactPoint",
@@ -48,6 +47,7 @@ export function localBusinessSchema(): SchemaNode {
     priceRange: BUSINESS.priceRange,
     currenciesAccepted: "BRL",
     knowsLanguage: "pt-BR",
+    ...(SOCIAL_PROFILES.length > 0 ? { sameAs: SOCIAL_PROFILES } : {}),
     areaServed: SERVICE_AREAS.map((area) => ({
       "@type": "Place",
       name: area,

@@ -27,3 +27,8 @@ export function validarTelefone(valor: string): string | undefined {
   if (digitos.length < 10) return "Informe um telefone com DDD.";
   return undefined;
 }
+
+export function validarSelecao(valor: string): string | undefined {
+  if (!valor.trim()) return "Escolha uma opção.";
+  return undefined;
+}

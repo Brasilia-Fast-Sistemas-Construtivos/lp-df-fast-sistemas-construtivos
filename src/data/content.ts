@@ -240,26 +240,45 @@ export const REGIOES_ATENDIDAS = [
 ] as const;
 
 export const REGIOES_OPTIONS = REGIOES_ATENDIDAS.map((regiao) => ({
-  value: regiao.toLowerCase().replace(/\s+/g, "-"),
+  value: regiao,
   label: regiao,
 }));
 
+export const REGIAO_FORA_DO_DF = "Entorno do DF";
+
+export const CIDADE_PADRAO = "Brasília";
+
+export const ESTADO_PADRAO = "Distrito Federal";
+
+export const ESTADO_FORA_DO_DF = "Goiás";
+
 export const TIPOS_DE_OBRA = [
-  { value: "compra-de-material", label: "Compra de material" },
-  { value: "residencial", label: "Obra residencial" },
-  { value: "comercial", label: "Obra comercial" },
-  { value: "corporativo", label: "Obra corporativa" },
-  { value: "reforma", label: "Reforma" },
-  { value: "construcao-nova", label: "Construção nova" },
+  { value: "Construção Residencial", label: "Construção residencial" },
+  { value: "Construção Comercial", label: "Construção comercial" },
+  { value: "Reforma ou Ampliação", label: "Reforma ou ampliação" },
 ] as const;
 
+export const TIPO_OBRA_POR_SISTEMA: Record<string, string> = {
+  drywall: "Reforma ou Ampliação",
+  "steel-frame": "Construção Residencial",
+  divisoria: "Construção Comercial",
+  "piso-vinilico": "Construção Comercial",
+};
+
 export const FAIXAS_METRAGEM = [
-  { value: "ate-30", label: "Até 30 m²" },
-  { value: "30-80", label: "30 a 80 m²" },
-  { value: "80-200", label: "80 a 200 m²" },
-  { value: "acima-200", label: "Acima de 200 m²" },
-  { value: "nao-sei", label: "Ainda não sei" },
+  { value: "Até 30 m²", label: "Até 30 m²" },
+  { value: "30 a 80 m²", label: "30 a 80 m²" },
+  { value: "80 a 200 m²", label: "80 a 200 m²" },
+  { value: "Acima de 200 m²", label: "Acima de 200 m²" },
+  { value: "Ainda não sei", label: "Ainda não sei" },
 ] as const;
+
+export const RESPOSTAS_SIM_NAO = [
+  { value: "Sim", label: "Sim" },
+  { value: "Não", label: "Não" },
+] as const;
+
+export const LIMITE_DESCRICAO = 2000;
 
 export const CTA_FINAL = {
   titulo: "Peça seu orçamento: material ou obra completa.",

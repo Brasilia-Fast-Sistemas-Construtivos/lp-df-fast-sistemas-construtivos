@@ -15,8 +15,9 @@ export type PreFill = {
   email?: string;
   telefone?: string;
   tipoObra?: string;
-  metragem?: string;
   regiao?: string;
+  metragemEstimada?: string;
+  descricao?: string;
 };
 
 type OpenOptions = PreFill & {

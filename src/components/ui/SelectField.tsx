@@ -14,6 +14,7 @@ type SelectFieldProps = SelectHTMLAttributes<HTMLSelectElement> & {
   label: string;
   options: ReadonlyArray<SelectOption>;
   placeholder?: string;
+  ajuda?: string;
   erro?: string;
   onDark?: boolean;
 };
@@ -23,11 +24,14 @@ export default function SelectField({
   label,
   options,
   placeholder = "Selecione",
+  ajuda,
   erro,
   onDark = false,
   ...rest
 }: SelectFieldProps) {
+  const ajudaId = ajuda ? `${id}-ajuda` : undefined;
   const erroId = erro ? `${id}-erro` : undefined;
+  const describedBy = [ajudaId, erroId].filter(Boolean).join(" ") || undefined;
 
   return (
     <FieldRoot data-invalid={Boolean(erro)} data-on-dark={onDark}>
@@ -40,8 +44,7 @@ export default function SelectField({
           id={id}
           className="field__control"
           aria-invalid={Boolean(erro)}
-          aria-describedby={erroId}
-          defaultValue=""
+          aria-describedby={describedBy}
           {...rest}
         >
           <option value="" disabled>
@@ -70,6 +73,12 @@ export default function SelectField({
           />
         </svg>
       </div>
+
+      {ajuda ? (
+        <span className="field__ajuda" id={ajudaId}>
+          {ajuda}
+        </span>
+      ) : null}
 
       {erro ? (
         <span className="field__erro" id={erroId} role="alert">
