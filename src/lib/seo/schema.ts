@@ -1,6 +1,14 @@
-import { BRAND_ASSETS, BUSINESS, CONTACT, SITE, SOCIAL_PROFILES } from "@/data/site";
+import {
+  BRAND_ASSETS,
+  BUSINESS,
+  CONTACT,
+  SITE,
+  SOCIAL_PROFILES,
+  STEEL_CONECTA,
+} from "@/data/site";
 import { FAQ_LP } from "@/data/content";
-import { AUDIENCES, SERVICE_AREAS, SERVICES } from "@/data/seo";
+import { SECTION_IDS } from "@/data/navigation";
+import { AUDIENCES, SERVICE_AREAS, SERVICES, SERVICOS_DE_EXECUCAO } from "@/data/seo";
 import { absoluteUrl, SCHEMA_ID, SITE_URL } from "@/lib/seo/config";
 import type { FaqEntry } from "@/types/seo";
 
@@ -95,6 +103,46 @@ export function localBusinessSchema(): SchemaNode {
         }
       : {}),
     ...(BUSINESS.mapUrl ? { hasMap: BUSINESS.mapUrl } : {}),
+  };
+}
+
+export function steelConectaSchema(): SchemaNode {
+  return {
+    "@type": ["LocalBusiness", "GeneralContractor"],
+    "@id": SCHEMA_ID.steelConecta,
+    name: STEEL_CONECTA.nome,
+    url: `${SITE_URL}/#${SECTION_IDS.steelConecta}`,
+    description: STEEL_CONECTA.descricao,
+    parentOrganization: { "@id": SCHEMA_ID.organization },
+    telephone: CONTACT.phoneSchema,
+    email: CONTACT.email,
+    priceRange: BUSINESS.priceRange,
+    currenciesAccepted: "BRL",
+    knowsLanguage: "pt-BR",
+    sameAs: [STEEL_CONECTA.instagramUrl],
+    areaServed: SERVICE_AREAS.map((area) => ({
+      "@type": "Place",
+      name: area,
+    })),
+    makesOffer: SERVICOS_DE_EXECUCAO.map((servico) => ({
+      "@type": "Offer",
+      itemOffered: {
+        "@type": "Service",
+        name: servico.name,
+        description: servico.description,
+        serviceType: servico.shortName,
+        provider: { "@id": SCHEMA_ID.steelConecta },
+        areaServed: BUSINESS.areaServed,
+      },
+    })),
+    ...(BUSINESS.address
+      ? {
+          address: {
+            "@type": "PostalAddress",
+            ...BUSINESS.address,
+          },
+        }
+      : {}),
   };
 }
 

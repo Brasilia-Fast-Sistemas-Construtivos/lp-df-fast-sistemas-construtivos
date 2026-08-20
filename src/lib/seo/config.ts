@@ -20,6 +20,7 @@ export function absoluteUrl(pathname: string): string {
 export const SCHEMA_ID = {
   organization: `${SITE_URL}/#organization`,
   localBusiness: `${SITE_URL}/#localbusiness`,
+  steelConecta: `${SITE_URL}/#steel-conecta`,
   website: `${SITE_URL}/#website`,
   webpage: (path: string) => `${absoluteUrl(path)}#webpage`,
   breadcrumb: (path: string) => `${absoluteUrl(path)}#breadcrumb`,

@@ -1,6 +1,6 @@
 import { FAQ_LP } from "@/data/content";
-import { AUDIENCES, SERVICE_AREAS, SERVICES } from "@/data/seo";
-import { BUSINESS, CONTACT, SITE, SOCIAL } from "@/data/site";
+import { AUDIENCES, SERVICE_AREAS, SERVICES, SERVICOS_DE_EXECUCAO } from "@/data/seo";
+import { BUSINESS, CONTACT, SITE, SOCIAL, STEEL_CONECTA } from "@/data/site";
 import { SITE_URL } from "@/lib/seo/config";
 
 export const dynamic = "force-static";
@@ -26,6 +26,18 @@ export function GET() {
     "- Fornecimento acompanhado do projeto à conclusão da obra: especificação do sistema, quantitativo fechado, entrega do material de cada fase e reposição até o fim.",
     "- Execução e instalação com mão de obra especializada, como serviço opcional.",
     "- Atendimento a projetos residenciais, comerciais e corporativos.",
+    "",
+    "[EXECUTION_PARTNER]",
+    `name=${STEEL_CONECTA.nome}`,
+    `role=${STEEL_CONECTA.papel}`,
+    `instagram=${STEEL_CONECTA.instagramUrl}`,
+    `description=${STEEL_CONECTA.descricao}`,
+    ...SERVICOS_DE_EXECUCAO.map(
+      (servico) =>
+        `SERVICE | slug=${servico.slug} | name=${servico.shortName} | description=${servico.description}`
+    ),
+    "- A Fast fornece o material. A Steel Conecta executa a obra com equipe própria.",
+    "- Pedidos de mão de obra são atendidos pela Steel Conecta. Pedidos de material são atendidos pela Fast.",
     "",
     "[SERVICES]",
     ...SERVICES.map(

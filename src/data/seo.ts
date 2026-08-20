@@ -52,6 +52,23 @@ export const SERVICES: ServiceEntry[] = [
   },
 ];
 
+export const SERVICOS_DE_EXECUCAO: ServiceEntry[] = [
+  {
+    slug: "execucao-steel-frame",
+    name: "Execução de obra em steel frame em Brasília",
+    shortName: "Execução em Steel Frame",
+    description:
+      "Montagem de estrutura, fechamento e acabamento em steel frame com equipe própria, escopo e prazo fechados em contrato.",
+  },
+  {
+    slug: "execucao-drywall",
+    name: "Execução de obra em drywall em Brasília",
+    shortName: "Execução em Drywall",
+    description:
+      "Instalação de paredes, forros e divisórias em drywall com equipe própria e material fornecido pela Fast.",
+  },
+];
+
 export const SERVICE_AREAS: string[] = [
   "Brasília",
   "Plano Piloto",

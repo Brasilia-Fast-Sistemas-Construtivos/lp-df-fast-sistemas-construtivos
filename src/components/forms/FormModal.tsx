@@ -5,14 +5,20 @@ import { useEffect, useRef, useState, type FormEvent } from "react";
 
 import { useFormModal } from "@/components/forms/FormModalProvider";
 import Button from "@/components/ui/Button";
+import ChoiceCardField from "@/components/ui/ChoiceCardField";
 import ChoiceField from "@/components/ui/ChoiceField";
 import Field from "@/components/ui/Field";
 import SelectField from "@/components/ui/SelectField";
 import {
+  ATENDIMENTO_POR_INTERESSE,
+  ETAPAS_DA_OBRA,
   FAIXAS_METRAGEM,
+  INTERESSE_MATERIAL,
   LIMITE_DESCRICAO,
+  OPCOES_INTERESSE,
   REGIOES_OPTIONS,
   RESPOSTAS_SIM_NAO,
+  SISTEMAS_EM_USO,
   TIPOS_DE_OBRA,
 } from "@/data/content";
 import { CONTACT } from "@/data/site";
@@ -29,11 +35,14 @@ import { submitLead } from "@/lib/leads";
 type Estado = "editando" | "enviando" | "sucesso" | "erro";
 
 type Campo =
+  | "interesse"
   | "tipoObra"
   | "regiao"
   | "metragemEstimada"
   | "temProjeto"
   | "temLocal"
+  | "etapaObra"
+  | "sistemaEmUso"
   | "nome"
   | "telefone"
   | "email"
@@ -43,11 +52,14 @@ type Erros = Partial<Record<Campo, string>>;
 type Valores = Record<Campo, string>;
 
 const CAMPO_IDS: Record<Campo, string> = {
+  interesse: "contato-form-interesse",
   tipoObra: "contato-form-tipo-obra",
   regiao: "contato-form-regiao",
   metragemEstimada: "contato-form-metragem",
   temProjeto: "contato-form-tem-projeto",
   temLocal: "contato-form-tem-local",
+  etapaObra: "contato-form-etapa-obra",
+  sistemaEmUso: "contato-form-sistema-em-uso",
   nome: "contato-form-nome",
   telefone: "contato-form-telefone",
   email: "contato-form-email",
@@ -55,42 +67,89 @@ const CAMPO_IDS: Record<Campo, string> = {
 };
 
 const VALIDADORES: Partial<Record<Campo, (valor: string) => string | undefined>> = {
+  interesse: validarSelecao,
   tipoObra: validarSelecao,
   regiao: validarSelecao,
   metragemEstimada: validarSelecao,
   temProjeto: validarSelecao,
   temLocal: validarSelecao,
+  etapaObra: validarSelecao,
+  sistemaEmUso: validarSelecao,
   nome: validarNome,
   telefone: validarTelefone,
   email: validarEmail,
 };
 
-const ETAPAS = [
-  {
-    titulo: "A obra",
-    campos: ["tipoObra", "regiao", "metragemEstimada", "temProjeto", "temLocal"] as Campo[],
-    acao: "Continuar",
-  },
-  {
-    titulo: "Seu contato",
-    campos: ["nome", "telefone", "email", "descricao"] as Campo[],
-    acao: "Pedir orçamento",
-  },
-];
+const ETAPA_ESCOPO = {
+  titulo: "O que você precisa",
+  campos: ["interesse"] as Campo[],
+  acao: "Continuar",
+};
 
-const CAMPOS_DE_ESCOLHA: Campo[] = ["temProjeto", "temLocal"];
+const FLUXO_MATERIAL = {
+  marca: "",
+  titulo: "Pedir orçamento",
+  descricao: "Retornamos com preço e prazo do seu projeto.",
+  sucessoTitulo: "Orçamento solicitado",
+  sucessoTexto:
+    "Recebemos seu pedido. Nossa equipe em Brasília entra em contato pelo telefone ou e-mail informado.",
+  etapas: [
+    ETAPA_ESCOPO,
+    {
+      titulo: "A obra",
+      campos: ["regiao", "etapaObra", "sistemaEmUso", "descricao"] as Campo[],
+      acao: "Continuar",
+    },
+    {
+      titulo: "Seu contato",
+      campos: ["nome", "telefone", "email"] as Campo[],
+      acao: "Pedir orçamento",
+    },
+  ],
+};
+
+const FLUXO_EXECUCAO = {
+  marca: "Steel Conecta · Execução",
+  titulo: "Falar com a Steel Conecta",
+  descricao: "Nossa equipe de execução retorna com escopo e prazo da obra.",
+  sucessoTitulo: "Pedido enviado para a Steel Conecta",
+  sucessoTexto:
+    "Recebemos seu pedido. A equipe de execução entra em contato pelo telefone ou e-mail informado.",
+  etapas: [
+    ETAPA_ESCOPO,
+    {
+      titulo: "A obra",
+      campos: ["tipoObra", "regiao", "metragemEstimada", "temProjeto", "temLocal"] as Campo[],
+      acao: "Continuar",
+    },
+    {
+      titulo: "Seu contato",
+      campos: ["nome", "telefone", "email", "descricao"] as Campo[],
+      acao: "Falar com a Steel Conecta",
+    },
+  ],
+};
+
+const CAMPOS_DE_ESCOLHA: Campo[] = ["interesse", "temProjeto", "temLocal"];
 
 const VALORES_VAZIOS: Valores = {
+  interesse: "",
   tipoObra: "",
   regiao: "",
   metragemEstimada: "",
   temProjeto: "",
   temLocal: "",
+  etapaObra: "",
+  sistemaEmUso: "",
   nome: "",
   telefone: "",
   email: "",
   descricao: "",
 };
+
+function fluxoDoInteresse(interesse: string) {
+  return interesse && interesse !== INTERESSE_MATERIAL ? FLUXO_EXECUCAO : FLUXO_MATERIAL;
+}
 
 function focarCampo(campo: Campo): void {
   const alvo = CAMPOS_DE_ESCOLHA.includes(campo)
@@ -178,6 +237,29 @@ const Dialog = styled.dialog`
         display: flex;
         flex-direction: column;
         gap: var(--space-2);
+
+        & > .modal__marca {
+          display: inline-flex;
+          align-items: center;
+          gap: var(--space-2);
+          align-self: flex-start;
+          padding: var(--space-1) var(--space-3);
+          border-radius: var(--radius-all);
+          border: 1px solid var(--color-border);
+          font-family: var(--font-alt);
+          font-size: var(--text-xs);
+          font-weight: var(--weight-semibold);
+          letter-spacing: 0.12em;
+          text-transform: uppercase;
+          color: var(--color-dark);
+
+          & > i {
+            width: var(--space-2);
+            height: var(--space-2);
+            border-radius: var(--radius-all);
+            background: var(--color-brand);
+          }
+        }
 
         & > .modal__titulo {
           font-family: var(--font-display);
@@ -366,6 +448,7 @@ export default function FormModal() {
         nome: preFill.nome ?? "",
         email: preFill.email ?? "",
         telefone: maskTelefone(preFill.telefone ?? ""),
+        interesse: preFill.interesse ?? "",
         tipoObra: preFill.tipoObra ?? "",
         regiao: preFill.regiao ?? "",
         metragemEstimada: preFill.metragemEstimada ?? "",
@@ -380,12 +463,14 @@ export default function FormModal() {
     }
   }, [isOpen, origin, preFill]);
 
+  const fluxo = fluxoDoInteresse(valores.interesse);
+
   useEffect(() => {
     if (etapa === etapaRenderizadaRef.current) return;
     etapaRenderizadaRef.current = etapa;
-    const primeiroCampo = ETAPAS[etapa].campos[0];
+    const primeiroCampo = fluxo.etapas[etapa].campos[0];
     window.requestAnimationFrame(() => focarCampo(primeiroCampo));
-  }, [etapa]);
+  }, [etapa, fluxo]);
 
   useEffect(() => {
     const dialog = dialogRef.current;
@@ -430,7 +515,7 @@ export default function FormModal() {
 
   const validarEtapa = (indice: number): Erros => {
     const encontrados: Erros = {};
-    ETAPAS[indice].campos.forEach((campo) => {
+    fluxo.etapas[indice].campos.forEach((campo) => {
       const erro = VALIDADORES[campo]?.(valores[campo]);
       if (erro) encontrados[campo] = erro;
     });
@@ -442,6 +527,7 @@ export default function FormModal() {
 
     try {
       await submitLead({
+        interesse: valores.interesse,
         nome: valores.nome.trim(),
         telefone: valores.telefone,
         email: valores.email.trim(),
@@ -450,12 +536,16 @@ export default function FormModal() {
         metragemEstimada: valores.metragemEstimada,
         temProjeto: valores.temProjeto,
         temLocal: valores.temLocal,
+        etapaObra: valores.etapaObra,
+        sistemaEmUso: valores.sistemaEmUso,
         descricao: valores.descricao.trim(),
         origin,
       });
       pushDataLayerEvent({
         event: "generate_lead",
         form_origin: origin,
+        interesse: valores.interesse,
+        atendimento: ATENDIMENTO_POR_INTERESSE[valores.interesse],
         tipo_obra: valores.tipoObra,
         regiao: valores.regiao,
       });
@@ -472,14 +562,14 @@ export default function FormModal() {
     setErros(encontrados);
 
     if (Object.keys(encontrados).length > 0) {
-      const primeiro = ETAPAS[etapa].campos.find((campo) => encontrados[campo]);
+      const primeiro = fluxo.etapas[etapa].campos.find((campo) => encontrados[campo]);
       if (primeiro) {
         window.requestAnimationFrame(() => focarCampo(primeiro));
       }
       return;
     }
 
-    if (etapa < ETAPAS.length - 1) {
+    if (etapa < fluxo.etapas.length - 1) {
       setEtapa(etapa + 1);
       return;
     }
@@ -487,19 +577,24 @@ export default function FormModal() {
     void enviar();
   };
 
-  const etapaAtual = ETAPAS[etapa];
+  const etapaAtual = fluxo.etapas[etapa];
+  const fluxoDeMaterial = fluxo === FLUXO_MATERIAL;
 
   return (
     <Dialog ref={dialogRef} aria-labelledby="contato-modal-titulo">
       <div className="modal__inner">
         <div className="modal__topo">
           <div className="modal__titulos">
+            {fluxo.marca ? (
+              <span className="modal__marca">
+                <i aria-hidden="true" />
+                {fluxo.marca}
+              </span>
+            ) : null}
             <h2 className="modal__titulo" id="contato-modal-titulo">
-              Pedir orçamento
+              {fluxo.titulo}
             </h2>
-            <p className="modal__descricao">
-              Retornamos com preço e prazo do seu projeto.
-            </p>
+            <p className="modal__descricao">{fluxo.descricao}</p>
           </div>
 
           <FecharBotao id="contato-btn-fechar" type="button" onClick={close} aria-label="Fechar">
@@ -527,12 +622,9 @@ export default function FormModal() {
                   strokeLinejoin="round"
                 />
               </svg>
-              Orçamento solicitado
+              {fluxo.sucessoTitulo}
             </p>
-            <p className="modal__feedback-texto">
-              Recebemos seu pedido. Nossa equipe em Brasília entra em contato pelo telefone ou
-              e-mail informado.
-            </p>
+            <p className="modal__feedback-texto">{fluxo.sucessoTexto}</p>
             <Button id="contato-btn-concluir" variant="outline" onClick={close}>
               Fechar
             </Button>
@@ -541,10 +633,10 @@ export default function FormModal() {
           <>
             <div className="modal__progresso">
               <p className="modal__progresso-texto" aria-live="polite">
-                Passo {etapa + 1} de {ETAPAS.length}: {etapaAtual.titulo}
+                Passo {etapa + 1} de {fluxo.etapas.length}: {etapaAtual.titulo}
               </p>
               <div className="modal__progresso-trilha" aria-hidden="true">
-                {ETAPAS.map((item, indice) => (
+                {fluxo.etapas.map((item, indice) => (
                   <span
                     key={item.titulo}
                     className="modal__progresso-segmento"
@@ -556,6 +648,70 @@ export default function FormModal() {
 
             <form onSubmit={handleSubmit} noValidate>
               {etapa === 0 ? (
+                <ChoiceCardField
+                  id={CAMPO_IDS.interesse}
+                  name="interesse"
+                  label="O que você precisa?"
+                  options={OPCOES_INTERESSE}
+                  value={valores.interesse}
+                  onChange={(valor) => atualizarCampo("interesse", valor)}
+                  erro={erros.interesse}
+                />
+              ) : null}
+
+              {etapa === 1 && fluxoDeMaterial ? (
+                <>
+                  <SelectField
+                    id={CAMPO_IDS.regiao}
+                    name="regiao"
+                    label="Região da obra"
+                    placeholder="Selecione a região"
+                    options={REGIOES_OPTIONS}
+                    value={valores.regiao}
+                    onChange={(evento) => atualizarCampo("regiao", evento.target.value)}
+                    erro={erros.regiao}
+                    required
+                  />
+
+                  <SelectField
+                    id={CAMPO_IDS.etapaObra}
+                    name="etapaObra"
+                    label="Em que etapa a obra está?"
+                    placeholder="Selecione a etapa"
+                    options={ETAPAS_DA_OBRA}
+                    value={valores.etapaObra}
+                    onChange={(evento) => atualizarCampo("etapaObra", evento.target.value)}
+                    erro={erros.etapaObra}
+                    required
+                  />
+
+                  <SelectField
+                    id={CAMPO_IDS.sistemaEmUso}
+                    name="sistemaEmUso"
+                    label="Qual sistema a obra está usando?"
+                    placeholder="Selecione o sistema"
+                    options={SISTEMAS_EM_USO}
+                    value={valores.sistemaEmUso}
+                    onChange={(evento) => atualizarCampo("sistemaEmUso", evento.target.value)}
+                    erro={erros.sistemaEmUso}
+                    required
+                  />
+
+                  <Field
+                    id={CAMPO_IDS.descricao}
+                    name="descricao"
+                    label="Lista de materiais (opcional)"
+                    multiline
+                    maxLength={LIMITE_DESCRICAO}
+                    ajuda="Se ainda não tiver a lista fechada, a equipe calcula com você."
+                    placeholder="Ex.: 40 placas standard, 60 montantes de 70mm, lã de vidro e massa."
+                    value={valores.descricao}
+                    onChange={(evento) => atualizarCampo("descricao", evento.target.value)}
+                  />
+                </>
+              ) : null}
+
+              {etapa === 1 && !fluxoDeMaterial ? (
                 <>
                   <SelectField
                     id={CAMPO_IDS.tipoObra}
@@ -616,7 +772,9 @@ export default function FormModal() {
                     />
                   </div>
                 </>
-              ) : (
+              ) : null}
+
+              {etapa === 2 ? (
                 <>
                   <Field
                     id={CAMPO_IDS.nome}
@@ -662,18 +820,20 @@ export default function FormModal() {
                     required
                   />
 
-                  <Field
-                    id={CAMPO_IDS.descricao}
-                    name="descricao"
-                    label="O que você precisa (opcional)"
-                    multiline
-                    maxLength={LIMITE_DESCRICAO}
-                    placeholder="Ex.: parede de drywall na sala e forro no quarto."
-                    value={valores.descricao}
-                    onChange={(evento) => atualizarCampo("descricao", evento.target.value)}
-                  />
+                  {fluxoDeMaterial ? null : (
+                    <Field
+                      id={CAMPO_IDS.descricao}
+                      name="descricao"
+                      label="O que você precisa (opcional)"
+                      multiline
+                      maxLength={LIMITE_DESCRICAO}
+                      placeholder="Ex.: preciso de equipe para levantar as paredes internas em steel frame."
+                      value={valores.descricao}
+                      onChange={(evento) => atualizarCampo("descricao", evento.target.value)}
+                    />
+                  )}
                 </>
-              )}
+              ) : null}
 
               <div className="modal__rodape">
                 <div className="modal__acoes">

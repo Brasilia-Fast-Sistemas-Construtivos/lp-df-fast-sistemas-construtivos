@@ -48,7 +48,8 @@ Consequência prática para mídia: com consentimento negado, as tags do Google 
 | --- | --- | --- |
 | `consent_state` | Carregamento e a cada escolha no banner | `consent_state` |
 | `form_open` | Modal do formulário abre | `form_origin` |
-| `generate_lead` | Envio aceito pelo webhook | `form_origin`, `tipo_obra`, `regiao` |
+| `steel_conecta_view` | Seção `#steel-conecta` entra em 40% da viewport, uma vez por sessão de página | nenhum |
+| `generate_lead` | Envio aceito pelo webhook | `form_origin`, `interesse`, `atendimento`, `tipo_obra`, `regiao` |
 
 `form_origin` é a origem do botão que abriu o modal (`hero`, `sistemas-drywall`, `footer`…). É o que permite saber qual seção converte.
 
@@ -75,12 +76,44 @@ Motivo: as regras do projeto pedem validação no client e no server, e assim a 
   "metragemEstimada": "80 a 200 m²",
   "temProjeto": "Não",
   "temLocal": "Sim",
+  "etapaObra": "Não informado",
+  "sistemaEmUso": "Não informado",
   "descricao": "Descrição opcional do que será feito",
   "referrer": "https://df.fastsistemasconstrutivos.com.br/?utm_source=ig&utm_medium=organic",
   "regiao": "Asa Sul",
+  "interesse": "ambos",
+  "interesseLabel": "Material + mão de obra",
+  "atendimento": "Steel Conecta",
   "origin": "hero"
 }
 ```
+
+### `interesse`: o parâmetro que separa os dois fluxos
+
+O passo 1 do formulário pergunta o que a pessoa precisa e grava a resposta em `interesse`. É esse valor que decide a marca do formulário, as perguntas do passo 2 e para qual time o lead vai.
+
+| `interesse` | `interesseLabel` | `atendimento` | Fluxo |
+| --- | --- | --- | --- |
+| `material` | Só material | Fast Sistemas Construtivos | Material |
+| `mao_obra` | Só mão de obra | Steel Conecta | Execução |
+| `ambos` | Material + mão de obra | Steel Conecta | Execução |
+
+`interesseLabel` e `atendimento` são derivados no servidor a partir de `interesse`, em `OPCOES_INTERESSE` (`src/data/content.ts`). O n8n pode rotear só por `interesse`; os outros dois existem para não obrigar a automação a traduzir slug.
+
+O contrato mantém **as mesmas chaves nos dois fluxos**. O que a pessoa não respondeu vai como `"Não informado"` (`VALOR_NAO_INFORMADO`), para nenhum node do n8n quebrar por campo ausente:
+
+| Campo | Fluxo Material | Fluxo Execução |
+| --- | --- | --- |
+| `regiao` | respondido | respondido |
+| `etapaObra` | respondido | `Não informado` |
+| `sistemaEmUso` | respondido | `Não informado` |
+| `tipoObra` | `Não informado` | respondido |
+| `metragemEstimada` | `Não informado` | respondido |
+| `temProjeto` | `Não informado` | respondido |
+| `temLocal` | `Não informado` | respondido |
+| `descricao` | lista de materiais, opcional | o que precisa, opcional |
+
+`descricao` é o mesmo campo nos dois fluxos, com rótulo diferente: no fluxo de material ele é a **lista de materiais** e aparece no passo 2; no fluxo de execução é o campo aberto do passo 3. Não foi criada uma chave nova para não duplicar texto livre no contrato.
 
 Além disso, quando houver atribuição persistida, os parâmetros vão como campos à parte (`utm_source`, `utm_medium`, `utm_campaign`, `utm_term`, `utm_content`, `utm_id`, `gclid`, `fbclid` e os demais de `ATTRIBUTION_KEYS`). O contrato do n8n dá prioridade a esses campos sobre o que estiver na query da `referrer`, que é o comportamento desejado: a `referrer` é a URL da página no momento do envio, e os UTMs são o último clique relevante, que pode ter vindo de uma sessão anterior.
 
@@ -99,30 +132,40 @@ O DF é município único, então toda RA é Brasília: mandar "Asa Sul" no camp
 
 ### Campos do formulário
 
-| Campo | Tipo | Obrigatório | Valores |
+| Campo | Tipo | Obrigatório em | Valores |
 | --- | --- | --- | --- |
-| `tipoObra` | select | sim | `Construção Residencial`, `Construção Comercial`, `Reforma ou Ampliação` |
-| `regiao` | select | sim | RAs do DF e "Entorno do DF" (`REGIOES_ATENDIDAS`) |
-| `metragemEstimada` | select | sim | faixas de `FAIXAS_METRAGEM`, incluindo "Ainda não sei" |
-| `temProjeto` | Sim/Não | sim | `Sim`, `Não` |
-| `temLocal` | Sim/Não | sim | `Sim`, `Não` |
-| `nome` | texto | sim | mínimo 2 caracteres |
-| `telefone` | tel | sim | mínimo 10 dígitos, máscara no client |
-| `email` | e-mail | sim | formato validado |
-| `descricao` | textarea | não | até 2000 caracteres |
+| `interesse` | cartões de escolha | sempre | `material`, `mao_obra`, `ambos` |
+| `regiao` | select | sempre | RAs do DF e "Entorno do DF" (`REGIOES_ATENDIDAS`) |
+| `etapaObra` | select | fluxo Material | `Planejamento`, `Início da execução`, `Final da obra` |
+| `sistemaEmUso` | select | fluxo Material | `Drywall`, `Steel Frame`, `Drywall + Steel Frame` |
+| `tipoObra` | select | fluxo Execução | `Construção Residencial`, `Construção Comercial`, `Reforma ou Ampliação` |
+| `metragemEstimada` | select | fluxo Execução | faixas de `FAIXAS_METRAGEM`, incluindo "Ainda não sei" |
+| `temProjeto` | Sim/Não | fluxo Execução | `Sim`, `Não` |
+| `temLocal` | Sim/Não | fluxo Execução | `Sim`, `Não` |
+| `nome` | texto | sempre | mínimo 2 caracteres |
+| `telefone` | tel | sempre | mínimo 10 dígitos, máscara no client |
+| `email` | e-mail | sempre | formato validado |
+| `descricao` | textarea | nunca | até 2000 caracteres |
+
+A validação do servidor segue a mesma tabela: com `interesse=material`, o payload é recusado se faltar `etapaObra` ou `sistemaEmUso`, e `tipoObra`, `metragemEstimada`, `temProjeto` e `temLocal` não são exigidos. Nos outros dois valores, o inverso.
 
 `estado` e `cidade` não são campos de tela, saem da região (tabela acima). Pedir o estado numa LP que atende só o DF seria fricção sem informação nova.
 
 O telefone vai como o cliente digitou. O node `Padroniza e limpa os dados` do n8n normaliza para `55DDDNÚMERO`.
 
-### Duas etapas
+### Três etapas com ramificação
 
-Dez campos num modal derrubam conversão. O formulário abre em dois passos:
+Dez campos num modal derrubam conversão. O formulário abre em três passos, e o primeiro decide os outros dois:
 
-1. **A obra** — cinco escolhas, nenhuma digitação, teclado não aparece no mobile
-2. **Seu contato** — nome, telefone, e-mail e a descrição opcional
+1. **O que você precisa** — três cartões de escolha, grava `interesse`
+2. **A obra** — perguntas diferentes por fluxo, nenhuma digitação obrigatória, teclado não aparece no mobile
+3. **Seu contato** — nome, telefone e e-mail
 
-Quem chega pela barra do hero já tem o passo 2 preenchido. Quem chega por um card de sistema já tem o `tipoObra` preenchido (`TIPO_OBRA_POR_SISTEMA`).
+No fluxo de material o passo 2 pergunta região, etapa da obra, sistema em uso e a lista de materiais, que é o que o comercial precisa para separar e cotar o pedido. No fluxo de execução o passo 2 pergunta tipo de obra, região, metragem, projeto e local, que é o que a equipe precisa para escopar o serviço. O passo 3 é o mesmo nos dois, sem repetir a pergunta aberta no fluxo de material, já respondida no passo 2.
+
+Marca, título e texto do botão final acompanham o fluxo: `Pedir orçamento` no fluxo Fast, `Falar com a Steel Conecta` no fluxo de execução, com selo "Steel Conecta · Execução" no topo do modal. A troca acontece assim que a pessoa marca a opção no passo 1, antes de continuar, para o roteamento ficar visível.
+
+Quem chega pela barra do hero já tem o passo 3 preenchido. Quem chega por um card de sistema já tem o `tipoObra` preenchido (`TIPO_OBRA_POR_SISTEMA`). Quem chega pelos botões da seção Steel Conecta ou da faixa de execução em Obras já tem `interesse=ambos` marcado no passo 1, e confirma ou troca em um toque.
 
 Decisões e a skill de origem estão em [design.md](design.md) e nas regras de UX consultadas: indicador de passo (`ux-guidelines` #82), validação no blur para texto (#56), rota de escape com botão Voltar (`escape-routes`), label sempre visível (`input-labels`).
 
@@ -141,7 +184,15 @@ Em qualquer falha o modal mostra o caminho alternativo: WhatsApp e telefone. Lea
 ```bash
 curl -X POST https://df.fastsistemasconstrutivos.com.br/api/lead \
   -H "Content-Type: application/json" \
-  -d '{"nome":"Teste Fast","telefone":"61999999999","email":"teste@exemplo.com","regiao":"Asa Sul","tipoObra":"Construção Residencial","metragemEstimada":"30 a 80 m²","temProjeto":"Sim","temLocal":"Sim","descricao":"teste de integração","origin":"teste-manual","referrer":"https://df.fastsistemasconstrutivos.com.br/"}'
+  -d '{"interesse":"ambos","nome":"Teste Fast","telefone":"61999999999","email":"teste@exemplo.com","regiao":"Asa Sul","tipoObra":"Construção Residencial","metragemEstimada":"30 a 80 m²","temProjeto":"Sim","temLocal":"Sim","descricao":"teste de integração","origin":"teste-manual","referrer":"https://df.fastsistemasconstrutivos.com.br/"}'
+```
+
+E o fluxo de material:
+
+```bash
+curl -X POST https://df.fastsistemasconstrutivos.com.br/api/lead \
+  -H "Content-Type: application/json" \
+  -d '{"interesse":"material","nome":"Teste Fast","telefone":"61999999999","email":"teste@exemplo.com","regiao":"Guará","etapaObra":"Planejamento","sistemaEmUso":"Drywall","descricao":"40 placas standard e 60 montantes de 70mm","origin":"teste-manual","referrer":"https://df.fastsistemasconstrutivos.com.br/"}'
 ```
 
 Resposta esperada: `204` sem corpo, e o lead aparecendo na automação.

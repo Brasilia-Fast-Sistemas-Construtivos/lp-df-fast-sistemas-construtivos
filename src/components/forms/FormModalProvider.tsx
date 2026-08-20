@@ -14,6 +14,7 @@ export type PreFill = {
   nome?: string;
   email?: string;
   telefone?: string;
+  interesse?: string;
   tipoObra?: string;
   regiao?: string;
   metragemEstimada?: string;

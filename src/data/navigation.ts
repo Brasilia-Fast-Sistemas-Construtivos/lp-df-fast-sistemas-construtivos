@@ -2,6 +2,7 @@ export const SECTION_IDS = {
   hero: "inicio",
   obraCompleta: "obra-completa",
   produtos: "produtos",
+  steelConecta: "steel-conecta",
   sistemas: "sistemas",
   processo: "como-comprar",
   obras: "obras",

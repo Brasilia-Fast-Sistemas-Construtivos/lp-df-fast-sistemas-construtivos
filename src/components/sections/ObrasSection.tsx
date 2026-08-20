@@ -15,7 +15,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import CtaButton from "@/components/forms/CtaButton";
 import { useReveal } from "@/components/motion/useReveal";
 import SectionTexts from "@/components/ui/SectionTexts";
-import { OBRAS_GALERIA } from "@/data/content";
+import { INTERESSE_AMBOS, OBRAS_EXECUCAO, OBRAS_GALERIA } from "@/data/content";
 import { SECTION_IDS } from "@/data/navigation";
 import { SOCIAL } from "@/data/site";
 
@@ -49,46 +49,110 @@ const Section = styled.section`
     }
   }
 
-  & > .obras__instagram {
-    align-self: center;
-    display: inline-flex;
+  & > .obras__execucao {
+    display: flex;
     align-items: center;
-    gap: var(--space-3);
-    min-height: 44px;
-    padding: var(--space-3) var(--space-5);
-    border-radius: var(--radius-all);
-    border: 1px solid var(--color-border);
-    font-family: var(--font-body);
-    font-size: var(--text-sm);
-    font-weight: var(--weight-medium);
-    color: var(--color-dark);
-    transition: border-color var(--dur-fast) var(--ease-standard);
+    justify-content: space-between;
+    gap: var(--space-6);
+    padding: var(--space-6);
+    border-radius: var(--radius-md);
+    background: var(--color-dark);
 
-    &:hover {
-      border-color: var(--color-dark);
+    @media (max-width: 900px) {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--space-5);
+      padding: var(--space-5);
     }
 
-    &:focus-visible {
-      outline: 2px solid var(--color-brand);
-      outline-offset: 3px;
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      transition: none;
-    }
-
-    & > svg {
-      width: 20px;
-      height: 20px;
-      color: var(--color-brand);
-    }
-
-    & > .obras__handle {
-      color: var(--color-muted);
-      font-weight: var(--weight-regular);
+    & > .obras__execucao-texto {
+      display: flex;
+      align-items: center;
+      gap: var(--space-5);
 
       @media (max-width: 480px) {
-        display: none;
+        gap: var(--space-4);
+      }
+
+      & > .obras__monograma {
+        flex-shrink: 0;
+        font-family: var(--font-display);
+        font-size: var(--text-2xl);
+        font-weight: var(--weight-bold);
+        line-height: 1;
+        letter-spacing: -0.04em;
+        color: var(--color-bg);
+
+        & > span {
+          color: var(--color-brand);
+        }
+      }
+
+      & > .obras__execucao-titulos {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-2);
+
+        & > .obras__execucao-eyebrow {
+          font-family: var(--font-alt);
+          font-size: var(--text-xs);
+          font-weight: var(--weight-semibold);
+          letter-spacing: 0.18em;
+          text-transform: uppercase;
+          color: var(--color-muted-white);
+        }
+
+        & > .obras__execucao-titulo {
+          font-family: var(--font-display);
+          font-size: var(--text-lg);
+          font-weight: var(--weight-medium);
+          line-height: var(--leading-snug);
+          letter-spacing: -0.01em;
+          color: var(--color-bg);
+          max-width: 46ch;
+        }
+      }
+    }
+
+    & > .obras__execucao-acoes {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: var(--space-3);
+
+      & > .obras__instagram {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-3);
+        min-height: 44px;
+        padding: var(--space-3) var(--space-5);
+        border-radius: var(--radius-all);
+        border: 1px solid var(--color-footer-rule);
+        font-family: var(--font-body);
+        font-size: var(--text-sm);
+        font-weight: var(--weight-medium);
+        color: var(--color-bg);
+        transition: border-color var(--dur-fast) var(--ease-standard);
+
+        &:hover {
+          border-color: var(--color-bg);
+        }
+
+        &:focus-visible {
+          outline: 2px solid var(--color-bg);
+          outline-offset: 3px;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          transition: none;
+        }
+
+        & > svg {
+          flex-shrink: 0;
+          width: 20px;
+          height: 20px;
+          color: var(--color-brand);
+        }
       }
     }
   }
@@ -320,19 +384,40 @@ export default function ObrasSection() {
         </div>
       </Carousel>
 
-      <a
-        id="obras-btn-instagram"
-        className="obras__instagram"
-        href={SOCIAL.instagramUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label={`Mais obras no Instagram ${SOCIAL.instagramHandle}, da Fast em Brasília`}
-        data-reveal
-      >
-        <InstagramLogoIcon aria-hidden="true" />
-        Mais obras no Instagram
-        <span className="obras__handle">{SOCIAL.instagramHandle}</span>
-      </a>
+      <div className="obras__execucao" data-reveal>
+        <div className="obras__execucao-texto">
+          <p className="obras__monograma" aria-hidden="true">
+            S<span>C</span>
+          </p>
+          <div className="obras__execucao-titulos">
+            <p className="obras__execucao-eyebrow">{OBRAS_EXECUCAO.eyebrow}</p>
+            <h3 className="obras__execucao-titulo">{OBRAS_EXECUCAO.titulo}</h3>
+          </div>
+        </div>
+
+        <div className="obras__execucao-acoes">
+          <a
+            id="obras-btn-instagram"
+            className="obras__instagram"
+            href={SOCIAL.instagramUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`Mais obras no Instagram ${SOCIAL.instagramHandle}, da Steel Conecta em Brasília`}
+          >
+            <InstagramLogoIcon aria-hidden="true" />
+            {SOCIAL.instagramHandle}
+          </a>
+
+          <CtaButton
+            id="obras-btn-execucao"
+            origin="obras-steel-conecta"
+            preFill={{ interesse: INTERESSE_AMBOS }}
+            onDark
+          >
+            Contratar a execução
+          </CtaButton>
+        </div>
+      </div>
     </Section>
   );
 }

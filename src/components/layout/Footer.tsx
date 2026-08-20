@@ -224,6 +224,9 @@ export default function Footer() {
               <a href={`#${SECTION_IDS.obraCompleta}`}>Do projeto à conclusão</a>
             </li>
             <li>
+              <a href={`#${SECTION_IDS.steelConecta}`}>Steel Conecta</a>
+            </li>
+            <li>
               <a href={`#${SECTION_IDS.processo}`}>Como comprar</a>
             </li>
             <li>

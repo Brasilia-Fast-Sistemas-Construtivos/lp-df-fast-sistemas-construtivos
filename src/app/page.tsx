@@ -8,10 +8,17 @@ import ObrasSection from "@/components/sections/ObrasSection";
 import ProdutosSection from "@/components/sections/ProdutosSection";
 import SistemasSection from "@/components/sections/SistemasSection";
 import SobreSection from "@/components/sections/SobreSection";
+import SteelConectaSection from "@/components/sections/SteelConectaSection";
 import JsonLd from "@/components/seo/JsonLd";
 import { FAQ_LP } from "@/data/content";
 import { PAGES } from "@/data/seo";
-import { buildGraph, faqSchema, serviceCatalogSchema, webPageSchema } from "@/lib/seo/schema";
+import {
+  buildGraph,
+  faqSchema,
+  serviceCatalogSchema,
+  steelConectaSchema,
+  webPageSchema,
+} from "@/lib/seo/schema";
 
 const homePage = PAGES[0];
 
@@ -22,6 +29,7 @@ const pageSchema = buildGraph([
     description: homePage.description,
   }),
   serviceCatalogSchema(),
+  steelConectaSchema(),
   faqSchema(FAQ_LP),
 ]);
 
@@ -32,8 +40,9 @@ export default function HomePage() {
       <HeroSection />
       <ProdutosSection />
       <ObraCompletaSection />
-      <SobreSection />
+      <SteelConectaSection />
       <SistemasSection />
+      <SobreSection />
       <ObrasSection />
       <ComoTrabalhamosSection />
       <MarcasSection />

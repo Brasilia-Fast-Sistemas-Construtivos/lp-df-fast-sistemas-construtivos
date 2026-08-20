@@ -28,6 +28,15 @@ export const SOCIAL = {
   instagramUrl: "https://www.instagram.com/steelconecta.brasilia/",
 } as const;
 
+export const STEEL_CONECTA = {
+  nome: "Steel Conecta",
+  papel: "Execução de obra · Grupo Fast",
+  descricao:
+    "Marca de execução do Grupo Fast em Brasília. Monta steel frame e drywall com equipe própria, usando o material fornecido pela Fast Sistemas Construtivos.",
+  instagramHandle: SOCIAL.instagramHandle,
+  instagramUrl: SOCIAL.instagramUrl,
+} as const;
+
 export const BRAND_ASSETS = {
   logo: "/brand/logo-fast-sistemas-construtivos.svg",
   logoWhite: "/brand/logo-fast-sistemas-construtivos-white.svg",

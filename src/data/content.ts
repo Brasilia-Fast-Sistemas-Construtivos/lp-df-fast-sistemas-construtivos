@@ -50,6 +50,43 @@ export const OBRA_COMPLETA = {
   ],
 } as const;
 
+export const STEEL_CONECTA_SECAO = {
+  eyebrow: "Execução de obra · Grupo Fast",
+  titulo: "A Fast fornece o material. A Steel Conecta constrói.",
+  descricao:
+    "Mesma estrutura, mesmo material, com equipe própria para tocar a obra do início ao fim. A Steel Conecta tem o suporte do Grupo Fast para operar com o padrão da maior rede de construção a seco do Brasil, com foco total na execução.",
+  cartaoLegenda: "Marca de execução do Grupo Fast",
+  microcopy: "Atendimento em todo o DF e entorno, mesma equipe da Fast.",
+  diferenciais: [
+    {
+      slug: "equipe-propria",
+      icone: "equipe",
+      titulo: "Equipe própria de execução",
+      descricao:
+        "Steel frame e drywall montados por equipe certificada da própria Steel Conecta, sem intermediação.",
+    },
+    {
+      slug: "material-sem-repasse",
+      icone: "material",
+      titulo: "Mesmo material, sem repasse",
+      descricao:
+        "O material sai direto do estoque Fast para a obra, o mesmo da loja, sem terceirização.",
+    },
+    {
+      slug: "escopo-em-contrato",
+      icone: "contrato",
+      titulo: "Escopo e prazo fechados em contrato",
+      descricao:
+        "Do projeto à entrega, com um único responsável pela execução do início ao fim.",
+    },
+  ],
+} as const;
+
+export const OBRAS_EXECUCAO = {
+  eyebrow: "Execução: Steel Conecta",
+  titulo: "Essas obras foram executadas pela Steel Conecta, com material Fast.",
+} as const;
+
 export const PRODUTOS = [
   { nome: "Placa de drywall", arquivo: "placa-de-drywall.png" },
   { nome: "Montante de drywall", arquivo: "montante-drywall.png" },
@@ -251,6 +288,62 @@ export const CIDADE_PADRAO = "Brasília";
 export const ESTADO_PADRAO = "Distrito Federal";
 
 export const ESTADO_FORA_DO_DF = "Goiás";
+
+export const INTERESSE_MATERIAL = "material";
+
+export const INTERESSE_MAO_DE_OBRA = "mao_obra";
+
+export const INTERESSE_AMBOS = "ambos";
+
+export const ATENDIMENTO_FAST = "Fast Sistemas Construtivos";
+
+export const ATENDIMENTO_STEEL_CONECTA = "Steel Conecta";
+
+export const VALOR_NAO_INFORMADO = "Não informado";
+
+export const OPCOES_INTERESSE = [
+  {
+    value: INTERESSE_MATERIAL,
+    label: "Só material",
+    descricao: "Você compra e cuida da instalação por conta própria.",
+    icone: "material",
+    atendimento: ATENDIMENTO_FAST,
+  },
+  {
+    value: INTERESSE_MAO_DE_OBRA,
+    label: "Só mão de obra",
+    descricao: "Você já tem ou compra à parte o material e quer só a execução.",
+    icone: "equipe",
+    atendimento: ATENDIMENTO_STEEL_CONECTA,
+  },
+  {
+    value: INTERESSE_AMBOS,
+    label: "Material + mão de obra",
+    descricao: "A Fast fornece o material e a Steel Conecta executa, do início ao fim.",
+    icone: "contrato",
+    atendimento: ATENDIMENTO_STEEL_CONECTA,
+  },
+] as const;
+
+export const ATENDIMENTO_POR_INTERESSE: Record<string, string> = Object.fromEntries(
+  OPCOES_INTERESSE.map((opcao) => [opcao.value, opcao.atendimento])
+);
+
+export const LABEL_POR_INTERESSE: Record<string, string> = Object.fromEntries(
+  OPCOES_INTERESSE.map((opcao) => [opcao.value, opcao.label])
+);
+
+export const ETAPAS_DA_OBRA = [
+  { value: "Planejamento", label: "Planejamento" },
+  { value: "Início da execução", label: "Início da execução" },
+  { value: "Final da obra", label: "Final da obra" },
+] as const;
+
+export const SISTEMAS_EM_USO = [
+  { value: "Drywall", label: "Drywall" },
+  { value: "Steel Frame", label: "Steel Frame" },
+  { value: "Drywall + Steel Frame", label: "Drywall + Steel Frame" },
+] as const;
 
 export const TIPOS_DE_OBRA = [
   { value: "Construção Residencial", label: "Construção residencial" },
