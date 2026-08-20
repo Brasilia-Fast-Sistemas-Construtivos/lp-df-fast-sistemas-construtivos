@@ -113,6 +113,8 @@ export function steelConectaSchema(): SchemaNode {
     name: STEEL_CONECTA.nome,
     url: `${SITE_URL}/#${SECTION_IDS.steelConecta}`,
     description: STEEL_CONECTA.descricao,
+    logo: absoluteUrl(STEEL_CONECTA.logo),
+    image: absoluteUrl(STEEL_CONECTA.logo),
     parentOrganization: { "@id": SCHEMA_ID.organization },
     telephone: CONTACT.phoneSchema,
     email: CONTACT.email,

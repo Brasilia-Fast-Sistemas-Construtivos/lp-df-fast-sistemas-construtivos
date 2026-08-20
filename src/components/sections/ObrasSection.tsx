@@ -17,7 +17,7 @@ import { useReveal } from "@/components/motion/useReveal";
 import SectionTexts from "@/components/ui/SectionTexts";
 import { INTERESSE_AMBOS, OBRAS_EXECUCAO, OBRAS_GALERIA } from "@/data/content";
 import { SECTION_IDS } from "@/data/navigation";
-import { SOCIAL } from "@/data/site";
+import { SOCIAL, STEEL_CONECTA } from "@/data/site";
 
 import "swiper/css";
 
@@ -74,17 +74,13 @@ const Section = styled.section`
         gap: var(--space-4);
       }
 
-      & > .obras__monograma {
+      & > .obras__logo {
         flex-shrink: 0;
-        font-family: var(--font-display);
-        font-size: var(--text-2xl);
-        font-weight: var(--weight-bold);
-        line-height: 1;
-        letter-spacing: -0.04em;
-        color: var(--color-bg);
+        width: 120px;
+        height: auto;
 
-        & > span {
-          color: var(--color-brand);
+        @media (max-width: 480px) {
+          width: 88px;
         }
       }
 
@@ -386,9 +382,14 @@ export default function ObrasSection() {
 
       <div className="obras__execucao" data-reveal>
         <div className="obras__execucao-texto">
-          <p className="obras__monograma" aria-hidden="true">
-            S<span>C</span>
-          </p>
+          <Image
+            className="obras__logo"
+            src={STEEL_CONECTA.logoWhite}
+            alt=""
+            width={STEEL_CONECTA.logoLargura}
+            height={STEEL_CONECTA.logoAltura}
+            sizes="120px"
+          />
           <div className="obras__execucao-titulos">
             <p className="obras__execucao-eyebrow">{OBRAS_EXECUCAO.eyebrow}</p>
             <h3 className="obras__execucao-titulo">{OBRAS_EXECUCAO.titulo}</h3>

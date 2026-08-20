@@ -2,6 +2,7 @@
 
 import styled from "@emotion/styled";
 import { ArrowRightIcon, InstagramLogoIcon } from "@phosphor-icons/react/dist/ssr";
+import Image from "next/image";
 import { useEffect, useRef } from "react";
 
 import CtaButton from "@/components/forms/CtaButton";
@@ -106,16 +107,12 @@ const Section = styled.section`
         flex-direction: column;
         gap: var(--space-3);
 
-        & > .conecta__monograma {
-          font-family: var(--font-display);
-          font-size: var(--text-4xl);
-          font-weight: var(--weight-bold);
-          line-height: 1;
-          letter-spacing: -0.04em;
-          color: var(--color-bg);
+        & > .conecta__logo {
+          width: 180px;
+          height: auto;
 
-          & > span {
-            color: var(--color-brand);
+          @media (max-width: 900px) {
+            width: 140px;
           }
         }
 
@@ -330,9 +327,14 @@ export default function SteelConectaSection() {
       <div className="conecta__grid">
         <div className="conecta__cartao" data-reveal>
           <div className="conecta__marca">
-            <p className="conecta__monograma" aria-hidden="true">
-              S<span>C</span>
-            </p>
+            <Image
+              className="conecta__logo"
+              src={STEEL_CONECTA.logoWhite}
+              alt={STEEL_CONECTA.nome}
+              width={STEEL_CONECTA.logoLargura}
+              height={STEEL_CONECTA.logoAltura}
+              sizes="180px"
+            />
             <p className="conecta__legenda">{STEEL_CONECTA_SECAO.cartaoLegenda}</p>
           </div>
 
