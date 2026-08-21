@@ -2,7 +2,8 @@
   --color-brand: #d01218;
   --color-brand-contrast: #7d1813;
   --color-steel-conecta: #174263;
-  --color-steel-conecta-on-dark: #dba04e;
+  --color-steel-conecta-surface: color-mix(in srgb, #174263 7%, #ffffff);
+  --color-steel-conecta-border: color-mix(in srgb, #174263 20%, #ffffff);
 
   --color-bg: #ffffff;
   --color-surface: #ffffff;

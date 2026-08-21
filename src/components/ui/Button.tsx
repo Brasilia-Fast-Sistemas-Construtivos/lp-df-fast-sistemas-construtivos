@@ -146,13 +146,6 @@ const Root = styled.button`
       --btn-focus: var(--color-bg);
     }
 
-    &[data-variant="steel"] {
-      --btn-color: var(--color-steel-conecta-on-dark);
-      --btn-fg: var(--color-dark);
-      --btn-fg-hover: var(--color-steel-conecta-on-dark);
-      --btn-border-hover: var(--color-steel-conecta-on-dark);
-      --btn-focus: var(--color-bg);
-    }
 
     &[data-variant="outline"] {
       --btn-color: var(--color-bg);

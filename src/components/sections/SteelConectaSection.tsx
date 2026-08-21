@@ -96,7 +96,8 @@ const Section = styled.section`
       gap: var(--space-7);
       padding: var(--space-6);
       border-radius: var(--radius-md);
-      background: var(--color-dark);
+      border: 1px solid var(--color-steel-conecta-border);
+      background: var(--color-steel-conecta-surface);
 
       @media (max-width: 900px) {
         gap: var(--space-5);
@@ -113,7 +114,7 @@ const Section = styled.section`
           font-weight: var(--weight-semibold);
           letter-spacing: 0.18em;
           text-transform: uppercase;
-          color: var(--color-muted-white);
+          color: var(--color-muted);
         }
       }
 
@@ -124,18 +125,19 @@ const Section = styled.section`
         min-height: 44px;
         padding: var(--space-3) var(--space-5);
         border-radius: var(--radius-all);
-        border: 1px solid var(--color-footer-rule);
+        border: 1px solid var(--color-steel-conecta-border);
+        background: var(--color-bg);
         font-size: var(--text-sm);
         font-weight: var(--weight-medium);
-        color: var(--color-bg);
+        color: var(--color-dark);
         transition: border-color var(--dur-fast) var(--ease-standard);
 
         &:hover {
-          border-color: var(--color-bg);
+          border-color: var(--color-steel-conecta);
         }
 
         &:focus-visible {
-          outline: 2px solid var(--color-bg);
+          outline: 2px solid var(--color-steel-conecta);
           outline-offset: 3px;
         }
 
@@ -147,7 +149,7 @@ const Section = styled.section`
           flex-shrink: 0;
           width: 20px;
           height: 20px;
-          color: var(--color-steel-conecta-on-dark);
+          color: var(--color-steel-conecta);
         }
       }
     }
@@ -180,7 +182,7 @@ const Section = styled.section`
           }
 
           &:hover {
-            border-color: var(--color-dark);
+            border-color: var(--color-steel-conecta);
           }
 
           @media (prefers-reduced-motion: reduce) {
@@ -194,7 +196,7 @@ const Section = styled.section`
             width: var(--space-7);
             height: var(--space-7);
             border-radius: var(--radius-all);
-            background: var(--color-gray-surface);
+            background: var(--color-steel-conecta-surface);
             color: var(--color-steel-conecta);
 
             & > svg {
@@ -319,7 +321,7 @@ export default function SteelConectaSection() {
       <div className="conecta__grid">
         <div className="conecta__cartao" data-reveal>
           <div className="conecta__marca">
-            <LogoSteelConecta tamanho="lg" onDark />
+            <LogoSteelConecta tamanho="lg" />
             <p className="conecta__legenda">{STEEL_CONECTA_SECAO.cartaoLegenda}</p>
           </div>
 

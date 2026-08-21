@@ -47,7 +47,8 @@ const Section = styled.section`
     gap: var(--space-6);
     padding: var(--space-6);
     border-radius: var(--radius-md);
-    background: var(--color-dark);
+    border: 1px solid var(--color-steel-conecta-border);
+    background: var(--color-steel-conecta-surface);
 
     @media (max-width: 900px) {
       flex-direction: column;
@@ -80,7 +81,7 @@ const Section = styled.section`
           font-weight: var(--weight-semibold);
           letter-spacing: 0.18em;
           text-transform: uppercase;
-          color: var(--color-muted-white);
+          color: var(--color-steel-conecta);
         }
 
         & > .obras__execucao-titulo {
@@ -89,7 +90,7 @@ const Section = styled.section`
           font-weight: var(--weight-medium);
           line-height: var(--leading-snug);
           letter-spacing: -0.01em;
-          color: var(--color-bg);
+          color: var(--color-dark);
           max-width: 46ch;
         }
       }
@@ -108,19 +109,20 @@ const Section = styled.section`
         min-height: 44px;
         padding: var(--space-3) var(--space-5);
         border-radius: var(--radius-all);
-        border: 1px solid var(--color-footer-rule);
+        border: 1px solid var(--color-steel-conecta-border);
+        background: var(--color-bg);
         font-family: var(--font-body);
         font-size: var(--text-sm);
         font-weight: var(--weight-medium);
-        color: var(--color-bg);
+        color: var(--color-dark);
         transition: border-color var(--dur-fast) var(--ease-standard);
 
         &:hover {
-          border-color: var(--color-bg);
+          border-color: var(--color-steel-conecta);
         }
 
         &:focus-visible {
-          outline: 2px solid var(--color-bg);
+          outline: 2px solid var(--color-steel-conecta);
           outline-offset: 3px;
         }
 
@@ -132,7 +134,7 @@ const Section = styled.section`
           flex-shrink: 0;
           width: 20px;
           height: 20px;
-          color: var(--color-steel-conecta-on-dark);
+          color: var(--color-steel-conecta);
         }
       }
     }
@@ -364,7 +366,7 @@ export default function ObrasSection() {
 
       <div className="obras__execucao" data-reveal>
         <div className="obras__execucao-texto">
-          <LogoSteelConecta onDark />
+          <LogoSteelConecta />
           <div className="obras__execucao-titulos">
             <p className="obras__execucao-eyebrow">{OBRAS_EXECUCAO.eyebrow}</p>
             <h3 className="obras__execucao-titulo">{OBRAS_EXECUCAO.titulo}</h3>
@@ -389,7 +391,6 @@ export default function ObrasSection() {
             origin="obras-steel-conecta"
             variant="steel"
             preFill={{ interesse: INTERESSE_AMBOS }}
-            onDark
           >
             Falar com a Steel Conecta
           </CtaButton>

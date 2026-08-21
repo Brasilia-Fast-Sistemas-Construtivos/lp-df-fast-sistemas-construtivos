@@ -7,7 +7,6 @@ import { STEEL_CONECTA } from "@/data/site";
 
 type LogoSteelConectaProps = {
   tamanho?: "sm" | "md" | "lg";
-  onDark?: boolean;
 };
 
 const Root = styled.span`
@@ -18,11 +17,26 @@ const Root = styled.span`
   &[data-tamanho="sm"] {
     --sc-marca: 30px;
     --sc-nome: var(--text-sm);
+    gap: var(--space-2);
 
     & > .marca__nome {
       flex-direction: row;
       gap: 0.28em;
       letter-spacing: 0.04em;
+    }
+
+    @media (max-width: 600px) {
+      --sc-marca: 26px;
+      --sc-nome: var(--text-xs);
+
+      & > .marca__nome {
+        flex-direction: column;
+        gap: 0;
+      }
+    }
+
+    @media (max-width: 400px) {
+      --sc-marca: 24px;
     }
   }
 
@@ -67,27 +81,14 @@ const Root = styled.span`
       color: var(--color-steel-conecta);
     }
   }
-
-  &[data-on-dark="true"] > .marca__nome {
-    & > .marca__steel {
-      color: var(--color-bg);
-    }
-
-    & > .marca__conecta {
-      color: var(--color-steel-conecta-on-dark);
-    }
-  }
 `;
 
-export default function LogoSteelConecta({
-  tamanho = "md",
-  onDark = false,
-}: LogoSteelConectaProps) {
+export default function LogoSteelConecta({ tamanho = "md" }: LogoSteelConectaProps) {
   return (
-    <Root data-tamanho={tamanho} data-on-dark={onDark}>
+    <Root data-tamanho={tamanho}>
       <Image
         className="marca__icone"
-        src={onDark ? STEEL_CONECTA.iconeOnDark : STEEL_CONECTA.icone}
+        src={STEEL_CONECTA.icone}
         alt=""
         width={STEEL_CONECTA.iconeTamanho}
         height={STEEL_CONECTA.iconeTamanho}

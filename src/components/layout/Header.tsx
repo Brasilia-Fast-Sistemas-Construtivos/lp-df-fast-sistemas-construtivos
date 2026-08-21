@@ -47,6 +47,10 @@ const Root = styled.header`
         gap: var(--space-3);
       }
 
+      @media (max-width: 600px) {
+        gap: var(--space-2);
+      }
+
       & > .header__logo {
         display: inline-flex;
         align-items: center;
@@ -63,6 +67,14 @@ const Root = styled.header`
           @media (max-width: 900px) {
             width: 120px;
           }
+
+          @media (max-width: 600px) {
+            width: 104px;
+          }
+
+          @media (max-width: 400px) {
+            width: 88px;
+          }
         }
       }
 
@@ -71,8 +83,8 @@ const Root = styled.header`
         height: var(--space-6);
         background: var(--color-border);
 
-        @media (max-width: 520px) {
-          display: none;
+        @media (max-width: 600px) {
+          height: var(--space-5);
         }
       }
 
@@ -83,10 +95,6 @@ const Root = styled.header`
         &:focus-visible {
           outline: 2px solid var(--color-steel-conecta);
           outline-offset: 4px;
-        }
-
-        @media (max-width: 520px) {
-          display: none;
         }
       }
     }
