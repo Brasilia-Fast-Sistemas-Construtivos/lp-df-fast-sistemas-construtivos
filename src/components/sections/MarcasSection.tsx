@@ -51,7 +51,6 @@ const Carousel = styled.div`
         height: 120px;
         object-fit: contain;
         object-position: center;
-        filter: grayscale(1);
 
         @media (max-width: 768px) {
           width: 72px;
