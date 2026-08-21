@@ -4,7 +4,7 @@ import styled from "@emotion/styled";
 import Image from "next/image";
 
 import CtaButton from "@/components/forms/CtaButton";
-import { BRAND_ASSETS } from "@/data/site";
+import { STEEL_CONECTA } from "@/data/site";
 import type { PreFill } from "@/components/forms/FormModalProvider";
 
 const Card = styled.article`
@@ -110,7 +110,7 @@ const Card = styled.article`
     height: 64px;
     border-radius: var(--radius-all);
     background-color: var(--color-bg);
-    border: 6px solid var(--color-gray-surface);
+    border: 6px solid var(--surface-halo, var(--color-gray-surface));
     display: flex;
     align-items: center;
     justify-content: center;
@@ -196,7 +196,7 @@ export default function CardService({
         <Image
           className="card__image-img"
           src={image}
-          alt={`${title} executado pela Fast em Brasília`}
+          alt={`${title} executado pela ${STEEL_CONECTA.nome} em Brasília`}
           width={400}
           height={260}
           sizes="(max-width: 768px) 90vw, 33vw"
@@ -206,7 +206,13 @@ export default function CardService({
       </figure>
 
       <div className="card__logo" aria-hidden="true">
-        <Image src={BRAND_ASSETS.icon} alt="" width={32} height={32} />
+        <Image
+          src={STEEL_CONECTA.icone}
+          alt=""
+          width={STEEL_CONECTA.iconeTamanho}
+          height={STEEL_CONECTA.iconeTamanho}
+          sizes="32px"
+        />
       </div>
 
       <div className="card__infos">

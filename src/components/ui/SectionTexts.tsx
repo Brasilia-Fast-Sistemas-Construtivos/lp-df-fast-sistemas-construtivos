@@ -9,6 +9,7 @@ type SectionTextsProps = {
   as?: ElementType;
   centrado?: boolean;
   onDark?: boolean;
+  marca?: "fast" | "steel-conecta";
   children?: ReactNode;
 };
 
@@ -54,6 +55,10 @@ const Root = styled.header`
     }
   }
 
+  &[data-marca="steel-conecta"] > .texts__title > .texts__ponto {
+    color: var(--color-steel-conecta);
+  }
+
   &[data-centrado="true"] {
     flex-direction: column;
     align-items: center;
@@ -97,10 +102,11 @@ export default function SectionTexts({
   as: Tag = "h2",
   centrado = false,
   onDark = false,
+  marca = "fast",
   children,
 }: SectionTextsProps) {
   return (
-    <Root data-centrado={centrado} data-on-dark={onDark}>
+    <Root data-centrado={centrado} data-on-dark={onDark} data-marca={marca}>
       <Tag className="texts__title">{renderTitulo(titulo)}</Tag>
       {descricao ? <p className="texts__description">{descricao}</p> : null}
       {children}

@@ -16,6 +16,8 @@ import { SECTION_IDS } from "@/data/navigation";
 import "swiper/css";
 
 const Section = styled.section`
+  --surface-halo: var(--color-steel-conecta-surface);
+
   width: 100%;
   position: relative;
   isolation: isolate;
@@ -35,7 +37,7 @@ const Section = styled.section`
     left: 50%;
     width: 100vw;
     transform: translateX(-50%);
-    background-color: var(--color-gray-surface);
+    background-color: var(--color-steel-conecta-surface);
     z-index: -1;
   }
 
@@ -85,7 +87,7 @@ const Carousel = styled.div`
       pointer-events: auto;
       background-color: var(--color-bg);
       border-radius: var(--radius-all);
-      border: 4px solid var(--color-gray-surface);
+      border: 4px solid var(--surface-halo);
       width: 48px;
       height: 48px;
       display: flex;
@@ -107,7 +109,7 @@ const Carousel = styled.div`
       }
 
       &:focus-visible {
-        outline: 2px solid var(--color-brand);
+        outline: 2px solid var(--color-steel-conecta);
         outline-offset: 2px;
       }
 
@@ -164,10 +166,12 @@ export default function SistemasSection() {
         <SectionTexts
           titulo="Mão de obra especializada."
           descricao="Toda a obra centralizada em um só lugar, do projeto à chave na mão."
+          marca="steel-conecta"
         />
         <CtaButton
           id="sistemas-btn-orcamento"
           origin="sistemas"
+          variant="steel"
           preFill={{ interesse: INTERESSE_AMBOS }}
         >
           Falar com a Steel Conecta
