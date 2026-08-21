@@ -3,7 +3,7 @@
 import styled from "@emotion/styled";
 import type { ButtonHTMLAttributes, ReactNode } from "react";
 
-type ButtonVariant = "solid" | "outline" | "ghost";
+type ButtonVariant = "solid" | "outline" | "ghost" | "steel";
 
 type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   id: string;
@@ -117,6 +117,17 @@ const Root = styled.button`
     --btn-focus: var(--color-brand);
   }
 
+  &[data-variant="steel"] {
+    --btn-color: var(--color-steel-conecta);
+    --btn-fill: 1;
+    --btn-fill-hover: 0;
+    --btn-fg: var(--color-bg);
+    --btn-fg-hover: var(--color-steel-conecta);
+    --btn-border: transparent;
+    --btn-border-hover: var(--color-steel-conecta);
+    --btn-focus: var(--color-steel-conecta);
+  }
+
   &[data-variant="ghost"] {
     --btn-color: transparent;
     --btn-fill: 0;
@@ -132,6 +143,14 @@ const Root = styled.button`
     &[data-variant="solid"] {
       --btn-fg-hover: var(--color-bg);
       --btn-border-hover: var(--color-bg);
+      --btn-focus: var(--color-bg);
+    }
+
+    &[data-variant="steel"] {
+      --btn-color: var(--color-steel-conecta-on-dark);
+      --btn-fg: var(--color-dark);
+      --btn-fg-hover: var(--color-steel-conecta-on-dark);
+      --btn-border-hover: var(--color-steel-conecta-on-dark);
       --btn-focus: var(--color-bg);
     }
 

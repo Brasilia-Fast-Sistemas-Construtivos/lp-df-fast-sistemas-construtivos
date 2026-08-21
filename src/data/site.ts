@@ -34,7 +34,8 @@ export const STEEL_CONECTA = {
   descricao:
     "Marca de execução do Grupo Fast em Brasília. Monta steel frame e drywall com equipe própria, usando o material fornecido pela Fast Sistemas Construtivos.",
   logo: "/logo-steelconecta-black.png",
-  icone: "/icon-steelconecta-gold.png",
+  icone: "/icon-steelconecta-blue.png",
+  iconeOnDark: "/icon-steelconecta-gold.png",
   iconeTamanho: 416,
   instagramHandle: SOCIAL.instagramHandle,
   instagramUrl: SOCIAL.instagramUrl,

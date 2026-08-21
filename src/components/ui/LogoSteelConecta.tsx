@@ -6,14 +6,25 @@ import Image from "next/image";
 import { STEEL_CONECTA } from "@/data/site";
 
 type LogoSteelConectaProps = {
-  tamanho?: "md" | "lg";
+  tamanho?: "sm" | "md" | "lg";
   onDark?: boolean;
 };
 
 const Root = styled.span`
   display: inline-flex;
   align-items: center;
-  gap: var(--space-4);
+  gap: var(--space-3);
+
+  &[data-tamanho="sm"] {
+    --sc-marca: 30px;
+    --sc-nome: var(--text-sm);
+
+    & > .marca__nome {
+      flex-direction: row;
+      gap: 0.28em;
+      letter-spacing: 0.04em;
+    }
+  }
 
   &[data-tamanho="md"] {
     --sc-marca: 44px;
@@ -23,6 +34,7 @@ const Root = styled.span`
   &[data-tamanho="lg"] {
     --sc-marca: 64px;
     --sc-nome: var(--text-2xl);
+    gap: var(--space-4);
 
     @media (max-width: 900px) {
       --sc-marca: 52px;
@@ -45,6 +57,7 @@ const Root = styled.span`
     line-height: 0.95;
     letter-spacing: 0.02em;
     text-transform: uppercase;
+    white-space: nowrap;
 
     & > .marca__steel {
       color: var(--color-dark);
@@ -55,8 +68,14 @@ const Root = styled.span`
     }
   }
 
-  &[data-on-dark="true"] > .marca__nome > .marca__steel {
-    color: var(--color-bg);
+  &[data-on-dark="true"] > .marca__nome {
+    & > .marca__steel {
+      color: var(--color-bg);
+    }
+
+    & > .marca__conecta {
+      color: var(--color-steel-conecta-on-dark);
+    }
   }
 `;
 
@@ -68,7 +87,7 @@ export default function LogoSteelConecta({
     <Root data-tamanho={tamanho} data-on-dark={onDark}>
       <Image
         className="marca__icone"
-        src={STEEL_CONECTA.icone}
+        src={onDark ? STEEL_CONECTA.iconeOnDark : STEEL_CONECTA.icone}
         alt=""
         width={STEEL_CONECTA.iconeTamanho}
         height={STEEL_CONECTA.iconeTamanho}

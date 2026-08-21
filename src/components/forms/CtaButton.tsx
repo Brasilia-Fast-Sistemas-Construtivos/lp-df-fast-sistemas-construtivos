@@ -9,7 +9,7 @@ type CtaButtonProps = {
   id: string;
   origin: string;
   children: ReactNode;
-  variant?: "solid" | "outline" | "ghost";
+  variant?: "solid" | "outline" | "ghost" | "steel";
   onDark?: boolean;
   fullWidth?: boolean;
   preFill?: PreFill;

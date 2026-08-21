@@ -7,8 +7,9 @@ import { useEffect, useState } from "react";
 import CtaButton from "@/components/forms/CtaButton";
 import { useFormModal } from "@/components/forms/FormModalProvider";
 import Button from "@/components/ui/Button";
+import LogoSteelConecta from "@/components/ui/LogoSteelConecta";
 import { MENU_LINKS, SECTION_IDS } from "@/data/navigation";
-import { BRAND_ASSETS, CONTACT, SITE } from "@/data/site";
+import { BRAND_ASSETS, CONTACT, SITE, STEEL_CONECTA } from "@/data/site";
 
 const Root = styled.header`
   position: fixed;
@@ -36,22 +37,56 @@ const Root = styled.header`
       transition: none;
     }
 
-    & > .header__logo {
-      display: inline-flex;
+    & > .header__marcas {
+      display: flex;
       align-items: center;
+      gap: var(--space-4);
       flex-shrink: 0;
 
-      &:focus-visible {
-        outline: 2px solid var(--color-brand);
-        outline-offset: 4px;
+      @media (max-width: 900px) {
+        gap: var(--space-3);
       }
 
-      & > img {
-        width: 150px;
-        height: auto;
+      & > .header__logo {
+        display: inline-flex;
+        align-items: center;
 
-        @media (max-width: 900px) {
-          width: 120px;
+        &:focus-visible {
+          outline: 2px solid var(--color-brand);
+          outline-offset: 4px;
+        }
+
+        & > img {
+          width: 150px;
+          height: auto;
+
+          @media (max-width: 900px) {
+            width: 120px;
+          }
+        }
+      }
+
+      & > .header__divisor {
+        width: 1px;
+        height: var(--space-6);
+        background: var(--color-border);
+
+        @media (max-width: 520px) {
+          display: none;
+        }
+      }
+
+      & > .header__conecta {
+        display: inline-flex;
+        align-items: center;
+
+        &:focus-visible {
+          outline: 2px solid var(--color-steel-conecta);
+          outline-offset: 4px;
+        }
+
+        @media (max-width: 520px) {
+          display: none;
         }
       }
     }
@@ -357,14 +392,28 @@ export default function Header() {
   return (
     <Root data-scrolled={scrolled} data-menu-aberto={menuAberto}>
       <div className="container header__inner">
-        <a
-          className="header__logo"
-          href={`#${SECTION_IDS.hero}`}
-          aria-label={`${SITE.name}, voltar ao início`}
-          onClick={() => setMenuAberto(false)}
-        >
-          <Image src={BRAND_ASSETS.logo} alt={SITE.name} width={150} height={38} priority />
-        </a>
+        <div className="header__marcas">
+          <a
+            className="header__logo"
+            href={`#${SECTION_IDS.hero}`}
+            aria-label={`${SITE.name}, voltar ao início`}
+            onClick={() => setMenuAberto(false)}
+          >
+            <Image src={BRAND_ASSETS.logo} alt={SITE.name} width={150} height={38} priority />
+          </a>
+
+          <span className="header__divisor" aria-hidden="true" />
+
+          <a
+            id="header-link-steel-conecta"
+            className="header__conecta"
+            href={`#${SECTION_IDS.steelConecta}`}
+            aria-label={`${STEEL_CONECTA.nome}, ir para a seção de execução de obra`}
+            onClick={() => setMenuAberto(false)}
+          >
+            <LogoSteelConecta tamanho="sm" />
+          </a>
+        </div>
 
         <nav className="header__nav" aria-label="Seções da página">
           {MENU_LINKS.map((link) => (

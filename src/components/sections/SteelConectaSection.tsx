@@ -62,7 +62,7 @@ const Section = styled.section`
         text-wrap: balance;
 
         & > .conecta__ponto {
-          color: var(--color-brand);
+          color: var(--color-steel-conecta);
         }
       }
     }
@@ -147,7 +147,7 @@ const Section = styled.section`
           flex-shrink: 0;
           width: 20px;
           height: 20px;
-          color: var(--color-brand);
+          color: var(--color-steel-conecta-on-dark);
         }
       }
     }
@@ -195,7 +195,7 @@ const Section = styled.section`
             height: var(--space-7);
             border-radius: var(--radius-all);
             background: var(--color-gray-surface);
-            color: var(--color-brand);
+            color: var(--color-steel-conecta);
 
             & > svg {
               width: 20px;
@@ -237,14 +237,14 @@ const Section = styled.section`
           text-underline-offset: 4px;
 
           &:focus-visible {
-            outline: 2px solid var(--color-brand);
+            outline: 2px solid var(--color-steel-conecta);
             outline-offset: 3px;
           }
 
           & > svg {
             width: 16px;
             height: 16px;
-            color: var(--color-brand);
+            color: var(--color-steel-conecta);
           }
         }
 
@@ -305,6 +305,7 @@ export default function SteelConectaSection() {
         <CtaButton
           id="steel-conecta-btn-execucao"
           origin="steel-conecta"
+          variant="steel"
           preFill={{ interesse: INTERESSE_AMBOS }}
         >
           Falar com a Steel Conecta

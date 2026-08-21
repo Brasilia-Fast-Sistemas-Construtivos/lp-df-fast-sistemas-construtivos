@@ -132,7 +132,7 @@ const Section = styled.section`
           flex-shrink: 0;
           width: 20px;
           height: 20px;
-          color: var(--color-brand);
+          color: var(--color-steel-conecta-on-dark);
         }
       }
     }
@@ -387,6 +387,7 @@ export default function ObrasSection() {
           <CtaButton
             id="obras-btn-execucao"
             origin="obras-steel-conecta"
+            variant="steel"
             preFill={{ interesse: INTERESSE_AMBOS }}
             onDark
           >
