@@ -2,12 +2,12 @@
 
 import styled from "@emotion/styled";
 import { ArrowRightIcon, InstagramLogoIcon } from "@phosphor-icons/react/dist/ssr";
-import Image from "next/image";
 import { useEffect, useRef } from "react";
 
 import CtaButton from "@/components/forms/CtaButton";
 import { useReveal } from "@/components/motion/useReveal";
 import IconeEscopo from "@/components/ui/IconeEscopo";
+import LogoSteelConecta from "@/components/ui/LogoSteelConecta";
 import { INTERESSE_AMBOS, STEEL_CONECTA_SECAO } from "@/data/content";
 import { SECTION_IDS } from "@/data/navigation";
 import { STEEL_CONECTA } from "@/data/site";
@@ -106,15 +106,6 @@ const Section = styled.section`
         display: flex;
         flex-direction: column;
         gap: var(--space-3);
-
-        & > .conecta__logo {
-          width: 180px;
-          height: auto;
-
-          @media (max-width: 900px) {
-            width: 140px;
-          }
-        }
 
         & > .conecta__legenda {
           font-family: var(--font-alt);
@@ -327,14 +318,7 @@ export default function SteelConectaSection() {
       <div className="conecta__grid">
         <div className="conecta__cartao" data-reveal>
           <div className="conecta__marca">
-            <Image
-              className="conecta__logo"
-              src={STEEL_CONECTA.logoWhite}
-              alt={STEEL_CONECTA.nome}
-              width={STEEL_CONECTA.logoLargura}
-              height={STEEL_CONECTA.logoAltura}
-              sizes="180px"
-            />
+            <LogoSteelConecta tamanho="lg" onDark />
             <p className="conecta__legenda">{STEEL_CONECTA_SECAO.cartaoLegenda}</p>
           </div>
 

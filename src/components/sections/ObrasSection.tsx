@@ -14,10 +14,11 @@ import { Swiper, SwiperSlide } from "swiper/react";
 
 import CtaButton from "@/components/forms/CtaButton";
 import { useReveal } from "@/components/motion/useReveal";
+import LogoSteelConecta from "@/components/ui/LogoSteelConecta";
 import SectionTexts from "@/components/ui/SectionTexts";
 import { INTERESSE_AMBOS, OBRAS_EXECUCAO, OBRAS_GALERIA } from "@/data/content";
 import { SECTION_IDS } from "@/data/navigation";
-import { SOCIAL, STEEL_CONECTA } from "@/data/site";
+import { SOCIAL } from "@/data/site";
 
 import "swiper/css";
 
@@ -64,14 +65,8 @@ const Section = styled.section`
         gap: var(--space-4);
       }
 
-      & > .obras__logo {
+      & > span {
         flex-shrink: 0;
-        width: 120px;
-        height: auto;
-
-        @media (max-width: 480px) {
-          width: 88px;
-        }
       }
 
       & > .obras__execucao-titulos {
@@ -369,14 +364,7 @@ export default function ObrasSection() {
 
       <div className="obras__execucao" data-reveal>
         <div className="obras__execucao-texto">
-          <Image
-            className="obras__logo"
-            src={STEEL_CONECTA.logoWhite}
-            alt=""
-            width={STEEL_CONECTA.logoLargura}
-            height={STEEL_CONECTA.logoAltura}
-            sizes="120px"
-          />
+          <LogoSteelConecta onDark />
           <div className="obras__execucao-titulos">
             <p className="obras__execucao-eyebrow">{OBRAS_EXECUCAO.eyebrow}</p>
             <h3 className="obras__execucao-titulo">{OBRAS_EXECUCAO.titulo}</h3>
