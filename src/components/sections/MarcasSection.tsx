@@ -52,23 +52,11 @@ const Carousel = styled.div`
         object-fit: contain;
         object-position: center;
         filter: grayscale(1);
-        opacity: 0.75;
-        transition: filter var(--dur-normal) var(--ease-standard),
-          opacity var(--dur-normal) var(--ease-standard);
 
         @media (max-width: 768px) {
           width: 72px;
           height: 72px;
         }
-
-        @media (prefers-reduced-motion: reduce) {
-          transition: none;
-        }
-      }
-
-      &:hover > .logo {
-        filter: grayscale(0);
-        opacity: 1;
       }
     }
   }
