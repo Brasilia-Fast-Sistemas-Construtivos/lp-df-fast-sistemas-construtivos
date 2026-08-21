@@ -4,13 +4,15 @@ import {
   ESTADO_FORA_DO_DF,
   ESTADO_PADRAO,
   ETAPAS_DA_OBRA,
-  FAIXAS_METRAGEM,
   INTERESSE_MATERIAL,
   LABEL_POR_INTERESSE,
   LIMITE_DESCRICAO,
+  LIMITE_METRAGEM,
+  LIMITE_REGIAO,
   OPCOES_INTERESSE,
+  PREFIXO_ENTORNO,
   REGIAO_FORA_DO_DF,
-  REGIOES_OPTIONS,
+  REGIOES_ATENDIDAS,
   RESPOSTAS_SIM_NAO,
   SISTEMAS_EM_USO,
   TIPOS_DE_OBRA,
@@ -18,11 +20,15 @@ import {
 } from "@/data/content";
 import { LEAD_WEBHOOK_TIMEOUT_MS, LEAD_WEBHOOK_URL } from "@/data/integrations";
 import { ATTRIBUTION_KEYS } from "@/lib/attribution";
-import { validarEmail, validarNome, validarTelefone } from "@/lib/formatters";
+import {
+  validarEmail,
+  validarMetragem,
+  validarNome,
+  validarRegiao,
+  validarTelefone,
+} from "@/lib/formatters";
 
-const REGIOES_ACEITAS: string[] = REGIOES_OPTIONS.map((opcao) => opcao.value);
 const TIPOS_ACEITOS: string[] = TIPOS_DE_OBRA.map((opcao) => opcao.value);
-const METRAGENS_ACEITAS: string[] = FAIXAS_METRAGEM.map((opcao) => opcao.value);
 const RESPOSTAS_ACEITAS: string[] = RESPOSTAS_SIM_NAO.map((opcao) => opcao.value);
 const INTERESSES_ACEITOS: string[] = OPCOES_INTERESSE.map((opcao) => opcao.value);
 const ETAPAS_ACEITAS: string[] = ETAPAS_DA_OBRA.map((opcao) => opcao.value);
@@ -32,7 +38,8 @@ const LIMITE = {
   nome: 120,
   telefone: 40,
   email: 160,
-  regiao: 80,
+  regiao: LIMITE_REGIAO,
+  metragem: LIMITE_METRAGEM,
   opcao: 60,
   descricao: LIMITE_DESCRICAO,
   origin: 80,
@@ -52,6 +59,16 @@ function urlSegura(valor: string): string {
   } catch {
     return "";
   }
+}
+
+const ACENTOS = /[̀-ͯ]/g;
+
+const REGIOES_DO_DISTRITO_FEDERAL: string[] = REGIOES_ATENDIDAS.filter(
+  (regiao) => regiao !== REGIAO_FORA_DO_DF
+).map((regiao) => normalizar(regiao));
+
+function normalizar(valor: string): string {
+  return valor.normalize("NFD").replace(ACENTOS, "").toLowerCase().trim();
 }
 
 function parametrosDeAtribuicao(corpo: Record<string, unknown>): Record<string, string> {
@@ -78,7 +95,7 @@ export async function POST(request: Request) {
   const email = texto(corpo.email, LIMITE.email);
   const regiao = texto(corpo.regiao, LIMITE.regiao);
   const tipoObra = texto(corpo.tipoObra, LIMITE.opcao);
-  const metragemEstimada = texto(corpo.metragemEstimada, LIMITE.opcao);
+  const metragemEstimada = texto(corpo.metragemEstimada, LIMITE.metragem);
   const temProjeto = texto(corpo.temProjeto, LIMITE.opcao);
   const temLocal = texto(corpo.temLocal, LIMITE.opcao);
   const etapaObra = texto(corpo.etapaObra, LIMITE.opcao);
@@ -89,7 +106,7 @@ export async function POST(request: Request) {
   if (validarNome(nome)) camposInvalidos.push("nome");
   if (validarTelefone(telefone)) camposInvalidos.push("telefone");
   if (validarEmail(email)) camposInvalidos.push("email");
-  if (!REGIOES_ACEITAS.includes(regiao)) camposInvalidos.push("regiao");
+  if (validarRegiao(regiao)) camposInvalidos.push("regiao");
 
   const fluxoDeMaterial = interesse === INTERESSE_MATERIAL;
 
@@ -98,7 +115,7 @@ export async function POST(request: Request) {
     if (!SISTEMAS_ACEITOS.includes(sistemaEmUso)) camposInvalidos.push("sistemaEmUso");
   } else {
     if (!TIPOS_ACEITOS.includes(tipoObra)) camposInvalidos.push("tipoObra");
-    if (!METRAGENS_ACEITAS.includes(metragemEstimada)) camposInvalidos.push("metragemEstimada");
+    if (validarMetragem(metragemEstimada)) camposInvalidos.push("metragemEstimada");
     if (!RESPOSTAS_ACEITAS.includes(temProjeto)) camposInvalidos.push("temProjeto");
     if (!RESPOSTAS_ACEITAS.includes(temLocal)) camposInvalidos.push("temLocal");
   }
@@ -111,14 +128,20 @@ export async function POST(request: Request) {
     urlSegura(texto(corpo.referrer, LIMITE.referrer)) ||
     urlSegura(texto(request.headers.get("referer"), LIMITE.referrer));
 
-  const foraDoDistritoFederal = regiao === REGIAO_FORA_DO_DF;
+  const regiaoNormalizada = normalizar(regiao);
+  const regiaoReconhecida = REGIOES_DO_DISTRITO_FEDERAL.includes(regiaoNormalizada);
+  const declarouEntorno = regiaoNormalizada.startsWith(normalizar(PREFIXO_ENTORNO));
 
   const lead = {
     nome,
     telefone,
     email,
-    estado: foraDoDistritoFederal ? ESTADO_FORA_DO_DF : ESTADO_PADRAO,
-    cidade: foraDoDistritoFederal ? REGIAO_FORA_DO_DF : CIDADE_PADRAO,
+    estado: regiaoReconhecida
+      ? ESTADO_PADRAO
+      : declarouEntorno
+        ? ESTADO_FORA_DO_DF
+        : VALOR_NAO_INFORMADO,
+    cidade: regiaoReconhecida ? CIDADE_PADRAO : regiao,
     tipoObra: fluxoDeMaterial ? VALOR_NAO_INFORMADO : tipoObra,
     metragemEstimada: fluxoDeMaterial ? VALOR_NAO_INFORMADO : metragemEstimada,
     temProjeto: fluxoDeMaterial ? VALOR_NAO_INFORMADO : temProjeto,

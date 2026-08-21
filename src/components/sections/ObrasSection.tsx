@@ -36,17 +36,7 @@ const Section = styled.section`
   & > .obras__topo {
     display: flex;
     align-items: flex-end;
-    justify-content: space-between;
     gap: var(--space-5);
-
-    @media (max-width: 768px) {
-      flex-direction: column;
-      align-items: flex-start;
-
-      & > button {
-        display: none;
-      }
-    }
   }
 
   & > .obras__execucao {
@@ -309,9 +299,6 @@ export default function ObrasSection() {
           titulo="O material da Fast em obra."
           descricao="Projetos com os produtos que você encontra aqui, do residencial ao corporativo."
         />
-        <CtaButton id="obras-btn-orcamento" origin="obras">
-          Pedir orçamento
-        </CtaButton>
       </div>
 
       <Carousel role="region" aria-label="Carrossel de obras" data-reveal>
@@ -415,7 +402,7 @@ export default function ObrasSection() {
             preFill={{ interesse: INTERESSE_AMBOS }}
             onDark
           >
-            Contratar a execução
+            Falar com a Steel Conecta
           </CtaButton>
         </div>
       </div>

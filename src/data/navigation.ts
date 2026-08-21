@@ -13,6 +13,7 @@ export const SECTION_IDS = {
 
 export const MENU_LINKS = [
   { href: `#${SECTION_IDS.produtos}`, label: "Produtos" },
+  { href: `#${SECTION_IDS.steelConecta}`, label: "Steel Conecta" },
   { href: `#${SECTION_IDS.sistemas}`, label: "Sistemas" },
   { href: `#${SECTION_IDS.processo}`, label: "Como comprar" },
   { href: `#${SECTION_IDS.obras}`, label: "Obras" },

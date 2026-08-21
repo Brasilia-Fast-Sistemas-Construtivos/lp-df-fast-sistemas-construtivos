@@ -276,12 +276,9 @@ export const REGIOES_ATENDIDAS = [
   "Entorno do DF",
 ] as const;
 
-export const REGIOES_OPTIONS = REGIOES_ATENDIDAS.map((regiao) => ({
-  value: regiao,
-  label: regiao,
-}));
-
 export const REGIAO_FORA_DO_DF = "Entorno do DF";
+
+export const PREFIXO_ENTORNO = "Entorno";
 
 export const CIDADE_PADRAO = "Brasília";
 
@@ -358,20 +355,16 @@ export const TIPO_OBRA_POR_SISTEMA: Record<string, string> = {
   "piso-vinilico": "Construção Comercial",
 };
 
-export const FAIXAS_METRAGEM = [
-  { value: "Até 30 m²", label: "Até 30 m²" },
-  { value: "30 a 80 m²", label: "30 a 80 m²" },
-  { value: "80 a 200 m²", label: "80 a 200 m²" },
-  { value: "Acima de 200 m²", label: "Acima de 200 m²" },
-  { value: "Ainda não sei", label: "Ainda não sei" },
-] as const;
-
 export const RESPOSTAS_SIM_NAO = [
   { value: "Sim", label: "Sim" },
   { value: "Não", label: "Não" },
 ] as const;
 
 export const LIMITE_DESCRICAO = 2000;
+
+export const LIMITE_REGIAO = 80;
+
+export const LIMITE_METRAGEM = 60;
 
 export const CTA_FINAL = {
   titulo: "Peça seu orçamento: material ou obra completa.",
@@ -383,16 +376,12 @@ export const MARCAS: Array<{ nome: string; arquivo: string }> = [
   { nome: "Saint-Gobain", arquivo: "saint-gobain.png" },
   { nome: "Isover", arquivo: "isover-icon.png" },
   { nome: "Ecophone", arquivo: "ecophone-icon.png" },
-  { nome: "Ecofiber", arquivo: "ecofiber-icon.png" },
   { nome: "Nova Metálica", arquivo: "nova-metalica-icon.png" },
   { nome: "Tekbond", arquivo: "tekbond.png" },
   { nome: "Ruffino", arquivo: "ruffino.png" },
 ];
 
-export const CLIENTES: Array<{ nome: string; arquivo: string }> = [
-  { nome: "Maracanã", arquivo: "logo-cliente-maracana.jpg" },
-  { nome: "Torra Torra", arquivo: "logo-cliente-torra-torra.jpg" },
-];
+export const CLIENTES: Array<{ nome: string; arquivo: string }> = [];
 
 export const OBRAS_GALERIA = [
   {

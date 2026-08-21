@@ -32,3 +32,13 @@ export function validarSelecao(valor: string): string | undefined {
   if (!valor.trim()) return "Escolha uma opção.";
   return undefined;
 }
+
+export function validarRegiao(valor: string): string | undefined {
+  if (valor.trim().length < 2) return "Informe a região da obra.";
+  return undefined;
+}
+
+export function validarMetragem(valor: string): string | undefined {
+  if (!valor.trim()) return "Informe a metragem estimada.";
+  return undefined;
+}

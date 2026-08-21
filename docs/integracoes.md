@@ -121,25 +121,28 @@ Além disso, quando houver atribuição persistida, os parâmetros vão como cam
 
 ### Cidade, estado e região
 
-O formulário pergunta a **região da obra**, não a cidade, porque `REGIOES_ATENDIDAS` é lista de regiões administrativas do DF (Asa Sul, Guará, Ceilândia…). O servidor deriva os campos do contrato:
+O formulário pergunta a **região da obra** em campo aberto, não a cidade. O que a pessoa digita vai inteiro em `regiao`, e o servidor deriva `cidade` e `estado` por comparação normalizada (sem acento, sem caixa) com `REGIOES_ATENDIDAS`:
 
-| Região escolhida | `cidade` | `estado` |
+| O que foi digitado | `cidade` | `estado` |
 | --- | --- | --- |
-| Qualquer RA do DF | `Brasília` | `Distrito Federal` |
-| `Entorno do DF` | `Entorno do DF` | `Goiás` |
+| Bate com uma RA do DF (`Asa Sul`, `guara`, `ÁGUAS CLARAS`…) | `Brasília` | `Distrito Federal` |
+| Começa com "Entorno" | o texto digitado | `Goiás` |
+| Qualquer outra coisa | o texto digitado | `Não informado` |
 
-O DF é município único, então toda RA é Brasília: mandar "Asa Sul" no campo `cidade` quebraria a semântica do contrato. A RA vai preservada em `regiao`. No caso do entorno, a cidade exata não é perguntada para não criar mais um campo; quem atende confirma no contato.
+O DF é município único, então toda RA é Brasília: mandar "Asa Sul" no campo `cidade` quebraria a semântica do contrato. A RA vai preservada em `regiao`.
+
+Fora disso o servidor não inventa: prefere repassar o texto em `cidade` e marcar o estado como `Não informado` a afirmar "Distrito Federal" para quem escreveu uma cidade de Goiás. Quem atende confirma no contato. Se a automação precisar de `estado` sempre preenchido, o ajuste é uma linha em `src/app/api/lead/route.ts`.
 
 ### Campos do formulário
 
 | Campo | Tipo | Obrigatório em | Valores |
 | --- | --- | --- | --- |
 | `interesse` | cartões de escolha | sempre | `material`, `mao_obra`, `ambos` |
-| `regiao` | select | sempre | RAs do DF e "Entorno do DF" (`REGIOES_ATENDIDAS`) |
+| `regiao` | texto | sempre | livre, mínimo 2 caracteres, até 80 |
 | `etapaObra` | select | fluxo Material | `Planejamento`, `Início da execução`, `Final da obra` |
 | `sistemaEmUso` | select | fluxo Material | `Drywall`, `Steel Frame`, `Drywall + Steel Frame` |
 | `tipoObra` | select | fluxo Execução | `Construção Residencial`, `Construção Comercial`, `Reforma ou Ampliação` |
-| `metragemEstimada` | select | fluxo Execução | faixas de `FAIXAS_METRAGEM`, incluindo "Ainda não sei" |
+| `metragemEstimada` | texto | fluxo Execução | livre, não vazio, até 60 |
 | `temProjeto` | Sim/Não | fluxo Execução | `Sim`, `Não` |
 | `temLocal` | Sim/Não | fluxo Execução | `Sim`, `Não` |
 | `nome` | texto | sempre | mínimo 2 caracteres |
@@ -177,7 +180,7 @@ Decisões e a skill de origem estão em [design.md](design.md) e nas regras de U
 | `400` | Payload inválido. Corpo traz `camposInvalidos` |
 | `502` | n8n fora do ar, recusou ou estourou 10s de timeout |
 
-Em qualquer falha o modal mostra o caminho alternativo: WhatsApp e telefone. Lead não se perde em silêncio.
+Em qualquer falha o modal pede nova tentativa e mostra o telefone. O WhatsApp foi retirado do modal de propósito: o formulário é o único caminho com rastreio de origem e atribuição, e oferecer o WhatsApp ali drenava lead para um canal cego. O botão flutuante de WhatsApp na página continua, como canal secundário.
 
 ### Teste manual
 

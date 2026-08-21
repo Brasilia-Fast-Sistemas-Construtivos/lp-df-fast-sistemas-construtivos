@@ -12,11 +12,11 @@ import SelectField from "@/components/ui/SelectField";
 import {
   ATENDIMENTO_POR_INTERESSE,
   ETAPAS_DA_OBRA,
-  FAIXAS_METRAGEM,
   INTERESSE_MATERIAL,
   LIMITE_DESCRICAO,
+  LIMITE_METRAGEM,
+  LIMITE_REGIAO,
   OPCOES_INTERESSE,
-  REGIOES_OPTIONS,
   RESPOSTAS_SIM_NAO,
   SISTEMAS_EM_USO,
   TIPOS_DE_OBRA,
@@ -26,7 +26,9 @@ import { pushDataLayerEvent } from "@/lib/analytics";
 import {
   maskTelefone,
   validarEmail,
+  validarMetragem,
   validarNome,
+  validarRegiao,
   validarSelecao,
   validarTelefone,
 } from "@/lib/formatters";
@@ -69,8 +71,8 @@ const CAMPO_IDS: Record<Campo, string> = {
 const VALIDADORES: Partial<Record<Campo, (valor: string) => string | undefined>> = {
   interesse: validarSelecao,
   tipoObra: validarSelecao,
-  regiao: validarSelecao,
-  metragemEstimada: validarSelecao,
+  regiao: validarRegiao,
+  metragemEstimada: validarMetragem,
   temProjeto: validarSelecao,
   temLocal: validarSelecao,
   etapaObra: validarSelecao,
@@ -661,14 +663,16 @@ export default function FormModal() {
 
               {etapa === 1 && fluxoDeMaterial ? (
                 <>
-                  <SelectField
+                  <Field
                     id={CAMPO_IDS.regiao}
                     name="regiao"
                     label="Região da obra"
-                    placeholder="Selecione a região"
-                    options={REGIOES_OPTIONS}
+                    placeholder="Ex.: Águas Claras"
+                    ajuda="Cidade, região administrativa ou bairro."
+                    maxLength={LIMITE_REGIAO}
                     value={valores.regiao}
                     onChange={(evento) => atualizarCampo("regiao", evento.target.value)}
+                    onBlur={() => validarCampo("regiao")}
                     erro={erros.regiao}
                     required
                   />
@@ -725,28 +729,31 @@ export default function FormModal() {
                     required
                   />
 
-                  <SelectField
+                  <Field
                     id={CAMPO_IDS.regiao}
                     name="regiao"
                     label="Região da obra"
-                    placeholder="Selecione a região"
-                    options={REGIOES_OPTIONS}
+                    placeholder="Ex.: Águas Claras"
+                    ajuda="Cidade, região administrativa ou bairro."
+                    maxLength={LIMITE_REGIAO}
                     value={valores.regiao}
                     onChange={(evento) => atualizarCampo("regiao", evento.target.value)}
+                    onBlur={() => validarCampo("regiao")}
                     erro={erros.regiao}
                     required
                   />
 
-                  <SelectField
+                  <Field
                     id={CAMPO_IDS.metragemEstimada}
                     name="metragemEstimada"
                     label="Metragem estimada"
-                    placeholder="Selecione a faixa"
-                    options={FAIXAS_METRAGEM}
+                    placeholder="Ex.: 120 m²"
+                    ajuda="Aproximado já resolve. Se ainda não souber, escreva não sei."
+                    maxLength={LIMITE_METRAGEM}
                     value={valores.metragemEstimada}
                     onChange={(evento) => atualizarCampo("metragemEstimada", evento.target.value)}
+                    onBlur={() => validarCampo("metragemEstimada")}
                     erro={erros.metragemEstimada}
-                    ajuda="Faixa aproximada já resolve. Não precisa calcular."
                     required
                   />
 
@@ -863,11 +870,8 @@ export default function FormModal() {
 
                 {estado === "erro" ? (
                   <p className="modal__microcopy" role="alert">
-                    Não conseguimos enviar agora.{" "}
-                    <a href={CONTACT.whatsappUrl} target="_blank" rel="noopener noreferrer">
-                      Fale com a gente no WhatsApp
-                    </a>{" "}
-                    ou ligue para {CONTACT.phoneDisplay}.
+                    Não conseguimos enviar agora. Tente de novo em instantes ou ligue para{" "}
+                    <a href={CONTACT.phoneUrl}>{CONTACT.phoneDisplay}</a>.
                   </p>
                 ) : (
                   <p className="modal__microcopy">

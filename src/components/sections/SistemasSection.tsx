@@ -10,7 +10,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import CtaButton from "@/components/forms/CtaButton";
 import CardService from "@/components/ui/CardService";
 import SectionTexts from "@/components/ui/SectionTexts";
-import { SISTEMAS, TIPO_OBRA_POR_SISTEMA } from "@/data/content";
+import { INTERESSE_AMBOS, SISTEMAS, TIPO_OBRA_POR_SISTEMA } from "@/data/content";
 import { SECTION_IDS } from "@/data/navigation";
 
 import "swiper/css";
@@ -162,11 +162,15 @@ export default function SistemasSection() {
 
       <div className="sistemas__topo">
         <SectionTexts
-          titulo="Tudo para construção a seco."
-          descricao="Compre só o material ou contrate com a instalação incluída."
+          titulo="Mão de obra especializada."
+          descricao="Toda a obra centralizada em um só lugar, do projeto à chave na mão."
         />
-        <CtaButton id="sistemas-btn-orcamento" origin="sistemas">
-          Pedir orçamento
+        <CtaButton
+          id="sistemas-btn-orcamento"
+          origin="sistemas"
+          preFill={{ interesse: INTERESSE_AMBOS }}
+        >
+          Falar com a Steel Conecta
         </CtaButton>
       </div>
 
