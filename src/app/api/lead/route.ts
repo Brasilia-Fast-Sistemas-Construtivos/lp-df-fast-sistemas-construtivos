@@ -1,18 +1,15 @@
 import {
   ATENDIMENTO_POR_INTERESSE,
-  CIDADE_PADRAO,
-  ESTADO_FORA_DO_DF,
-  ESTADO_PADRAO,
+  ESTADOS_BRASILEIROS,
   ETAPAS_DA_OBRA,
   INTERESSE_MATERIAL,
+  LABEL_POR_ESTADO,
   LABEL_POR_INTERESSE,
   LIMITE_DESCRICAO,
+  LIMITE_ESTADO,
   LIMITE_METRAGEM,
   LIMITE_REGIAO,
   OPCOES_INTERESSE,
-  PREFIXO_ENTORNO,
-  REGIAO_FORA_DO_DF,
-  REGIOES_ATENDIDAS,
   RESPOSTAS_SIM_NAO,
   SISTEMAS_EM_USO,
   TIPOS_DE_OBRA,
@@ -21,10 +18,10 @@ import {
 import { LEAD_WEBHOOK_TIMEOUT_MS, LEAD_WEBHOOK_URL } from "@/data/integrations";
 import { ATTRIBUTION_KEYS } from "@/lib/attribution";
 import {
+  validarCidade,
   validarEmail,
   validarMetragem,
   validarNome,
-  validarRegiao,
   validarTelefone,
 } from "@/lib/formatters";
 
@@ -33,12 +30,14 @@ const RESPOSTAS_ACEITAS: string[] = RESPOSTAS_SIM_NAO.map((opcao) => opcao.value
 const INTERESSES_ACEITOS: string[] = OPCOES_INTERESSE.map((opcao) => opcao.value);
 const ETAPAS_ACEITAS: string[] = ETAPAS_DA_OBRA.map((opcao) => opcao.value);
 const SISTEMAS_ACEITOS: string[] = SISTEMAS_EM_USO.map((opcao) => opcao.value);
+const ESTADOS_ACEITOS: string[] = ESTADOS_BRASILEIROS.map((opcao) => opcao.value);
 
 const LIMITE = {
   nome: 120,
   telefone: 40,
   email: 160,
   regiao: LIMITE_REGIAO,
+  estado: LIMITE_ESTADO,
   metragem: LIMITE_METRAGEM,
   opcao: 60,
   descricao: LIMITE_DESCRICAO,
@@ -59,16 +58,6 @@ function urlSegura(valor: string): string {
   } catch {
     return "";
   }
-}
-
-const ACENTOS = /[̀-ͯ]/g;
-
-const REGIOES_DO_DISTRITO_FEDERAL: string[] = REGIOES_ATENDIDAS.filter(
-  (regiao) => regiao !== REGIAO_FORA_DO_DF
-).map((regiao) => normalizar(regiao));
-
-function normalizar(valor: string): string {
-  return valor.normalize("NFD").replace(ACENTOS, "").toLowerCase().trim();
 }
 
 function parametrosDeAtribuicao(corpo: Record<string, unknown>): Record<string, string> {
@@ -93,6 +82,7 @@ export async function POST(request: Request) {
   const nome = texto(corpo.nome, LIMITE.nome);
   const telefone = texto(corpo.telefone, LIMITE.telefone);
   const email = texto(corpo.email, LIMITE.email);
+  const estado = texto(corpo.estado, LIMITE.estado).toUpperCase();
   const regiao = texto(corpo.regiao, LIMITE.regiao);
   const tipoObra = texto(corpo.tipoObra, LIMITE.opcao);
   const metragemEstimada = texto(corpo.metragemEstimada, LIMITE.metragem);
@@ -106,7 +96,8 @@ export async function POST(request: Request) {
   if (validarNome(nome)) camposInvalidos.push("nome");
   if (validarTelefone(telefone)) camposInvalidos.push("telefone");
   if (validarEmail(email)) camposInvalidos.push("email");
-  if (validarRegiao(regiao)) camposInvalidos.push("regiao");
+  if (!ESTADOS_ACEITOS.includes(estado)) camposInvalidos.push("estado");
+  if (validarCidade(regiao)) camposInvalidos.push("regiao");
 
   const fluxoDeMaterial = interesse === INTERESSE_MATERIAL;
 
@@ -128,20 +119,13 @@ export async function POST(request: Request) {
     urlSegura(texto(corpo.referrer, LIMITE.referrer)) ||
     urlSegura(texto(request.headers.get("referer"), LIMITE.referrer));
 
-  const regiaoNormalizada = normalizar(regiao);
-  const regiaoReconhecida = REGIOES_DO_DISTRITO_FEDERAL.includes(regiaoNormalizada);
-  const declarouEntorno = regiaoNormalizada.startsWith(normalizar(PREFIXO_ENTORNO));
-
   const lead = {
     nome,
     telefone,
     email,
-    estado: regiaoReconhecida
-      ? ESTADO_PADRAO
-      : declarouEntorno
-        ? ESTADO_FORA_DO_DF
-        : VALOR_NAO_INFORMADO,
-    cidade: regiaoReconhecida ? CIDADE_PADRAO : regiao,
+    estado,
+    estadoLabel: LABEL_POR_ESTADO[estado],
+    cidade: regiao,
     tipoObra: fluxoDeMaterial ? VALOR_NAO_INFORMADO : tipoObra,
     metragemEstimada: fluxoDeMaterial ? VALOR_NAO_INFORMADO : metragemEstimada,
     temProjeto: fluxoDeMaterial ? VALOR_NAO_INFORMADO : temProjeto,

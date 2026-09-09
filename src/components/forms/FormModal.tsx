@@ -11,6 +11,7 @@ import Field from "@/components/ui/Field";
 import SelectField from "@/components/ui/SelectField";
 import {
   ATENDIMENTO_POR_INTERESSE,
+  ESTADOS_BRASILEIROS,
   ETAPAS_DA_OBRA,
   INTERESSE_MATERIAL,
   LIMITE_DESCRICAO,
@@ -23,12 +24,13 @@ import {
 } from "@/data/content";
 import { CONTACT } from "@/data/site";
 import { pushDataLayerEvent } from "@/lib/analytics";
+import { appendAttribution } from "@/lib/attribution";
 import {
   maskTelefone,
+  validarCidade,
   validarEmail,
   validarMetragem,
   validarNome,
-  validarRegiao,
   validarSelecao,
   validarTelefone,
 } from "@/lib/formatters";
@@ -39,6 +41,7 @@ type Estado = "editando" | "enviando" | "sucesso" | "erro";
 type Campo =
   | "interesse"
   | "tipoObra"
+  | "estado"
   | "regiao"
   | "metragemEstimada"
   | "temProjeto"
@@ -56,7 +59,8 @@ type Valores = Record<Campo, string>;
 const CAMPO_IDS: Record<Campo, string> = {
   interesse: "contato-form-interesse",
   tipoObra: "contato-form-tipo-obra",
-  regiao: "contato-form-regiao",
+  estado: "contato-form-estado",
+  regiao: "contato-form-cidade",
   metragemEstimada: "contato-form-metragem",
   temProjeto: "contato-form-tem-projeto",
   temLocal: "contato-form-tem-local",
@@ -71,7 +75,8 @@ const CAMPO_IDS: Record<Campo, string> = {
 const VALIDADORES: Partial<Record<Campo, (valor: string) => string | undefined>> = {
   interesse: validarSelecao,
   tipoObra: validarSelecao,
-  regiao: validarRegiao,
+  estado: validarSelecao,
+  regiao: validarCidade,
   metragemEstimada: validarMetragem,
   temProjeto: validarSelecao,
   temLocal: validarSelecao,
@@ -99,7 +104,7 @@ const FLUXO_MATERIAL = {
     ETAPA_ESCOPO,
     {
       titulo: "A obra",
-      campos: ["regiao", "etapaObra", "sistemaEmUso", "descricao"] as Campo[],
+      campos: ["estado", "regiao", "etapaObra", "sistemaEmUso", "descricao"] as Campo[],
       acao: "Continuar",
     },
     {
@@ -121,7 +126,14 @@ const FLUXO_EXECUCAO = {
     ETAPA_ESCOPO,
     {
       titulo: "A obra",
-      campos: ["tipoObra", "regiao", "metragemEstimada", "temProjeto", "temLocal"] as Campo[],
+      campos: [
+        "tipoObra",
+        "estado",
+        "regiao",
+        "metragemEstimada",
+        "temProjeto",
+        "temLocal",
+      ] as Campo[],
       acao: "Continuar",
     },
     {
@@ -137,6 +149,7 @@ const CAMPOS_DE_ESCOLHA: Campo[] = ["interesse", "temProjeto", "temLocal"];
 const VALORES_VAZIOS: Valores = {
   interesse: "",
   tipoObra: "",
+  estado: "",
   regiao: "",
   metragemEstimada: "",
   temProjeto: "",
@@ -387,6 +400,53 @@ const Dialog = styled.dialog`
         color: var(--color-fg);
         font-family: var(--font-display);
       }
+
+      & > .modal__feedback-acoes {
+        display: flex;
+        align-items: center;
+        gap: var(--space-3);
+        width: 100%;
+
+        @media (max-width: 480px) {
+          flex-direction: column;
+          align-items: stretch;
+        }
+
+        & > .modal__feedback-whatsapp {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          gap: var(--space-2);
+          min-height: 44px;
+          padding: var(--space-3) var(--space-5);
+          border-radius: var(--radius-all);
+          border: 1px solid var(--color-whatsapp);
+          background: var(--color-whatsapp);
+          color: var(--color-bg);
+          font-family: var(--font-body);
+          font-size: var(--text-sm);
+          font-weight: var(--weight-medium);
+          line-height: 1;
+          text-align: center;
+          touch-action: manipulation;
+          transition: background-color var(--dur-fast) var(--ease-standard),
+            border-color var(--dur-fast) var(--ease-standard);
+
+          &:hover {
+            background: var(--color-whatsapp-hover);
+            border-color: var(--color-whatsapp-hover);
+          }
+
+          &:focus-visible {
+            outline: 2px solid var(--color-dark);
+            outline-offset: 2px;
+          }
+
+          @media (prefers-reduced-motion: reduce) {
+            transition: none;
+          }
+        }
+      }
     }
   }
 `;
@@ -433,6 +493,14 @@ export default function FormModal() {
   const [estado, setEstado] = useState<Estado>("editando");
   const [erros, setErros] = useState<Erros>({});
   const [valores, setValores] = useState<Valores>(VALORES_VAZIOS);
+  const [whatsappPosCadastro, setWhatsappPosCadastro] = useState<string>(
+    CONTACT.whatsappPosCadastroUrl
+  );
+
+  useEffect(() => {
+    if (estado !== "sucesso") return;
+    setWhatsappPosCadastro(appendAttribution(CONTACT.whatsappPosCadastroUrl));
+  }, [estado]);
 
   useEffect(() => {
     const dialog = dialogRef.current;
@@ -533,7 +601,8 @@ export default function FormModal() {
         nome: valores.nome.trim(),
         telefone: valores.telefone,
         email: valores.email.trim(),
-        regiao: valores.regiao,
+        estado: valores.estado,
+        regiao: valores.regiao.trim(),
         tipoObra: valores.tipoObra,
         metragemEstimada: valores.metragemEstimada,
         temProjeto: valores.temProjeto,
@@ -549,7 +618,8 @@ export default function FormModal() {
         interesse: valores.interesse,
         atendimento: ATENDIMENTO_POR_INTERESSE[valores.interesse],
         tipo_obra: valores.tipoObra,
-        regiao: valores.regiao,
+        estado: valores.estado,
+        regiao: valores.regiao.trim(),
       });
       setEstado("sucesso");
     } catch {
@@ -627,9 +697,28 @@ export default function FormModal() {
               {fluxo.sucessoTitulo}
             </p>
             <p className="modal__feedback-texto">{fluxo.sucessoTexto}</p>
-            <Button id="contato-btn-concluir" variant="outline" onClick={close}>
-              Fechar
-            </Button>
+            <div className="modal__feedback-acoes">
+              <a
+                id="contato-btn-whatsapp-atendente"
+                className="modal__feedback-whatsapp"
+                href={whatsappPosCadastro}
+                target="_blank"
+                rel="noopener noreferrer"
+                data-no-utm
+                onClick={() =>
+                  pushDataLayerEvent({
+                    event: "whatsapp_click",
+                    form_origin: origin,
+                    whatsapp_origin: "pos-cadastro",
+                  })
+                }
+              >
+                Falar com Atendente no Whatsapp
+              </a>
+              <Button id="contato-btn-concluir" variant="ghost" onClick={close}>
+                Fechar
+              </Button>
+            </div>
           </div>
         ) : (
           <>
@@ -663,10 +752,23 @@ export default function FormModal() {
 
               {etapa === 1 && fluxoDeMaterial ? (
                 <>
+                  <SelectField
+                    id={CAMPO_IDS.estado}
+                    name="estado"
+                    label="Estado da obra"
+                    placeholder="Selecione o estado"
+                    autoComplete="address-level1"
+                    options={ESTADOS_BRASILEIROS}
+                    value={valores.estado}
+                    onChange={(evento) => atualizarCampo("estado", evento.target.value)}
+                    erro={erros.estado}
+                    required
+                  />
+
                   <Field
                     id={CAMPO_IDS.regiao}
                     name="regiao"
-                    label="Região da obra"
+                    label="Cidade da obra"
                     placeholder="Ex.: Águas Claras"
                     ajuda="Cidade, região administrativa ou bairro."
                     maxLength={LIMITE_REGIAO}
@@ -729,10 +831,23 @@ export default function FormModal() {
                     required
                   />
 
+                  <SelectField
+                    id={CAMPO_IDS.estado}
+                    name="estado"
+                    label="Estado da obra"
+                    placeholder="Selecione o estado"
+                    autoComplete="address-level1"
+                    options={ESTADOS_BRASILEIROS}
+                    value={valores.estado}
+                    onChange={(evento) => atualizarCampo("estado", evento.target.value)}
+                    erro={erros.estado}
+                    required
+                  />
+
                   <Field
                     id={CAMPO_IDS.regiao}
                     name="regiao"
-                    label="Região da obra"
+                    label="Cidade da obra"
                     placeholder="Ex.: Águas Claras"
                     ajuda="Cidade, região administrativa ou bairro."
                     maxLength={LIMITE_REGIAO}

@@ -326,10 +326,18 @@ const Drawer = styled.nav`
       & > .drawer__contato {
         display: inline-flex;
         align-items: center;
+        align-self: flex-start;
         min-height: 44px;
+        padding: 0;
+        border: none;
+        background: none;
+        font-family: inherit;
         font-size: var(--text-md);
         font-weight: var(--weight-medium);
+        text-align: left;
         color: var(--color-fg);
+        cursor: pointer;
+        touch-action: manipulation;
 
         &:focus-visible {
           outline: 2px solid var(--color-brand);
@@ -480,15 +488,18 @@ export default function Header() {
             >
               {CONTACT.phoneDisplay}
             </a>
-            <a
+            <button
+              id="drawer-btn-whatsapp"
               className="drawer__contato"
-              href={CONTACT.whatsappUrl}
-              target="_blank"
-              rel="noopener noreferrer"
+              type="button"
               tabIndex={menuAberto ? 0 : -1}
+              onClick={() => {
+                setMenuAberto(false);
+                open({ origin: "header-whatsapp" });
+              }}
             >
               WhatsApp
-            </a>
+            </button>
           </div>
 
           <Button

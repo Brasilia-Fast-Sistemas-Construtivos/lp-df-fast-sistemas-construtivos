@@ -33,8 +33,8 @@ export function validarSelecao(valor: string): string | undefined {
   return undefined;
 }
 
-export function validarRegiao(valor: string): string | undefined {
-  if (valor.trim().length < 2) return "Informe a região da obra.";
+export function validarCidade(valor: string): string | undefined {
+  if (valor.trim().length < 2) return "Informe a cidade da obra.";
   return undefined;
 }
 

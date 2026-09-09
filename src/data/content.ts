@@ -278,13 +278,41 @@ export const REGIOES_ATENDIDAS = [
 
 export const REGIAO_FORA_DO_DF = "Entorno do DF";
 
-export const PREFIXO_ENTORNO = "Entorno";
+export const ESTADO_PADRAO = "DF";
 
-export const CIDADE_PADRAO = "Brasília";
+export const ESTADOS_BRASILEIROS = [
+  { value: "AC", label: "Acre" },
+  { value: "AL", label: "Alagoas" },
+  { value: "AP", label: "Amapá" },
+  { value: "AM", label: "Amazonas" },
+  { value: "BA", label: "Bahia" },
+  { value: "CE", label: "Ceará" },
+  { value: "DF", label: "Distrito Federal" },
+  { value: "ES", label: "Espírito Santo" },
+  { value: "GO", label: "Goiás" },
+  { value: "MA", label: "Maranhão" },
+  { value: "MT", label: "Mato Grosso" },
+  { value: "MS", label: "Mato Grosso do Sul" },
+  { value: "MG", label: "Minas Gerais" },
+  { value: "PA", label: "Pará" },
+  { value: "PB", label: "Paraíba" },
+  { value: "PR", label: "Paraná" },
+  { value: "PE", label: "Pernambuco" },
+  { value: "PI", label: "Piauí" },
+  { value: "RJ", label: "Rio de Janeiro" },
+  { value: "RN", label: "Rio Grande do Norte" },
+  { value: "RS", label: "Rio Grande do Sul" },
+  { value: "RO", label: "Rondônia" },
+  { value: "RR", label: "Roraima" },
+  { value: "SC", label: "Santa Catarina" },
+  { value: "SP", label: "São Paulo" },
+  { value: "SE", label: "Sergipe" },
+  { value: "TO", label: "Tocantins" },
+] as const;
 
-export const ESTADO_PADRAO = "Distrito Federal";
-
-export const ESTADO_FORA_DO_DF = "Goiás";
+export const LABEL_POR_ESTADO: Record<string, string> = Object.fromEntries(
+  ESTADOS_BRASILEIROS.map((estado) => [estado.value, estado.label])
+);
 
 export const INTERESSE_MATERIAL = "material";
 
@@ -363,6 +391,8 @@ export const RESPOSTAS_SIM_NAO = [
 export const LIMITE_DESCRICAO = 2000;
 
 export const LIMITE_REGIAO = 80;
+
+export const LIMITE_ESTADO = 2;
 
 export const LIMITE_METRAGEM = 60;
 

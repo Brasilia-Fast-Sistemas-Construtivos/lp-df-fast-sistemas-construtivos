@@ -4,6 +4,7 @@ import styled from "@emotion/styled";
 import Image from "next/image";
 
 import CtaButton from "@/components/forms/CtaButton";
+import { useFormModal } from "@/components/forms/FormModalProvider";
 import { FOOTER_SOLUCOES, POLITICAS_LINKS, SECTION_IDS } from "@/data/navigation";
 import { BRAND_ASSETS, CONTACT, SITE, SOCIAL } from "@/data/site";
 
@@ -92,13 +93,22 @@ const Root = styled.footer`
         flex-direction: column;
         gap: var(--space-2);
 
-        & > a {
+        & > a,
+        & > button {
           display: inline-flex;
           align-items: center;
+          align-self: flex-start;
           min-height: var(--space-6);
+          padding: 0;
+          border: none;
+          background: none;
+          font-family: inherit;
           font-size: var(--text-md);
           font-weight: var(--weight-medium);
+          text-align: left;
           color: var(--color-bg);
+          cursor: pointer;
+          touch-action: manipulation;
 
           &:hover {
             color: var(--color-muted-white);
@@ -159,6 +169,8 @@ const Root = styled.footer`
 `;
 
 export default function Footer() {
+  const { open } = useFormModal();
+
   return (
     <Root>
       <div className="container footer__topo">
@@ -181,14 +193,13 @@ export default function Footer() {
             <a id="footer-btn-email" href={CONTACT.emailUrl}>
               {CONTACT.email}
             </a>
-            <a
+            <button
               id="footer-btn-whatsapp"
-              href={CONTACT.whatsappUrl}
-              target="_blank"
-              rel="noopener noreferrer"
+              type="button"
+              onClick={() => open({ origin: "footer-whatsapp" })}
             >
               WhatsApp
-            </a>
+            </button>
             <a
               id="footer-btn-instagram"
               href={SOCIAL.instagramUrl}

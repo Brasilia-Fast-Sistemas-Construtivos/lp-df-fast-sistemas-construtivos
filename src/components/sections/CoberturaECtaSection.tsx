@@ -2,15 +2,13 @@
 
 import styled from "@emotion/styled";
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 
 import CtaButton from "@/components/forms/CtaButton";
 import { gsap, motionEnabled, registerGsap } from "@/components/motion/gsap";
 import { useReveal } from "@/components/motion/useReveal";
-import { CONTACT } from "@/data/site";
 import { CTA_FINAL, REGIOES_ATENDIDAS } from "@/data/content";
 import { SECTION_IDS } from "@/data/navigation";
-import { appendAttribution } from "@/lib/attribution";
 
 const Band = styled.section`
   width: 100%;
@@ -201,35 +199,6 @@ const Cta = styled.section`
         flex-direction: column;
       }
 
-      & > .cta__whatsapp {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        min-height: 44px;
-        padding: var(--space-3) var(--space-5);
-        border-radius: var(--radius-all);
-        border: 1px solid var(--color-bg);
-        color: var(--color-bg);
-        font-size: var(--text-sm);
-        font-weight: var(--weight-medium);
-        font-family: var(--font-body);
-        transition: background-color var(--dur-fast) var(--ease-standard),
-          color var(--dur-fast) var(--ease-standard);
-
-        &:hover {
-          background-color: var(--color-bg);
-          color: var(--color-dark);
-        }
-
-        &:focus-visible {
-          outline: 2px solid var(--color-bg);
-          outline-offset: 3px;
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-          transition: none;
-        }
-      }
     }
 
     & > .cta__microcopy {
@@ -285,14 +254,8 @@ export function CoberturaBand() {
 
 export function CtaFinalSection() {
   const ctaRef = useRef<HTMLElement>(null);
-  const [whatsappHref, setWhatsappHref] = useState<string>(CONTACT.whatsappUrl);
 
   useReveal(ctaRef);
-
-  useEffect(() => {
-    const base = `${CONTACT.whatsappUrl}?text=${encodeURIComponent(CONTACT.whatsappMensagem)}`;
-    setWhatsappHref(appendAttribution(base));
-  }, []);
 
   return (
     <Cta id={SECTION_IDS.cta} ref={ctaRef} aria-labelledby="cta-final-titulo">
@@ -324,16 +287,9 @@ export function CtaFinalSection() {
           <CtaButton id="cta-final-btn-orcamento" origin="cta-final" onDark>
             Pedir orçamento
           </CtaButton>
-          <a
-            id="cta-final-btn-whatsapp"
-            className="cta__whatsapp"
-            href={whatsappHref}
-            target="_blank"
-            rel="noopener noreferrer"
-            data-no-utm
-          >
+          <CtaButton id="cta-final-btn-whatsapp" origin="cta-final-whatsapp" variant="outline" onDark>
             Chamar no WhatsApp
-          </a>
+          </CtaButton>
         </div>
         <p className="cta__microcopy">{CTA_FINAL.microcopy}</p>
       </div>

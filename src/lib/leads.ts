@@ -6,6 +6,7 @@ export type LeadPayload = {
   nome: string;
   telefone: string;
   email: string;
+  estado: string;
   regiao: string;
   tipoObra: string;
   metragemEstimada: string;
