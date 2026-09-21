@@ -12,27 +12,36 @@ export const SECTION_IDS = {
 } as const;
 
 export const MENU_LINKS = [
-  { href: `#${SECTION_IDS.produtos}`, label: "Produtos" },
-  { href: `#${SECTION_IDS.steelConecta}`, label: "Steel Conecta" },
-  { href: `#${SECTION_IDS.sistemas}`, label: "Sistemas" },
-  { href: `#${SECTION_IDS.processo}`, label: "Como comprar" },
-  { href: `#${SECTION_IDS.obras}`, label: "Obras" },
-  { href: `#${SECTION_IDS.faq}`, label: "Dúvidas" },
+  { slug: "produtos", href: `#${SECTION_IDS.produtos}`, label: "Produtos" },
+  { slug: "steel-conecta", href: `#${SECTION_IDS.steelConecta}`, label: "Steel Conecta" },
+  { slug: "sistemas", href: `#${SECTION_IDS.sistemas}`, label: "Sistemas" },
+  { slug: "como-comprar", href: `#${SECTION_IDS.processo}`, label: "Como comprar" },
+  { slug: "obras", href: `#${SECTION_IDS.obras}`, label: "Obras" },
+  { slug: "duvidas", href: `#${SECTION_IDS.faq}`, label: "Dúvidas" },
 ] as const;
 
 export const FOOTER_SOLUCOES = [
-  { href: `#${SECTION_IDS.sistemas}`, label: "Drywall" },
-  { href: `#${SECTION_IDS.sistemas}`, label: "Steel Frame" },
-  { href: `#${SECTION_IDS.sistemas}`, label: "Forro" },
-  { href: `#${SECTION_IDS.sistemas}`, label: "Divisória" },
-  { href: `#${SECTION_IDS.sistemas}`, label: "Piso Vinílico" },
-  { href: `#${SECTION_IDS.sistemas}`, label: "Revestimento" },
+  { slug: "drywall", href: `#${SECTION_IDS.sistemas}`, label: "Drywall" },
+  { slug: "steel-frame", href: `#${SECTION_IDS.sistemas}`, label: "Steel Frame" },
+  { slug: "forro", href: `#${SECTION_IDS.sistemas}`, label: "Forro" },
+  { slug: "divisoria", href: `#${SECTION_IDS.sistemas}`, label: "Divisória" },
+  { slug: "piso-vinilico", href: `#${SECTION_IDS.sistemas}`, label: "Piso Vinílico" },
+  { slug: "revestimento", href: `#${SECTION_IDS.sistemas}`, label: "Revestimento" },
+] as const;
+
+export const FOOTER_NAVEGACAO = [
+  { slug: "produtos", href: `#${SECTION_IDS.produtos}`, label: "Produtos" },
+  { slug: "obra-completa", href: `#${SECTION_IDS.obraCompleta}`, label: "Do projeto à conclusão" },
+  { slug: "steel-conecta", href: `#${SECTION_IDS.steelConecta}`, label: "Steel Conecta" },
+  { slug: "como-comprar", href: `#${SECTION_IDS.processo}`, label: "Como comprar" },
+  { slug: "obras", href: `#${SECTION_IDS.obras}`, label: "Obras no DF" },
+  { slug: "duvidas", href: `#${SECTION_IDS.faq}`, label: "Dúvidas" },
 ] as const;
 
 export const POLITICAS_LINKS = [
-  { href: "/politicas/privacidade", label: "Privacidade" },
-  { href: "/politicas/cookies", label: "Cookies" },
-  { href: "/politicas/lgpd", label: "LGPD" },
-  { href: "/politicas/termos", label: "Termos de uso" },
-  { href: "/politicas/seguranca", label: "Segurança" },
+  { slug: "privacidade", href: "/politicas/privacidade", label: "Privacidade" },
+  { slug: "cookies", href: "/politicas/cookies", label: "Cookies" },
+  { slug: "lgpd", href: "/politicas/lgpd", label: "LGPD" },
+  { slug: "termos", href: "/politicas/termos", label: "Termos de uso" },
+  { slug: "seguranca", href: "/politicas/seguranca", label: "Segurança" },
 ] as const;

@@ -2,6 +2,7 @@ import { LEAD_API_ROUTE } from "@/data/integrations";
 import { getAttribution } from "@/lib/attribution";
 
 export type LeadPayload = {
+  formato: string;
   interesse: string;
   nome: string;
   telefone: string;

@@ -47,11 +47,29 @@ Consequência prática para mídia: com consentimento negado, as tags do Google 
 | Evento | Quando | Campos |
 | --- | --- | --- |
 | `consent_state` | Carregamento e a cada escolha no banner | `consent_state` |
-| `form_open` | Modal do formulário abre | `form_origin` |
+| `form_open` | Modal do formulário abre | `form_origin`, `form_formato`, `click_id` |
+| `whatsapp_click` | Clique em qualquer gatilho de WhatsApp, e no link da tela de sucesso | `click_id`, `form_origin`, `form_formato`, `whatsapp_origin` |
 | `steel_conecta_view` | Seção `#steel-conecta` entra em 40% da viewport, uma vez por sessão de página | nenhum |
-| `generate_lead` | Envio aceito pelo webhook | `form_origin`, `interesse`, `atendimento`, `tipo_obra`, `regiao` |
+| `generate_lead` | Envio aceito pelo webhook | `form_origin`, `form_formato`, `click_id`, `interesse`, `atendimento`, `tipo_obra`, `regiao` |
 
 `form_origin` é a origem do botão que abriu o modal (`hero`, `sistemas-drywall`, `footer`…). É o que permite saber qual seção converte.
+
+`click_id` é o `id` do elemento clicado, o mesmo que está no DOM (`flutuante-btn-whatsapp`, `footer-btn-whatsapp`, `cta-final-btn-whatsapp`…). Serve para o GTM disparar por botão sem depender de seletor de CSS.
+
+`form_formato` diz qual versão do formulário abriu: `completo` (três passos) ou `whatsapp` (passo único).
+
+### Gatilhos de WhatsApp
+
+Os quatro botões de WhatsApp da LP abrem o formulário curto, não a conversa direto:
+
+| `click_id` | Onde | `form_origin` |
+| --- | --- | --- |
+| `flutuante-btn-whatsapp` | Botão flutuante, presente na LP inteira | `whatsapp-flutuante` |
+| `drawer-btn-whatsapp` | Menu mobile do header | `header-whatsapp` |
+| `footer-btn-whatsapp` | Contatos do rodapé | `footer-whatsapp` |
+| `cta-final-btn-whatsapp` | CTA final | `cta-final-whatsapp` |
+
+O `whatsapp_click` dispara no clique, antes do envio. O link que abre a conversa de verdade fica na tela de sucesso (`contato-btn-whatsapp-atendente`) e dispara o mesmo evento com `whatsapp_origin: "pos-cadastro"`. Ou seja: `whatsapp_click` com `whatsapp_origin` diferente de `pos-cadastro` mede intenção; com `pos-cadastro`, mede quem de fato foi para a conversa.
 
 ## Formulário e webhook do n8n
 

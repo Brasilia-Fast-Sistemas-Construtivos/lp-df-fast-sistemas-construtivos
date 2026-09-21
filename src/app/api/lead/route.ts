@@ -2,7 +2,10 @@ import {
   ATENDIMENTO_POR_INTERESSE,
   ESTADOS_BRASILEIROS,
   ETAPAS_DA_OBRA,
+  FORMATO_COMPLETO,
+  FORMATO_WHATSAPP,
   INTERESSE_MATERIAL,
+  INTERESSE_NAO_INFORMADO,
   LABEL_POR_ESTADO,
   LABEL_POR_INTERESSE,
   LIMITE_DESCRICAO,
@@ -50,6 +53,10 @@ function texto(valor: unknown, limite: number): string {
   return typeof valor === "string" ? valor.trim().slice(0, limite) : "";
 }
 
+function ouNaoInformado(valor: string | undefined): string {
+  return valor || VALOR_NAO_INFORMADO;
+}
+
 function urlSegura(valor: string): string {
   if (!valor) return "";
   try {
@@ -78,6 +85,9 @@ export async function POST(request: Request) {
     return Response.json({ erro: "Corpo da requisição inválido." }, { status: 400 });
   }
 
+  const formato =
+    texto(corpo.formato, LIMITE.opcao) === FORMATO_WHATSAPP ? FORMATO_WHATSAPP : FORMATO_COMPLETO;
+  const formatoExpresso = formato === FORMATO_WHATSAPP;
   const interesse = texto(corpo.interesse, LIMITE.opcao);
   const nome = texto(corpo.nome, LIMITE.nome);
   const telefone = texto(corpo.telefone, LIMITE.telefone);
@@ -92,23 +102,29 @@ export async function POST(request: Request) {
   const sistemaEmUso = texto(corpo.sistemaEmUso, LIMITE.opcao);
 
   const camposInvalidos: string[] = [];
-  if (!INTERESSES_ACEITOS.includes(interesse)) camposInvalidos.push("interesse");
   if (validarNome(nome)) camposInvalidos.push("nome");
   if (validarTelefone(telefone)) camposInvalidos.push("telefone");
-  if (validarEmail(email)) camposInvalidos.push("email");
-  if (!ESTADOS_ACEITOS.includes(estado)) camposInvalidos.push("estado");
-  if (validarCidade(regiao)) camposInvalidos.push("regiao");
 
-  const fluxoDeMaterial = interesse === INTERESSE_MATERIAL;
+  const fluxoDeMaterial = !formatoExpresso && interesse === INTERESSE_MATERIAL;
 
-  if (fluxoDeMaterial) {
-    if (!ETAPAS_ACEITAS.includes(etapaObra)) camposInvalidos.push("etapaObra");
-    if (!SISTEMAS_ACEITOS.includes(sistemaEmUso)) camposInvalidos.push("sistemaEmUso");
-  } else {
+  if (formatoExpresso) {
+    if (interesse !== INTERESSE_NAO_INFORMADO) camposInvalidos.push("interesse");
     if (!TIPOS_ACEITOS.includes(tipoObra)) camposInvalidos.push("tipoObra");
-    if (validarMetragem(metragemEstimada)) camposInvalidos.push("metragemEstimada");
-    if (!RESPOSTAS_ACEITAS.includes(temProjeto)) camposInvalidos.push("temProjeto");
-    if (!RESPOSTAS_ACEITAS.includes(temLocal)) camposInvalidos.push("temLocal");
+  } else {
+    if (!INTERESSES_ACEITOS.includes(interesse)) camposInvalidos.push("interesse");
+    if (validarEmail(email)) camposInvalidos.push("email");
+    if (!ESTADOS_ACEITOS.includes(estado)) camposInvalidos.push("estado");
+    if (validarCidade(regiao)) camposInvalidos.push("regiao");
+
+    if (fluxoDeMaterial) {
+      if (!ETAPAS_ACEITAS.includes(etapaObra)) camposInvalidos.push("etapaObra");
+      if (!SISTEMAS_ACEITOS.includes(sistemaEmUso)) camposInvalidos.push("sistemaEmUso");
+    } else {
+      if (!TIPOS_ACEITOS.includes(tipoObra)) camposInvalidos.push("tipoObra");
+      if (validarMetragem(metragemEstimada)) camposInvalidos.push("metragemEstimada");
+      if (!RESPOSTAS_ACEITAS.includes(temProjeto)) camposInvalidos.push("temProjeto");
+      if (!RESPOSTAS_ACEITAS.includes(temLocal)) camposInvalidos.push("temLocal");
+    }
   }
 
   if (camposInvalidos.length > 0) {
@@ -120,21 +136,24 @@ export async function POST(request: Request) {
     urlSegura(texto(request.headers.get("referer"), LIMITE.referrer));
 
   const lead = {
+    formato,
     nome,
     telefone,
-    email,
-    estado,
-    estadoLabel: LABEL_POR_ESTADO[estado],
-    cidade: regiao,
-    tipoObra: fluxoDeMaterial ? VALOR_NAO_INFORMADO : tipoObra,
-    metragemEstimada: fluxoDeMaterial ? VALOR_NAO_INFORMADO : metragemEstimada,
-    temProjeto: fluxoDeMaterial ? VALOR_NAO_INFORMADO : temProjeto,
-    temLocal: fluxoDeMaterial ? VALOR_NAO_INFORMADO : temLocal,
+    email: ouNaoInformado(email),
+    estado: ouNaoInformado(estado),
+    estadoLabel: ouNaoInformado(LABEL_POR_ESTADO[estado]),
+    cidade: ouNaoInformado(regiao),
+    tipoObra: fluxoDeMaterial ? VALOR_NAO_INFORMADO : ouNaoInformado(tipoObra),
+    metragemEstimada: fluxoDeMaterial
+      ? VALOR_NAO_INFORMADO
+      : ouNaoInformado(metragemEstimada),
+    temProjeto: fluxoDeMaterial ? VALOR_NAO_INFORMADO : ouNaoInformado(temProjeto),
+    temLocal: fluxoDeMaterial ? VALOR_NAO_INFORMADO : ouNaoInformado(temLocal),
     etapaObra: fluxoDeMaterial ? etapaObra : VALOR_NAO_INFORMADO,
     sistemaEmUso: fluxoDeMaterial ? sistemaEmUso : VALOR_NAO_INFORMADO,
     descricao: texto(corpo.descricao, LIMITE.descricao),
     referrer,
-    regiao,
+    regiao: ouNaoInformado(regiao),
     interesse,
     interesseLabel: LABEL_POR_INTERESSE[interesse],
     atendimento: ATENDIMENTO_POR_INTERESSE[interesse],

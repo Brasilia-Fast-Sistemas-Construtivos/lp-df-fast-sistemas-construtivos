@@ -8,6 +8,7 @@ import CtaButton from "@/components/forms/CtaButton";
 import { useFormModal } from "@/components/forms/FormModalProvider";
 import Button from "@/components/ui/Button";
 import LogoSteelConecta from "@/components/ui/LogoSteelConecta";
+import { FORMATO_WHATSAPP } from "@/data/content";
 import { MENU_LINKS, SECTION_IDS } from "@/data/navigation";
 import { BRAND_ASSETS, CONTACT, SITE, STEEL_CONECTA } from "@/data/site";
 
@@ -410,6 +411,7 @@ export default function Header() {
       <div className="container header__inner">
         <div className="header__marcas">
           <a
+            id="header-link-logo"
             className="header__logo"
             href={`#${SECTION_IDS.hero}`}
             aria-label={`${SITE.name}, voltar ao início`}
@@ -433,7 +435,7 @@ export default function Header() {
 
         <nav className="header__nav" aria-label="Seções da página">
           {MENU_LINKS.map((link) => (
-            <a key={link.href + link.label} className="header__link" href={link.href}>
+            <a key={link.slug} id={`header-link-${link.slug}`} className="header__link" href={link.href}>
               {link.label}
             </a>
           ))}
@@ -468,7 +470,8 @@ export default function Header() {
         <div className="drawer__links">
           {MENU_LINKS.map((link) => (
             <a
-              key={`drawer-${link.href}${link.label}`}
+              key={link.slug}
+              id={`drawer-link-${link.slug}`}
               className="drawer__link"
               href={link.href}
               tabIndex={menuAberto ? 0 : -1}
@@ -482,6 +485,7 @@ export default function Header() {
         <div className="drawer__rodape">
           <div className="drawer__contatos">
             <a
+              id="drawer-link-telefone"
               className="drawer__contato"
               href={CONTACT.phoneUrl}
               tabIndex={menuAberto ? 0 : -1}
@@ -493,9 +497,10 @@ export default function Header() {
               className="drawer__contato"
               type="button"
               tabIndex={menuAberto ? 0 : -1}
-              onClick={() => {
+              onClick={(evento) => {
+                const clickId = evento.currentTarget.id;
                 setMenuAberto(false);
-                open({ origin: "header-whatsapp" });
+                open({ origin: "header-whatsapp", clickId, formato: FORMATO_WHATSAPP });
               }}
             >
               WhatsApp

@@ -7,7 +7,7 @@ import { useEffect, useRef } from "react";
 import CtaButton from "@/components/forms/CtaButton";
 import { gsap, motionEnabled, registerGsap } from "@/components/motion/gsap";
 import { useReveal } from "@/components/motion/useReveal";
-import { CTA_FINAL, REGIOES_ATENDIDAS } from "@/data/content";
+import { CTA_FINAL, FORMATO_WHATSAPP, REGIOES_ATENDIDAS } from "@/data/content";
 import { SECTION_IDS } from "@/data/navigation";
 
 const Band = styled.section`
@@ -287,7 +287,13 @@ export function CtaFinalSection() {
           <CtaButton id="cta-final-btn-orcamento" origin="cta-final" onDark>
             Pedir orçamento
           </CtaButton>
-          <CtaButton id="cta-final-btn-whatsapp" origin="cta-final-whatsapp" variant="outline" onDark>
+          <CtaButton
+            id="cta-final-btn-whatsapp"
+            origin="cta-final-whatsapp"
+            variant="outline"
+            formato={FORMATO_WHATSAPP}
+            onDark
+          >
             Chamar no WhatsApp
           </CtaButton>
         </div>

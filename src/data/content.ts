@@ -324,6 +324,12 @@ export const ATENDIMENTO_FAST = "Fast Sistemas Construtivos";
 
 export const ATENDIMENTO_STEEL_CONECTA = "Steel Conecta";
 
+export const INTERESSE_NAO_INFORMADO = "nao_informado";
+
+export const FORMATO_COMPLETO = "completo";
+
+export const FORMATO_WHATSAPP = "whatsapp";
+
 export const VALOR_NAO_INFORMADO = "Não informado";
 
 export const OPCOES_INTERESSE = [
@@ -350,13 +356,15 @@ export const OPCOES_INTERESSE = [
   },
 ] as const;
 
-export const ATENDIMENTO_POR_INTERESSE: Record<string, string> = Object.fromEntries(
-  OPCOES_INTERESSE.map((opcao) => [opcao.value, opcao.atendimento])
-);
+export const ATENDIMENTO_POR_INTERESSE: Record<string, string> = {
+  ...Object.fromEntries(OPCOES_INTERESSE.map((opcao) => [opcao.value, opcao.atendimento])),
+  [INTERESSE_NAO_INFORMADO]: ATENDIMENTO_FAST,
+};
 
-export const LABEL_POR_INTERESSE: Record<string, string> = Object.fromEntries(
-  OPCOES_INTERESSE.map((opcao) => [opcao.value, opcao.label])
-);
+export const LABEL_POR_INTERESSE: Record<string, string> = {
+  ...Object.fromEntries(OPCOES_INTERESSE.map((opcao) => [opcao.value, opcao.label])),
+  [INTERESSE_NAO_INFORMADO]: VALOR_NAO_INFORMADO,
+};
 
 export const ETAPAS_DA_OBRA = [
   { value: "Planejamento", label: "Planejamento" },

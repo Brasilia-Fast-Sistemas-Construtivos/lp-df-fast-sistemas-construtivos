@@ -21,6 +21,9 @@ export const CONTACT = {
   emailUrl: "mailto:franquia.fjsteel@fastdrywall.com.br",
   phoneUrl: "tel:+5561998467194",
   whatsappMensagem: "Olá! Vim pelo site e gostaria de um orçamento.",
+  whatsappEnvioUrl: "https://api.whatsapp.com/send?phone=5561998467194",
+  whatsappTextoExpresso: (nome: string, tipoObra: string) =>
+    `Olá! Sou ${nome}, vim pelo site da Fast e quero um orçamento para ${tipoObra.toLowerCase()} em Brasília.`,
   whatsappPosCadastroUrl:
     "https://api.whatsapp.com/send?phone=5561998467194&text=Ol%C3%A1!%20Acabei%20de%20me%20cadastrar%20no%20seu%20site%20e%20que%20fazer%20a%20cota%C3%A7%C3%A3o%20da%20minha%20obra",
 } as const;

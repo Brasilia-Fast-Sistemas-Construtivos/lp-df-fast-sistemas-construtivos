@@ -5,7 +5,13 @@ import Image from "next/image";
 
 import CtaButton from "@/components/forms/CtaButton";
 import { useFormModal } from "@/components/forms/FormModalProvider";
-import { FOOTER_SOLUCOES, POLITICAS_LINKS, SECTION_IDS } from "@/data/navigation";
+import { FORMATO_WHATSAPP } from "@/data/content";
+import {
+  FOOTER_NAVEGACAO,
+  FOOTER_SOLUCOES,
+  POLITICAS_LINKS,
+  SECTION_IDS,
+} from "@/data/navigation";
 import { BRAND_ASSETS, CONTACT, SITE, SOCIAL } from "@/data/site";
 
 const ANO_ATUAL = new Date().getFullYear();
@@ -196,7 +202,13 @@ export default function Footer() {
             <button
               id="footer-btn-whatsapp"
               type="button"
-              onClick={() => open({ origin: "footer-whatsapp" })}
+              onClick={(evento) =>
+                open({
+                  origin: "footer-whatsapp",
+                  clickId: evento.currentTarget.id,
+                  formato: FORMATO_WHATSAPP,
+                })
+              }
             >
               WhatsApp
             </button>
@@ -218,8 +230,10 @@ export default function Footer() {
           <h2 className="footer__titulo">Soluções</h2>
           <ul className="footer__lista">
             {FOOTER_SOLUCOES.map((item) => (
-              <li key={item.label}>
-                <a href={item.href}>{item.label}</a>
+              <li key={item.slug}>
+                <a id={`footer-link-solucao-${item.slug}`} href={item.href}>
+                  {item.label}
+                </a>
               </li>
             ))}
           </ul>
@@ -228,26 +242,20 @@ export default function Footer() {
         <div className="footer__coluna">
           <h2 className="footer__titulo">Navegação</h2>
           <ul className="footer__lista">
+            {FOOTER_NAVEGACAO.map((item) => (
+              <li key={item.slug}>
+                <a id={`footer-link-${item.slug}`} href={item.href}>
+                  {item.label}
+                </a>
+              </li>
+            ))}
             <li>
-              <a href={`#${SECTION_IDS.produtos}`}>Produtos</a>
-            </li>
-            <li>
-              <a href={`#${SECTION_IDS.obraCompleta}`}>Do projeto à conclusão</a>
-            </li>
-            <li>
-              <a href={`#${SECTION_IDS.steelConecta}`}>Steel Conecta</a>
-            </li>
-            <li>
-              <a href={`#${SECTION_IDS.processo}`}>Como comprar</a>
-            </li>
-            <li>
-              <a href={`#${SECTION_IDS.obras}`}>Obras no DF</a>
-            </li>
-            <li>
-              <a href={`#${SECTION_IDS.faq}`}>Dúvidas</a>
-            </li>
-            <li>
-              <a href={SITE.institutionalUrl} target="_blank" rel="noopener noreferrer">
+              <a
+                id="footer-link-site-nacional"
+                href={SITE.institutionalUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 Site nacional
               </a>
             </li>
@@ -262,7 +270,9 @@ export default function Footer() {
           </p>
           <ul className="footer__lista">
             <li>
-              <a href={`#${SECTION_IDS.cobertura}`}>Ver regiões atendidas</a>
+              <a id="footer-link-cobertura" href={`#${SECTION_IDS.cobertura}`}>
+                Ver regiões atendidas
+              </a>
             </li>
           </ul>
         </div>
@@ -271,7 +281,7 @@ export default function Footer() {
       <div className="container footer__base">
         <nav className="footer__legal" aria-label="Políticas">
           {POLITICAS_LINKS.map((item) => (
-            <a key={item.href} href={item.href}>
+            <a key={item.slug} id={`footer-link-politica-${item.slug}`} href={item.href}>
               {item.label}
             </a>
           ))}

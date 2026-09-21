@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 
 import { useFormModal } from "@/components/forms/FormModalProvider";
 import IconeWhatsApp from "@/components/ui/IconeWhatsApp";
+import { FORMATO_WHATSAPP } from "@/data/content";
 
 const Root = styled.button`
   position: fixed;
@@ -81,7 +82,13 @@ export default function WhatsAppFloating() {
       id="flutuante-btn-whatsapp"
       type="button"
       data-lifted={lifted}
-      onClick={() => open({ origin: "whatsapp-flutuante" })}
+      onClick={(evento) =>
+        open({
+          origin: "whatsapp-flutuante",
+          clickId: evento.currentTarget.id,
+          formato: FORMATO_WHATSAPP,
+        })
+      }
       aria-label="Pedir orçamento pelo WhatsApp"
     >
       <IconeWhatsApp size={28} />

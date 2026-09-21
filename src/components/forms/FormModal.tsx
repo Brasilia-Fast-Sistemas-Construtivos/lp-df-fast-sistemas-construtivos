@@ -13,7 +13,9 @@ import {
   ATENDIMENTO_POR_INTERESSE,
   ESTADOS_BRASILEIROS,
   ETAPAS_DA_OBRA,
+  FORMATO_WHATSAPP,
   INTERESSE_MATERIAL,
+  INTERESSE_NAO_INFORMADO,
   LIMITE_DESCRICAO,
   LIMITE_METRAGEM,
   LIMITE_REGIAO,
@@ -93,6 +95,8 @@ const ETAPA_ESCOPO = {
   acao: "Continuar",
 };
 
+const ACAO_WHATSAPP_PADRAO = "Falar com Atendente no Whatsapp";
+
 const FLUXO_MATERIAL = {
   marca: "",
   titulo: "Pedir orçamento",
@@ -100,6 +104,7 @@ const FLUXO_MATERIAL = {
   sucessoTitulo: "Orçamento solicitado",
   sucessoTexto:
     "Recebemos seu pedido. Nossa equipe em Brasília entra em contato pelo telefone ou e-mail informado.",
+  whatsappAcao: ACAO_WHATSAPP_PADRAO,
   etapas: [
     ETAPA_ESCOPO,
     {
@@ -122,6 +127,7 @@ const FLUXO_EXECUCAO = {
   sucessoTitulo: "Pedido enviado para a Steel Conecta",
   sucessoTexto:
     "Recebemos seu pedido. A equipe de execução entra em contato pelo telefone ou e-mail informado.",
+  whatsappAcao: ACAO_WHATSAPP_PADRAO,
   etapas: [
     ETAPA_ESCOPO,
     {
@@ -144,6 +150,23 @@ const FLUXO_EXECUCAO = {
   ],
 };
 
+const FLUXO_WHATSAPP = {
+  marca: "",
+  titulo: "Orçamento pelo WhatsApp",
+  descricao: "Três respostas e a conversa já começa com o contexto da sua obra.",
+  sucessoTitulo: "Pronto, é só abrir a conversa",
+  sucessoTexto:
+    "Seus dados chegaram para a equipe da Fast em Brasília. Toque no botão para falar agora.",
+  whatsappAcao: "Abrir conversa no WhatsApp",
+  etapas: [
+    {
+      titulo: "Seu contato",
+      campos: ["nome", "telefone", "tipoObra"] as Campo[],
+      acao: "Continuar no WhatsApp",
+    },
+  ],
+};
+
 const CAMPOS_DE_ESCOLHA: Campo[] = ["interesse", "temProjeto", "temLocal"];
 
 const VALORES_VAZIOS: Valores = {
@@ -162,7 +185,8 @@ const VALORES_VAZIOS: Valores = {
   descricao: "",
 };
 
-function fluxoDoInteresse(interesse: string) {
+function fluxoAtivo(formato: string, interesse: string) {
+  if (formato === FORMATO_WHATSAPP) return FLUXO_WHATSAPP;
   return interesse && interesse !== INTERESSE_MATERIAL ? FLUXO_EXECUCAO : FLUXO_MATERIAL;
 }
 
@@ -486,7 +510,7 @@ const FecharBotao = styled.button`
 `;
 
 export default function FormModal() {
-  const { isOpen, origin, preFill, close } = useFormModal();
+  const { isOpen, origin, clickId, formato, preFill, close } = useFormModal();
   const dialogRef = useRef<HTMLDialogElement>(null);
   const etapaRenderizadaRef = useRef(0);
   const [etapa, setEtapa] = useState(0);
@@ -497,10 +521,19 @@ export default function FormModal() {
     CONTACT.whatsappPosCadastroUrl
   );
 
+  const fluxo = fluxoAtivo(formato, valores.interesse);
+  const fluxoDeMaterial = fluxo === FLUXO_MATERIAL;
+  const fluxoExpresso = fluxo === FLUXO_WHATSAPP;
+
   useEffect(() => {
     if (estado !== "sucesso") return;
-    setWhatsappPosCadastro(appendAttribution(CONTACT.whatsappPosCadastroUrl));
-  }, [estado]);
+    const destino = fluxoExpresso
+      ? `${CONTACT.whatsappEnvioUrl}&text=${encodeURIComponent(
+          CONTACT.whatsappTextoExpresso(valores.nome.trim(), valores.tipoObra)
+        )}`
+      : CONTACT.whatsappPosCadastroUrl;
+    setWhatsappPosCadastro(appendAttribution(destino));
+  }, [estado, fluxoExpresso, valores.nome, valores.tipoObra]);
 
   useEffect(() => {
     const dialog = dialogRef.current;
@@ -524,16 +557,19 @@ export default function FormModal() {
         metragemEstimada: preFill.metragemEstimada ?? "",
         descricao: preFill.descricao ?? "",
       });
-      pushDataLayerEvent({ event: "form_open", form_origin: origin });
+      pushDataLayerEvent({
+        event: "form_open",
+        form_origin: origin,
+        form_formato: formato,
+        click_id: clickId,
+      });
     }
 
     if (!isOpen && dialog.open) {
       dialog.close();
       document.body.style.overflow = "";
     }
-  }, [isOpen, origin, preFill]);
-
-  const fluxo = fluxoDoInteresse(valores.interesse);
+  }, [isOpen, origin, clickId, formato, preFill]);
 
   useEffect(() => {
     if (etapa === etapaRenderizadaRef.current) return;
@@ -594,10 +630,12 @@ export default function FormModal() {
 
   const enviar = async () => {
     setEstado("enviando");
+    const interesseEnviado = fluxoExpresso ? INTERESSE_NAO_INFORMADO : valores.interesse;
 
     try {
       await submitLead({
-        interesse: valores.interesse,
+        formato,
+        interesse: interesseEnviado,
         nome: valores.nome.trim(),
         telefone: valores.telefone,
         email: valores.email.trim(),
@@ -615,8 +653,10 @@ export default function FormModal() {
       pushDataLayerEvent({
         event: "generate_lead",
         form_origin: origin,
-        interesse: valores.interesse,
-        atendimento: ATENDIMENTO_POR_INTERESSE[valores.interesse],
+        form_formato: formato,
+        click_id: clickId,
+        interesse: interesseEnviado,
+        atendimento: ATENDIMENTO_POR_INTERESSE[interesseEnviado],
         tipo_obra: valores.tipoObra,
         estado: valores.estado,
         regiao: valores.regiao.trim(),
@@ -650,7 +690,52 @@ export default function FormModal() {
   };
 
   const etapaAtual = fluxo.etapas[etapa];
-  const fluxoDeMaterial = fluxo === FLUXO_MATERIAL;
+
+  const campoNome = (
+    <Field
+      id={CAMPO_IDS.nome}
+      name="nome"
+      label="Nome"
+      autoComplete="name"
+      placeholder="Seu nome"
+      value={valores.nome}
+      onChange={(evento) => atualizarCampo("nome", evento.target.value)}
+      onBlur={() => validarCampo("nome")}
+      erro={erros.nome}
+      required
+    />
+  );
+
+  const campoTelefone = (
+    <Field
+      id={CAMPO_IDS.telefone}
+      name="telefone"
+      label="Telefone"
+      type="tel"
+      inputMode="tel"
+      autoComplete="tel"
+      placeholder="(61) 9 0000-0000"
+      value={valores.telefone}
+      onChange={(evento) => atualizarCampo("telefone", evento.target.value)}
+      onBlur={() => validarCampo("telefone")}
+      erro={erros.telefone}
+      required
+    />
+  );
+
+  const campoTipoObra = (rotulo: string) => (
+    <SelectField
+      id={CAMPO_IDS.tipoObra}
+      name="tipoObra"
+      label={rotulo}
+      placeholder="Selecione o tipo"
+      options={TIPOS_DE_OBRA}
+      value={valores.tipoObra}
+      onChange={(evento) => atualizarCampo("tipoObra", evento.target.value)}
+      erro={erros.tipoObra}
+      required
+    />
+  );
 
   return (
     <Dialog ref={dialogRef} aria-labelledby="contato-modal-titulo">
@@ -705,15 +790,17 @@ export default function FormModal() {
                 target="_blank"
                 rel="noopener noreferrer"
                 data-no-utm
-                onClick={() =>
+                onClick={(evento) =>
                   pushDataLayerEvent({
                     event: "whatsapp_click",
+                    click_id: evento.currentTarget.id,
                     form_origin: origin,
+                    form_formato: formato,
                     whatsapp_origin: "pos-cadastro",
                   })
                 }
               >
-                Falar com Atendente no Whatsapp
+                {fluxo.whatsappAcao}
               </a>
               <Button id="contato-btn-concluir" variant="ghost" onClick={close}>
                 Fechar
@@ -722,23 +809,33 @@ export default function FormModal() {
           </div>
         ) : (
           <>
-            <div className="modal__progresso">
-              <p className="modal__progresso-texto" aria-live="polite">
-                Passo {etapa + 1} de {fluxo.etapas.length}: {etapaAtual.titulo}
-              </p>
-              <div className="modal__progresso-trilha" aria-hidden="true">
-                {fluxo.etapas.map((item, indice) => (
-                  <span
-                    key={item.titulo}
-                    className="modal__progresso-segmento"
-                    data-ativo={indice <= etapa}
-                  />
-                ))}
+            {fluxo.etapas.length > 1 ? (
+              <div className="modal__progresso">
+                <p className="modal__progresso-texto" aria-live="polite">
+                  Passo {etapa + 1} de {fluxo.etapas.length}: {etapaAtual.titulo}
+                </p>
+                <div className="modal__progresso-trilha" aria-hidden="true">
+                  {fluxo.etapas.map((item, indice) => (
+                    <span
+                      key={item.titulo}
+                      className="modal__progresso-segmento"
+                      data-ativo={indice <= etapa}
+                    />
+                  ))}
+                </div>
               </div>
-            </div>
+            ) : null}
 
             <form onSubmit={handleSubmit} noValidate>
-              {etapa === 0 ? (
+              {fluxoExpresso ? (
+                <>
+                  {campoNome}
+                  {campoTelefone}
+                  {campoTipoObra("Tipo de construção")}
+                </>
+              ) : null}
+
+              {etapa === 0 && !fluxoExpresso ? (
                 <ChoiceCardField
                   id={CAMPO_IDS.interesse}
                   name="interesse"
@@ -819,17 +916,7 @@ export default function FormModal() {
 
               {etapa === 1 && !fluxoDeMaterial ? (
                 <>
-                  <SelectField
-                    id={CAMPO_IDS.tipoObra}
-                    name="tipoObra"
-                    label="Tipo de obra"
-                    placeholder="Selecione o tipo"
-                    options={TIPOS_DE_OBRA}
-                    value={valores.tipoObra}
-                    onChange={(evento) => atualizarCampo("tipoObra", evento.target.value)}
-                    erro={erros.tipoObra}
-                    required
-                  />
+                  {campoTipoObra("Tipo de obra")}
 
                   <SelectField
                     id={CAMPO_IDS.estado}
@@ -898,33 +985,8 @@ export default function FormModal() {
 
               {etapa === 2 ? (
                 <>
-                  <Field
-                    id={CAMPO_IDS.nome}
-                    name="nome"
-                    label="Nome"
-                    autoComplete="name"
-                    placeholder="Seu nome"
-                    value={valores.nome}
-                    onChange={(evento) => atualizarCampo("nome", evento.target.value)}
-                    onBlur={() => validarCampo("nome")}
-                    erro={erros.nome}
-                    required
-                  />
-
-                  <Field
-                    id={CAMPO_IDS.telefone}
-                    name="telefone"
-                    label="Telefone"
-                    type="tel"
-                    inputMode="tel"
-                    autoComplete="tel"
-                    placeholder="(61) 9 0000-0000"
-                    value={valores.telefone}
-                    onChange={(evento) => atualizarCampo("telefone", evento.target.value)}
-                    onBlur={() => validarCampo("telefone")}
-                    erro={erros.telefone}
-                    required
-                  />
+                  {campoNome}
+                  {campoTelefone}
 
                   <Field
                     id={CAMPO_IDS.email}
@@ -986,7 +1048,10 @@ export default function FormModal() {
                 {estado === "erro" ? (
                   <p className="modal__microcopy" role="alert">
                     Não conseguimos enviar agora. Tente de novo em instantes ou ligue para{" "}
-                    <a href={CONTACT.phoneUrl}>{CONTACT.phoneDisplay}</a>.
+                    <a id="contato-link-telefone" href={CONTACT.phoneUrl}>
+                      {CONTACT.phoneDisplay}
+                    </a>
+                    .
                   </p>
                 ) : (
                   <p className="modal__microcopy">

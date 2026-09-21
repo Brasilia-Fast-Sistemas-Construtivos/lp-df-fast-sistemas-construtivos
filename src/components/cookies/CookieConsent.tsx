@@ -160,7 +160,10 @@ export default function CookieConsent() {
         <p className="cookie__texto" id="cookie-texto">
           Usamos cookies para entender de onde vêm as visitas e melhorar o atendimento. Escolha uma
           opção para continuar: recusar não tira nenhuma função do site. Veja a{" "}
-          <a href="/politicas/cookies">política de cookies</a>.
+          <a id="cookie-link-politica" href="/politicas/cookies">
+            política de cookies
+          </a>
+          .
         </p>
         <div className="cookie__acoes">
           <Button id="cookie-btn-aceitar" onClick={() => registrar("accepted")}>

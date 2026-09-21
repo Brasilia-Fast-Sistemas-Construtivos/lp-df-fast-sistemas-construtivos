@@ -19,7 +19,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
       <GsapRoot />
       <UtmPersist />
 
-      <a className="skip-link" href="#conteudo">
+      <a id="layout-link-conteudo" className="skip-link" href="#conteudo">
         Pular para o conteúdo
       </a>
 

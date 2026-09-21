@@ -2,7 +2,11 @@
 
 import type { ReactNode } from "react";
 
-import { useFormModal, type PreFill } from "@/components/forms/FormModalProvider";
+import {
+  useFormModal,
+  type FormatoDoFormulario,
+  type PreFill,
+} from "@/components/forms/FormModalProvider";
 import Button from "@/components/ui/Button";
 
 type CtaButtonProps = {
@@ -13,6 +17,7 @@ type CtaButtonProps = {
   onDark?: boolean;
   fullWidth?: boolean;
   preFill?: PreFill;
+  formato?: FormatoDoFormulario;
 };
 
 export default function CtaButton({
@@ -23,6 +28,7 @@ export default function CtaButton({
   onDark = false,
   fullWidth = false,
   preFill,
+  formato,
 }: CtaButtonProps) {
   const { open } = useFormModal();
 
@@ -32,7 +38,7 @@ export default function CtaButton({
       variant={variant}
       onDark={onDark}
       fullWidth={fullWidth}
-      onClick={() => open({ origin, ...preFill })}
+      onClick={() => open({ origin, clickId: id, formato, ...preFill })}
     >
       {children}
     </Button>
